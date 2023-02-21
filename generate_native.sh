@@ -2,4 +2,4 @@
 rm -rf build2
 mkdir build2
 cd build2
-cmake ..  -DHAVE_VULKAN=NO -DHAVE_GLES2=NO
+cmake ..  -DHAVE_VULKAN=NO -DHAVE_GLES2=NO -DHAVE_MUSL=YES

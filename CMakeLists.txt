@@ -199,6 +199,7 @@ endif()
 
 option (HAVE_VULKAN "Enable Vulkan support" ON)
 option (HAVE_GLES2 "Enable GLES2 support" ON)
+option (HAVE_MUSL "Build with MUSL awareness" OFF)
 
 # no, we're not using external asmjit for now, we made too many modifications to our's.
 # if the asmjit author uses our changes then we'll update this.
@@ -273,6 +274,10 @@ else()
 
 	if ( HAVE_GLES2 )
 		set( ALL_C_FLAGS "${ALL_C_FLAGS} -DHAVE_GLES2" )
+	endif()
+
+	if( HAVE_MUSL )
+		set( ALL_C_FLAGS "${ALL_C_FLAGS} -DHAVE_MUSL" )
 	endif()
 
 	if ( UNIX )

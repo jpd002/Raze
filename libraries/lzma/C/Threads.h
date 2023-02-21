@@ -13,7 +13,7 @@
 #ifndef _7ZIP_AFFINITY_DISABLE
 #define _7ZIP_AFFINITY_SUPPORTED
 // #pragma message(" ==== _7ZIP_AFFINITY_SUPPORTED")
-// #define _GNU_SOURCE
+#define _GNU_SOURCE
 #endif
 #endif
 #endif

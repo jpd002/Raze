@@ -36,7 +36,7 @@
 #define stat _stat
 #else
 #include <dirent.h>
-#if !defined(__sun)
+#if !defined(__sun) && !defined(HAVE_MUSL)
 #include <fts.h>
 #endif
 #endif
@@ -499,7 +499,7 @@ dir_tree_t *add_dirs(char **argv)
 	return trees;
 }
 
-#elif defined(__sun)
+#elif defined(__sun) || defined(HAVE_MUSL)
 
 //==========================================================================
 //
@@ -534,7 +534,7 @@ void add_dir(dir_tree_t *tree, char* dirpath)
 		stat(fullFileName, fileStat);
 		isDirectory = S_ISDIR(fileStat->st_mode);
 		time = fileStat->st_mtime;
-		free(stat);
+		free(fileStat);
 
 		free(fullFileName);
 
@@ -577,7 +577,7 @@ dir_tree_t *add_dirs(char **argv)
 
 		if(tree != NULL)
 		{
-			char* dirpath = malloc(sizeof(argv[i]) + 2);
+			char* dirpath = malloc(strlen(argv[i]) + 2);
 			strcpy(dirpath, argv[i]);
 			if(dirpath[strlen(dirpath)] != '/')
 				strcat(dirpath, "/");
