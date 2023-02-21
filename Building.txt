@@ -1,0 +1,23 @@
+docker run -it -v //d/ProjectsGit/PS2-Raze:/work --name ps2raze -d ps2dev/ps2dev
+winpty docker start -i ps2raze
+apk update
+apk add build-base git cmake sdl2-dev glib-dev
+
+//Build zmusic
+cd ~
+git clone https://github.com/ZDoom/Zmusic
+mkdir build
+cd build
+cmake ..
+make install
+
+//Build native version
+cd work
+./generate_native.sh
+cd build2
+cmake ..
+
+//Build PS2 version
+cd work
+./generate.sh
+cd build
