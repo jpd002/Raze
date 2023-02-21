@@ -36,6 +36,9 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
+#ifdef __PS2__
+#include <strings.h>
+#endif
 #include <stddef.h>
 #include <string>
 #include "tarray.h"
