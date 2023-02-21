@@ -134,7 +134,7 @@ else()
 	endif()
 
 	# Non-Windows version also needs SDL except native OS X backend
-	if( NOT APPLE OR NOT OSX_COCOA_BACKEND )
+	if( ( NOT APPLE OR NOT OSX_COCOA_BACKEND ) AND ( NOT PLATFORM_PS2 ) )
 		find_package( SDL2 REQUIRED )
 		include_directories( "${SDL2_INCLUDE_DIR}" )
 		set( PROJECT_LIBRARIES ${PROJECT_LIBRARIES} "${SDL2_LIBRARY}" )
@@ -329,7 +329,7 @@ endif()
 
 # ZMUSIC
 
-if( MSVC )
+if( MSVC OR PLATFORM_PS2 )
 	find_package( ZMusic )
 else()
 	find_package( ZMusic REQUIRED )
@@ -337,7 +337,7 @@ endif()
 
 message("Building for target architecture: ${TARGET_ARCHITECTURE}")
 
-if( MSVC AND NOT ZMUSIC_FOUND )
+if( ( MSVC OR PLATFORM_PS2 ) AND NOT ZMUSIC_FOUND )
 	# Use prebuilt library
 	set( ZMUSIC_ROOT_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../bin/windows/zmusic" )
 	set( ZMUSIC_INCLUDE_DIR ${ZMUSIC_ROOT_PATH}/include )

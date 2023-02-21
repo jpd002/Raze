@@ -337,8 +337,10 @@ if (HAVE_VULKAN)
 	add_subdirectory( libraries/ZVulkan )
 endif()
 
-add_subdirectory( libraries/discordrpc )
 set( DRPC_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/libraries/discordrpc/include" )
+if( NOT PLATFORM_PS2 )
+	add_subdirectory( libraries/discordrpc )
+endif()
 set( DRPC_LIBRARIES discord-rpc )
 set( DRPC_LIBRARY discord-rpc )
 

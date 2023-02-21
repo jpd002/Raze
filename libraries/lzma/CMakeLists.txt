@@ -29,4 +29,4 @@ add_library( lzma STATIC
 	C/Ppmd7Dec.c
 	C/Threads.c
 )
-target_link_libraries( lzma Threads::Threads )
+target_link_libraries( lzma )
