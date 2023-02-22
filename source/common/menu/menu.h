@@ -76,11 +76,11 @@ class DListMenuDescriptor : public DMenuDescriptor
 
 public:
 	int mSelectedItem;
-	double mSelectOfsX;
-	double mSelectOfsY;
+	float mSelectOfsX;
+	float mSelectOfsY;
 	FTextureID mSelector;
 	int mDisplayTop;
-	double mXpos, mYpos;
+	float mXpos, mYpos;
 	int mWLeft, mWRight;
 	int mLinespacing;	// needs to be stored for dynamically created menus
 	int mAutoselect;	// this can only be set by internal menu creation functions
@@ -145,7 +145,7 @@ public:
 	PalEntry textBackgroundBrightness;
 
 	FFont *textFont;
-	double textScale;
+	float textScale;
 	bool mAnimatedTransition;
 	bool mAnimated;
 	bool mDontDim;
@@ -202,7 +202,7 @@ struct MenuTransition
 	DMenu* previous;
 	DMenu* current;
 
-	double start;
+	float start;
 	int32_t length;
 	int8_t dir;
 	bool destroyprev;
@@ -259,7 +259,7 @@ class DMenuItemBase : public DObject
 {
 	DECLARE_CLASS(DMenuItemBase, DObject)
 public:
-	double mXpos, mYpos;
+	float mXpos, mYpos;
 	FName mAction;
 	int mEnabled;
 
@@ -269,7 +269,7 @@ public:
 	bool SetValue(int i, int value);
 	bool GetValue(int i, int *pvalue);
 	void OffsetPositionY(int ydelta) { mYpos += ydelta; }
-	double GetY() { return mYpos; }
+	float GetY() { return mYpos; }
 };	
 
 //=============================================================================
@@ -281,7 +281,7 @@ struct FOptionValues
 {
 	struct Pair
 	{
-		double Value;
+		float Value;
 		FString TextValue;
 		FString Text;
 	};
@@ -327,10 +327,10 @@ DMenuItemBase * CreateOptionMenuItemStaticText(const char *name, int v = -1);
 DMenuItemBase * CreateOptionMenuItemSubmenu(const char *label, FName cmd, int center);
 DMenuItemBase * CreateOptionMenuItemControl(const char *label, FName cmd, FKeyBindings *bindings);
 DMenuItemBase * CreateOptionMenuItemJoyConfigMenu(const char *label, IJoystickConfig *joy);
-DMenuItemBase * CreateListMenuItemPatch(double x, double y, int height, int hotkey, FTextureID tex, FName command, int param);
-DMenuItemBase * CreateListMenuItemText(double x, double y, int height, int hotkey, const char *text, FFont *font, PalEntry color1, PalEntry color2, FName command, int param);
+DMenuItemBase * CreateListMenuItemPatch(float x, float y, int height, int hotkey, FTextureID tex, FName command, int param);
+DMenuItemBase * CreateListMenuItemText(float x, float y, int height, int hotkey, const char *text, FFont *font, PalEntry color1, PalEntry color2, FName command, int param);
 DMenuItemBase * CreateOptionMenuItemCommand(const char *label, FName cmd, bool centered = false);
-DMenuItemBase* CreateListMenuItemStaticText(double x, double y, const char* text, FFont* font, PalEntry color, bool centered = false);
+DMenuItemBase* CreateListMenuItemStaticText(float x, float y, const char* text, FFont* font, PalEntry color, bool centered = false);
 
 void UpdateVRModes(bool considerQuadBuffered=true);
 
