@@ -315,20 +315,24 @@ template<> FSerializer& Serialize(FSerializer& arc, const char* key, PClass*& cl
 template<> FSerializer& Serialize(FSerializer& arc, const char* key, FFont*& font, FFont** def);
 template<> FSerializer &Serialize(FSerializer &arc, const char *key, Dictionary *&dict, Dictionary **def);
 
+#if 0
 inline FSerializer &Serialize(FSerializer &arc, const char *key, DVector3 &p, DVector3 *def)
 {
 	return arc.Array<double>(key, &p[0], def? &(*def)[0] : nullptr, 3, true);
 }
+#endif
 
 inline FSerializer &Serialize(FSerializer &arc, const char *key, DRotator &p, DRotator *def)
 {
 	return arc.Array<DAngle>(key, &p[0], def? &(*def)[0] : nullptr, 3, true);
 }
 
+#if 0
 inline FSerializer &Serialize(FSerializer &arc, const char *key, DVector2 &p, DVector2 *def)
 {
 	return arc.Array<double>(key, &p[0], def? &(*def)[0] : nullptr, 2, true);
 }
+#endif
 
 inline FSerializer& Serialize(FSerializer& arc, const char* key, FVector4& p, FVector4* def)
 {
