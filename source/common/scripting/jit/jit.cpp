@@ -275,7 +275,7 @@ void JitCompiler::SetupFrame()
 	// the VM version reads this from the stack, but it is constant data
 	offsetParams = ((int)sizeof(VMFrame) + 15) & ~15;
 	offsetF = offsetParams + (int)(sfunc->MaxParam * sizeof(VMValue));
-	offsetS = offsetF + (int)(sfunc->NumRegF * sizeof(double));
+	offsetS = offsetF + (int)(sfunc->NumRegF * sizeof(float));
 	offsetA = offsetS + (int)(sfunc->NumRegS * sizeof(FString));
 	offsetD = offsetA + (int)(sfunc->NumRegA * sizeof(void*));
 	offsetExtra = (offsetD + (int)(sfunc->NumRegD * sizeof(int32_t)) + 15) & ~15;
@@ -405,7 +405,7 @@ void JitCompiler::SetupFullVMFrame()
 		cc.mov(regD[i], x86::dword_ptr(vmframe, offsetD + i * sizeof(int32_t)));
 
 	for (int i = 0; i < sfunc->NumRegF; i++)
-		cc.movsd(regF[i], x86::qword_ptr(vmframe, offsetF + i * sizeof(double)));
+		cc.movsd(regF[i], x86::qword_ptr(vmframe, offsetF + i * sizeof(float)));
 
 	for (int i = 0; i < sfunc->NumRegS; i++)
 		cc.lea(regS[i], x86::ptr(vmframe, offsetS + i * sizeof(FString)));

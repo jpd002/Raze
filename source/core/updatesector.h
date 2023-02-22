@@ -25,22 +25,22 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 
 // checker functions for updatesector's template parameter.
-inline int inside0(double x, double y, double z, const sectortype* sect)
+inline int inside0(float x, float y, float z, const sectortype* sect)
 {
     return inside(x, y, sect);
 }
 
-inline int insideZ(double x, double y, double z, const sectortype* sect)
+inline int insideZ(float x, float y, float z, const sectortype* sect)
 {
-    double cz, fz;
+    float cz, fz;
     calcSlope(sect, x, y, &cz, &fz);
     return (z >= cz && z <= fz && inside(x, y, sect) != 0);
 }
 
 template<class Inside>
-void DoUpdateSector(double x, double y, double z, int* sectnum, double maxDistance, Inside checker)
+void DoUpdateSector(float x, float y, float z, int* sectnum, float maxDistance, Inside checker)
 {
-    double maxDistSq = maxDistance * maxDistance;
+    float maxDistSq = maxDistance * maxDistance;
 
     if (validSectorIndex(*sectnum))
     {
@@ -80,14 +80,14 @@ void DoUpdateSector(double x, double y, double z, int* sectnum, double maxDistan
 
 constexpr int MAXUPDATESECTORDIST = 96;
 
-inline void updatesector(const DVector3& pos, sectortype** const sectp, double maxDistance = MAXUPDATESECTORDIST)
+inline void updatesector(const DVector3& pos, sectortype** const sectp, float maxDistance = MAXUPDATESECTORDIST)
 {
     int sectno = *sectp ? sector.IndexOf(*sectp) : -1;
 	DoUpdateSector(pos.X, pos.Y, pos.Z, &sectno, maxDistance, inside0);
     *sectp = sectno == -1 ? nullptr : &sector[sectno];
 }
 
-inline void updatesector(const DVector2& pos, sectortype** const sectp, double maxDistance = MAXUPDATESECTORDIST)
+inline void updatesector(const DVector2& pos, sectortype** const sectp, float maxDistance = MAXUPDATESECTORDIST)
 {
 	int sectno = *sectp ? sector.IndexOf(*sectp) : -1;
 	DoUpdateSector(pos.X, pos.Y, 0, &sectno, maxDistance, inside0);
@@ -95,7 +95,7 @@ inline void updatesector(const DVector2& pos, sectortype** const sectp, double m
 }
 
 
-inline void updatesectorz(const DVector3& pos, sectortype** const sectp, double maxDistance = MAXUPDATESECTORDIST)
+inline void updatesectorz(const DVector3& pos, sectortype** const sectp, float maxDistance = MAXUPDATESECTORDIST)
 {
 	int sectno = *sectp ? sector.IndexOf(*sectp) : -1;
 	DoUpdateSector(pos.X, pos.Y, pos.Z, &sectno, maxDistance, insideZ);

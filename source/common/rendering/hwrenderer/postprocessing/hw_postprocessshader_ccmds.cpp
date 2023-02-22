@@ -74,7 +74,7 @@ CCMD (shaderuniform)
 		{
 			if (argv.argc() > 3)
 			{
-				double *vec4 = shader.Uniforms[uniformName].Values;
+				float *vec4 = shader.Uniforms[uniformName].Values;
 				vec4[0] = argv.argc()>=4 ? atof(argv[3]) : 0.0;
 				vec4[1] = argv.argc()>=5 ? atof(argv[4]) : 0.0;
 				vec4[2] = argv.argc()>=6 ? atof(argv[5]) : 0.0;
@@ -82,7 +82,7 @@ CCMD (shaderuniform)
 			}
 			else
 			{
-				double *vec4 = shader.Uniforms[uniformName].Values;
+				float *vec4 = shader.Uniforms[uniformName].Values;
 				Printf("Shader '%s' uniform '%s': %f %f %f\n", shaderName, uniformName, vec4[0], vec4[1], vec4[2]);
 			}
 			found = 1;
@@ -125,7 +125,7 @@ CCMD(listuniforms)
 
 			while (it.NextPair(pair))
 			{
-				double *vec4 = shader.Uniforms[pair->Key].Values;
+				float *vec4 = shader.Uniforms[pair->Key].Values;
 				Printf("  %s : %f %f %f\n", pair->Key.GetChars(), vec4[0], vec4[1], vec4[2]);
 			}
 			found = 1;

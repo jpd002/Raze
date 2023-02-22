@@ -139,11 +139,11 @@ public:
 
 	// Sets the value of a variable of this type at (addr)
 	virtual void SetValue(void *addr, int val);
-	virtual void SetValue(void *addr, double val);
+	virtual void SetValue(void *addr, float val);
 
 	// Gets the value of a variable of this type at (addr)
 	virtual int GetValueInt(void *addr) const;
-	virtual double GetValueFloat(void *addr) const;
+	virtual float GetValueFloat(void *addr) const;
 
 	// Gets the opcode to store from a register to memory
 	int GetStoreOp() const
@@ -275,9 +275,9 @@ public:
 	bool ReadValue(FSerializer &ar, const char *key,void *addr) const override;
 
 	virtual void SetValue(void *addr, int val) override;
-	virtual void SetValue(void *addr, double val) override;
+	virtual void SetValue(void *addr, float val) override;
 	virtual int GetValueInt(void *addr) const override;
-	virtual double GetValueFloat(void *addr) const override;
+	virtual float GetValueFloat(void *addr) const override;
 	virtual bool isNumeric() override { return IntCompatible; }
 
 	bool Unsigned;
@@ -291,9 +291,9 @@ class PBool : public PInt
 public:
 	PBool();
 	virtual void SetValue(void *addr, int val);
-	virtual void SetValue(void *addr, double val);
+	virtual void SetValue(void *addr, float val);
 	virtual int GetValueInt(void *addr) const;
-	virtual double GetValueFloat(void *addr) const;
+	virtual float GetValueFloat(void *addr) const;
 };
 
 class PFloat : public PBasicType
@@ -305,9 +305,9 @@ public:
 	bool ReadValue(FSerializer &ar, const char *key,void *addr) const override;
 
 	virtual void SetValue(void *addr, int val) override;
-	virtual void SetValue(void *addr, double val) override;
+	virtual void SetValue(void *addr, float val) override;
 	virtual int GetValueInt(void *addr) const override;
-	virtual double GetValueFloat(void *addr) const override;
+	virtual float GetValueFloat(void *addr) const override;
 	virtual bool isNumeric() override { return true; }
 protected:
 	void SetOps();
@@ -315,7 +315,7 @@ private:
 	struct SymbolInitF
 	{
 		ENamedName Name;
-		double Value;
+		float Value;
 	};
 	struct SymbolInitI
 	{

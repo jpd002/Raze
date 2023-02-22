@@ -369,7 +369,7 @@ CCMD(quickload)
 //
 //=============================================================================
 
-static DMenuItemBase* CreateCustomListMenuItemText(double x, double y, int height, int hotkey, const char* text, FFont* font, PalEntry color1, PalEntry color2, FName command, int param)
+static DMenuItemBase* CreateCustomListMenuItemText(float x, float y, int height, int hotkey, const char* text, FFont* font, PalEntry color1, PalEntry color2, FName command, int param)
 {
 	const char* classname = 
 		isBlood() ? "ListMenuItemBloodTextItem" :
@@ -409,7 +409,7 @@ static void BuildEpisodeMenu()
 		}
 
 		ld->mSelectedItem = gDefaultVolume + ld->mItems.Size(); // account for pre-added items
-		double y = ld->mYpos;
+		float y = ld->mYpos;
 
 		// Volume definitions should be sorted by intended menu order.
 		for (auto &vol : volumes)
@@ -462,7 +462,7 @@ static void BuildEpisodeMenu()
 		}
 		if (isBlood() || isSWALL()) gDefaultSkill = 2;
 		ld->mSelectedItem = gDefaultSkill + ld->mItems.Size(); // account for pre-added items
-		double y = ld->mYpos;
+		float y = ld->mYpos;
 
 		for (int i = 0; i < MAXSKILLS; i++)
 		{

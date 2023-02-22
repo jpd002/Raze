@@ -163,7 +163,7 @@ FGameTexture * BuildTextTexture(FFont *font, const char *string, int textcolor)
 //
 //==========================================================================
 
-void DrawChar(F2DDrawer *drawer, FFont* font, int normalcolor, double x, double y, int character, int tag_first, ...)
+void DrawChar(F2DDrawer *drawer, FFont* font, int normalcolor, float x, float y, int character, int tag_first, ...)
 {
 	if (font == NULL)
 		return;
@@ -193,7 +193,7 @@ void DrawChar(F2DDrawer *drawer, FFont* font, int normalcolor, double x, double 
 	}
 }
 
-void DrawChar(F2DDrawer *drawer,  FFont *font, int normalcolor, double x, double y, int character, VMVa_List &args)
+void DrawChar(F2DDrawer *drawer,  FFont *font, int normalcolor, float x, float y, int character, VMVa_List &args)
 {
 	if (font == NULL)
 		return;
@@ -264,20 +264,20 @@ DEFINE_ACTION_FUNCTION(FCanvas, DrawChar)
 EColorRange V_ParseFontColor(const char32_t *&color_value, int normalcolor, int boldcolor) { return CR_UNTRANSLATED; }
 
 template<class chartype>
-void DrawTextCommon(F2DDrawer *drawer, FFont *font, int normalcolor, double x, double y, const chartype *string, DrawParms &parms)
+void DrawTextCommon(F2DDrawer *drawer, FFont *font, int normalcolor, float x, float y, const chartype *string, DrawParms &parms)
 {
 	int 		w;
 	const chartype *ch;
 	int 		c;
-	double 		cx;
-	double 		cy;
+	float 		cx;
+	float 		cy;
 	int			boldcolor;
 	int			trans = -1;
 	int			kerning;
 	FGameTexture *pic;
 
-	double scalex = parms.scalex * parms.patchscalex;
-	double scaley = parms.scaley * parms.patchscaley;
+	float scalex = parms.scalex * parms.patchscalex;
+	float scaley = parms.scaley * parms.patchscaley;
 
 	if (parms.celly == 0) parms.celly = font->GetHeight() + 1;
 	parms.celly = int (parms.celly * scaley);
@@ -365,7 +365,7 @@ void DrawTextCommon(F2DDrawer *drawer, FFont *font, int normalcolor, double x, d
 
 
 // For now the 'drawer' parameter is a placeholder - this should be the way to handle it later to allow different drawers.
-void DrawText(F2DDrawer *drawer, FFont* font, int normalcolor, double x, double y, const char* string, int tag_first, ...)
+void DrawText(F2DDrawer *drawer, FFont* font, int normalcolor, float x, float y, const char* string, int tag_first, ...)
 {
 	Va_List tags;
 	DrawParms parms;
@@ -384,7 +384,7 @@ void DrawText(F2DDrawer *drawer, FFont* font, int normalcolor, double x, double 
 }
 
 
-void DrawText(F2DDrawer *drawer, FFont* font, int normalcolor, double x, double y, const char32_t* string, int tag_first, ...)
+void DrawText(F2DDrawer *drawer, FFont* font, int normalcolor, float x, float y, const char32_t* string, int tag_first, ...)
 {
 	Va_List tags;
 	DrawParms parms;
@@ -403,7 +403,7 @@ void DrawText(F2DDrawer *drawer, FFont* font, int normalcolor, double x, double 
 }
 
 
-void DrawText(F2DDrawer *drawer, FFont *font, int normalcolor, double x, double y, const char *string, VMVa_List &args)
+void DrawText(F2DDrawer *drawer, FFont *font, int normalcolor, float x, float y, const char *string, VMVa_List &args)
 {
 	DrawParms parms;
 

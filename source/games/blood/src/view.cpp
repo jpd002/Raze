@@ -352,10 +352,10 @@ void viewUpdateDelirium(PLAYER* pPlayer)
 			tilt2 = MulScale(tilt2, powerScale, 16);
 			pitch = MulScale(pitch, powerScale, 16);
 		}
-		double sin2 = BobVal(2 * timer);
-		double sin3 = BobVal(3 * timer);
-		double sin4 = BobVal(4 * timer);
-		double sin5 = BobVal(5 * timer);
+		float sin2 = BobVal(2 * timer);
+		float sin3 = BobVal(3 * timer);
+		float sin4 = BobVal(4 * timer);
+		float sin5 = BobVal(5 * timer);
 		gScreenTilt = DAngle::fromBuild((sin2 + sin3) * tilt1 * 0.5);
 		deliriumTurn = DAngle::fromBuild((sin3 + sin4) * tilt2 * 0.5);
 		deliriumPitch = int((sin4 + sin5) * pitch * 0.5);
@@ -382,7 +382,7 @@ void viewUpdateDelirium(PLAYER* pPlayer)
 //
 //---------------------------------------------------------------------------
 
-void viewUpdateShake(PLAYER* pPlayer, DVector3& cPos, DRotator& cAngles, double& pshakeX, double& pshakeY)
+void viewUpdateShake(PLAYER* pPlayer, DVector3& cPos, DRotator& cAngles, float& pshakeX, float& pshakeY)
 {
 	auto doEffect = [&](const int& effectType)
 	{
@@ -390,7 +390,7 @@ void viewUpdateShake(PLAYER* pPlayer, DVector3& cPos, DRotator& cAngles, double&
 		{
 			int nValue = ClipHigh(effectType * 8, 2000);
 			cAngles.Pitch -= maphoriz(QRandom2F(nValue * (1. / 256.)));
-			cAngles.Yaw += DAngle::fromDeg(QRandom2F(nValue * (360. / 524288.)));
+			cAngles.Yaw += DAngle::fromDeg(QRandom2F(nValue * (360.f / 524288.f)));
 			cPos.X += QRandom2F(nValue * maptoworld) * maptoworld;
 			cPos.Y += QRandom2F(nValue * maptoworld) * maptoworld;
 			cPos.Z += QRandom2F(nValue) * zmaptoworld;
@@ -401,7 +401,7 @@ void viewUpdateShake(PLAYER* pPlayer, DVector3& cPos, DRotator& cAngles, double&
 	doEffect(pPlayer->flickerEffect);
 	doEffect(pPlayer->quakeEffect);
 
-	cAngles.Pitch -= DAngle::fromDeg((1 - BobVal((pPlayer->tiltEffect << 2) + 512)) * 13.2);
+	cAngles.Pitch -= DAngle::fromDeg((1 - BobVal((pPlayer->tiltEffect << 2) + 512)) * 13.2f);
 }
 
 
@@ -415,7 +415,7 @@ int32_t g_frameRate;
 //
 //---------------------------------------------------------------------------
 
-static void DrawMap(PLAYER* pPlayer, const double interpfrac)
+static void DrawMap(PLAYER* pPlayer, const float interpfrac)
 {
 	int tm = 0;
 	if (viewport3d.Left() > 0)
@@ -434,9 +434,9 @@ static void DrawMap(PLAYER* pPlayer, const double interpfrac)
 //
 //---------------------------------------------------------------------------
 
-static void SetupView(PLAYER* pPlayer, DVector3& cPos, DRotator& cAngles, sectortype*& pSector, double& zDelta, double& shakeX, double& shakeY, const double interpfrac)
+static void SetupView(PLAYER* pPlayer, DVector3& cPos, DRotator& cAngles, sectortype*& pSector, float& zDelta, float& shakeX, float& shakeY, const float interpfrac)
 {
-	double bobWidth, bobHeight;
+	float bobWidth, bobHeight;
 
 	pSector = pPlayer->actor->sector();
 #if 0
@@ -573,7 +573,7 @@ void viewDrawScreen(bool sceneonly)
 
 	FireProcess();
 
-	double interpfrac;
+	float interpfrac;
 
 	if (!paused && (!M_Active() || gGameOptions.nGameType != 0))
 	{
@@ -612,8 +612,8 @@ void viewDrawScreen(bool sceneonly)
 		DVector3 cPos;
 		DRotator cAngles;
 		sectortype* pSector;
-		double zDelta;
-		double shakeX, shakeY;
+		float zDelta;
+		float shakeX, shakeY;
 		SetupView(pPlayer, cPos, cAngles, pSector, zDelta, shakeX, shakeY, interpfrac);
 
 		DAngle tilt = interpolatedvalue(gScreenTiltO, gScreenTilt, interpfrac);
@@ -669,7 +669,7 @@ void viewDrawScreen(bool sceneonly)
 
 		if (pSector != nullptr)
 		{
-			double ceilingZ, floorZ;
+			float ceilingZ, floorZ;
 			calcSlope(pSector, cPos, &ceilingZ, &floorZ);
 			if ((cPos.Z > floorZ - 1) && (pSector->upperLink == nullptr)) // clamp to floor
 			{
@@ -788,7 +788,7 @@ std::pair<DVector3, DAngle> GameInterface::GetCoordinates()
 //
 //---------------------------------------------------------------------------
 
-bool GameInterface::DrawAutomapPlayer(const DVector2& mxy, const DVector2& cpos, const DAngle cang, const DVector2& xydim, const double czoom, double const interpfrac)
+bool GameInterface::DrawAutomapPlayer(const DVector2& mxy, const DVector2& cpos, const DAngle cang, const DVector2& xydim, const float czoom, float const interpfrac)
 {
 	auto cangvect = cang.ToVector();
 

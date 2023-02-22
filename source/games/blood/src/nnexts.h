@@ -91,10 +91,10 @@ enum
 	kMaxAllowedPowerup = kMaxPowerUps
 };
 
-constexpr double kPatrolAlarmSeeDistSq = 625 * 625;
-constexpr double kSlopeDist = 0x20;
-constexpr double kMaxPatrolVelocity = FixedToFloat(500000); // ~7.63
-constexpr double kMaxPatrolCrouchVelocity = (kMaxPatrolVelocity / 2);
+constexpr float kPatrolAlarmSeeDistSq = 625 * 625;
+constexpr float kSlopeDist = 0x20;
+constexpr float kMaxPatrolVelocity = FixedToFloat(500000); // ~7.63
+constexpr float kMaxPatrolCrouchVelocity = (kMaxPatrolVelocity / 2);
 
 
 // modern statnums
@@ -197,7 +197,7 @@ struct SPRITEMASS { // sprite mass info for getSpriteMassBySize();
 	int16_t picnum; // mainly needs for moving debris
 	DVector2 scale;
 	int16_t airVel; // mainly needs for moving debris
-	double clipDist; // mass multiplier
+	float clipDist; // mass multiplier
 	int mass;
 	int fraction; // mainly needs for moving debris
 };
@@ -308,7 +308,7 @@ void aiSetGenIdleState(DBloodActor*);
 // triggers related
 //  -------------------------------------------------------------------------   //
 int aiFightGetTargetDist(DBloodActor* pSprite, DUDEINFO* pDudeInfo, DBloodActor* pTarget);
-double aiFightGetFineTargetDist(DBloodActor* actor, DBloodActor* target);
+float aiFightGetFineTargetDist(DBloodActor* actor, DBloodActor* target);
 bool aiFightDudeCanSeeTarget(DBloodActor* pXDude, DUDEINFO* pDudeInfo, DBloodActor* pTarget);
 bool aiFightDudeIsAffected(DBloodActor* pXDude);
 bool aiFightMatesHaveSameTarget(DBloodActor* leaderactor, DBloodActor* targetactor, int allow);
@@ -348,7 +348,7 @@ void playerDeactivateShrooms(PLAYER* pPlayer);
 QAV* playerQavSceneLoad(int qavId);
 void playerQavSceneProcess(PLAYER* pPlayer, QAVSCENE* pQavScene);
 void playerQavScenePlay(PLAYER* pPlayer);
-void playerQavSceneDraw(PLAYER* pPlayer, int shade, double xpos, double ypos, int palnum, DAngle angle);
+void playerQavSceneDraw(PLAYER* pPlayer, int shade, float xpos, float ypos, int palnum, DAngle angle);
 void playerQavSceneReset(PLAYER* pPlayer);
 //  -------------------------------------------------------------------------   //
 void callbackUniMissileBurst(DBloodActor* actor, sectortype* nSprite);

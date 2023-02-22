@@ -46,7 +46,7 @@ inline DVector2 rotatepoint(const DVector2& pivot, const DVector2& point, DAngle
 //
 //==========================================================================
 
-inline double PointOnLineSide(double x, double y, double linex, double liney, double deltax, double deltay)
+inline float PointOnLineSide(float x, float y, float linex, float liney, float deltax, float deltay)
 {
 	return (x - linex) * deltay - (y - liney) * deltax;
 }
@@ -57,39 +57,39 @@ inline double PointOnLineSide(double x, double y, double linex, double liney, do
 //
 //==========================================================================
 
-inline double SquareDist(double lx1, double ly1, double lx2, double ly2)
+inline float SquareDist(float lx1, float ly1, float lx2, float ly2)
 {
-	double dx = lx2 - lx1;
-	double dy = ly2 - ly1;
+	float dx = lx2 - lx1;
+	float dy = ly2 - ly1;
 	return dx * dx + dy * dy;
 }
 
 // This is for cases where only the factor is needed, and pre-validation was performed.
-inline double NearestPointOnLineFast(double px, double py, double lx1, double ly1, double lx2, double ly2)
+inline float NearestPointOnLineFast(float px, float py, float lx1, float ly1, float lx2, float ly2)
 {
-	double wall_length = SquareDist(lx1, ly1, lx2, ly2);
+	float wall_length = SquareDist(lx1, ly1, lx2, ly2);
 	assert(wall_length > 0);
 	return ((px - lx1) * (lx2 - lx1) + (py - ly1) * (ly2 - ly1)) / wall_length;
 }
 
 
-inline DVector2 NearestPointOnLine(double px, double py, double lx1, double ly1, double lx2, double ly2, bool clamp = true)
+inline DVector2 NearestPointOnLine(float px, float py, float lx1, float ly1, float lx2, float ly2, bool clamp = true)
 {
-	double wall_length = SquareDist(lx1, ly1, lx2, ly2);
+	float wall_length = SquareDist(lx1, ly1, lx2, ly2);
 
 	if (wall_length == 0)
 	{
 		return { lx1, ly1 };
 	}
 
-	double t = ((px - lx1) * (lx2 - lx1) + (py - ly1) * (ly2 - ly1)) / wall_length;
+	float t = ((px - lx1) * (lx2 - lx1) + (py - ly1) * (ly2 - ly1)) / wall_length;
 	if (clamp)
 	{
 		if (t <= 0) return { lx1, ly1 };
 		if (t >= 1) return { lx2, ly2 };
 	}
-	double xx = lx1 + t * (lx2 - lx1);
-	double yy = ly1 + t * (ly2 - ly1);
+	float xx = lx1 + t * (lx2 - lx1);
+	float yy = ly1 + t * (ly2 - ly1);
 	return { xx, yy };
 }
 
@@ -99,16 +99,16 @@ inline DVector2 NearestPointOnLine(double px, double py, double lx1, double ly1,
 //
 //==========================================================================
 
-inline double SquareDistToLine(double px, double py, double lx1, double ly1, double lx2, double ly2)
+inline float SquareDistToLine(float px, float py, float lx1, float ly1, float lx2, float ly2)
 {
-	double wall_length = SquareDist(lx1, ly1, lx2, ly2);
+	float wall_length = SquareDist(lx1, ly1, lx2, ly2);
 
 	if (wall_length == 0) return SquareDist(px, py, lx1, ly1);
 
-	double t = ((px - lx1) * (lx2 - lx1) + (py - ly1) * (ly2 - ly1)) / wall_length;
-	t = clamp(t, 0., 1.);
-	double xx = lx1 + t * (lx2 - lx1);
-	double yy = ly1 + t * (ly2 - ly1);
+	float t = ((px - lx1) * (lx2 - lx1) + (py - ly1) * (ly2 - ly1)) / wall_length;
+	t = clamp(t, 0.f, 1.f);
+	float xx = lx1 + t * (lx2 - lx1);
+	float yy = ly1 + t * (ly2 - ly1);
 	return SquareDist(px, py, xx, yy);
 }
 
@@ -118,14 +118,14 @@ inline double SquareDistToLine(double px, double py, double lx1, double ly1, dou
 //
 //==========================================================================
 
-inline double InterceptVector(double v2x, double v2y, double v2dx, double v2dy, double v1x, double v1y, double v1dx, double v1dy)
+inline float InterceptVector(float v2x, float v2y, float v2dx, float v2dy, float v1x, float v1y, float v1dx, float v1dy)
 {
-	double den = v1dy * v2dx - v1dx * v2dy;
+	float den = v1dy * v2dx - v1dx * v2dy;
 
 	if (den == 0)
 		return 0;		// parallel
 
-	double num = (v1x - v2x) * v1dy + (v2y - v1y) * v1dx;
+	float num = (v1x - v2x) * v1dy + (v2y - v1y) * v1dx;
 	return num / den;
 }
 
@@ -136,12 +136,12 @@ inline double InterceptVector(double v2x, double v2y, double v2dx, double v2dy, 
 //
 //==========================================================================
 
-inline double InterceptLineSegments(double v2x, double v2y, double v2dx, double v2dy, double v1x, double v1y, double v1dx, double v1dy, double* pfactor1 = nullptr, bool forcansee = false)
+inline float InterceptLineSegments(float v2x, float v2y, float v2dx, float v2dy, float v1x, float v1y, float v1dx, float v1dy, float* pfactor1 = nullptr, bool forcansee = false)
 {
-	double den = v1dy * v2dx - v1dx * v2dy;
+	float den = v1dy * v2dx - v1dx * v2dy;
 
 	if (den == 0)
-		return -2 * (double)FLT_MAX;		// parallel (return a magic value different from everything else, just in case it needs to be handled)
+		return -2 * (float)FLT_MAX;		// parallel (return a magic value different from everything else, just in case it needs to be handled)
 
 	if (forcansee && den < 0)  // cansee does this added check here, aside from that its logic is virtually the same.
 		return -1;		// hitting the backside
@@ -149,7 +149,7 @@ inline double InterceptLineSegments(double v2x, double v2y, double v2dx, double 
 	// perform the division first for better parallelization.
 	den = 1 / den;
 
-	double factor1 = ((v2x - v1x) * v2dy + (v1y - v2y) * v2dx) * -den;
+	float factor1 = ((v2x - v1x) * v2dy + (v1y - v2y) * v2dx) * -den;
 	if (factor1 < 0 || factor1 > 1) return -FLT_MAX; // no intersection
 	if (pfactor1) *pfactor1 = factor1;
 
@@ -162,12 +162,12 @@ inline double InterceptLineSegments(double v2x, double v2y, double v2dx, double 
 //
 //==========================================================================
 
-inline double LinePlaneIntersect(const DVector3& start, const DVector3& trace, const DVector3& ppoint, const DVector3& pvec1, const DVector3& pvec2)
+inline float LinePlaneIntersect(const DVector3& start, const DVector3& trace, const DVector3& ppoint, const DVector3& pvec1, const DVector3& pvec2)
 {
 	auto normal = pvec1 ^ pvec2; // we do not need a unit vector here.
-	double dist = normal.dot(ppoint);
-	double dotStart = normal.dot(start);
-	double dotTrace = normal.dot(trace);
+	float dist = normal.dot(ppoint);
+	float dotStart = normal.dot(start);
+	float dotTrace = normal.dot(trace);
 	if (dotTrace == 0) return -FLT_MAX;
 	return (dist - dotStart) / dotTrace; // we are only interested in the factor
 }

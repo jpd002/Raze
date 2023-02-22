@@ -40,7 +40,7 @@ enum
     kGenDudeMaxDispersion = 3500,
 };
 
-constexpr double kGenDudeMaxMeleeDistf = 128;
+constexpr float kGenDudeMaxMeleeDistf = 128;
 
 
 enum {
@@ -161,11 +161,11 @@ extern const GENDUDESND gCustomDudeSnd[];
 // temporary, until normal DUDEEXTRA gets refactored
 struct GENDUDEEXTRA 
 {
-    double clipdist;
+    float clipdist;
     uint16_t availDeaths[kDamageMax]; // list of seqs with deaths for each damage type
     uint32_t moveSpeed;
-    double fireDist;          // counts from sprite size
-    double throwDist;         // counts from sprite size
+    float fireDist;          // counts from sprite size
+    float throwDist;         // counts from sprite size
     uint16_t curWeapon;       // data1 duplicate to avoid potential problems when changing data dynamically
     uint16_t weaponType;
     uint16_t baseDispersion;
@@ -206,7 +206,7 @@ void aiGenDudeChooseDirection(DBloodActor* actor, DAngle a3, const DVector2& vel
 void aiGenDudeNewState(DBloodActor* actor, AISTATE* pAIState);
 int checkAttackState(DBloodActor* actor);
 bool doExplosion(DBloodActor* pSprite, int nType);
-DBloodActor* genDudeSpawn(DBloodActor* source, DBloodActor* pSprite, double nDist);
+DBloodActor* genDudeSpawn(DBloodActor* source, DBloodActor* pSprite, float nDist);
 void genDudeTransform(DBloodActor* pSprite);
 void dudeLeechOperate(DBloodActor* actor, const EVENT& a3);
 int getDodgeChance(DBloodActor* pSprite);

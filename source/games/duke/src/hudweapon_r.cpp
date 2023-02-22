@@ -39,22 +39,22 @@ BEGIN_DUKE_NS
 //
 //---------------------------------------------------------------------------
 
-inline static void hud_drawpal(double x, double y, int tilenum, int shade, int orientation, int p, DAngle angle, int scale = 32768)
+inline static void hud_drawpal(float x, float y, int tilenum, int shade, int orientation, int p, DAngle angle, int scale = 32768)
 {
 	hud_drawsprite(x, y, scale, angle.Degrees(), tilenum, shade, p, 2 | orientation);
 }
 
-inline static void rdmyospal(double x, double y, int tilenum, int shade, int orientation, int p, DAngle angle)
+inline static void rdmyospal(float x, float y, int tilenum, int shade, int orientation, int p, DAngle angle)
 {
 	hud_drawpal(x, y, tilenum, shade, orientation, p, angle, 36700);
 }
 
-inline static void rd2myospal(double x, double y, int tilenum, int shade, int orientation, int p, DAngle angle)
+inline static void rd2myospal(float x, float y, int tilenum, int shade, int orientation, int p, DAngle angle)
 {
 	hud_drawpal(x, y, tilenum, shade, orientation, p, angle, 44040);
 }
 
-inline static void rd3myospal(double x, double y, int tilenum, int shade, int orientation, int p, DAngle angle)
+inline static void rd3myospal(float x, float y, int tilenum, int shade, int orientation, int p, DAngle angle)
 {
 	hud_drawpal(x, y, tilenum, shade, orientation, p, angle, 47040);
 }
@@ -65,13 +65,13 @@ inline static void rd3myospal(double x, double y, int tilenum, int shade, int or
 //
 //---------------------------------------------------------------------------
 
-void displaymasks_r(int snum, int p, double interpfrac)
+void displaymasks_r(int snum, int p, float interpfrac)
 {
 	if (ps[snum].scuba_on)
 	{
 		//int pin = 0;
 		// to get the proper clock value with regards to interpolation we have add a interpfrac based offset to the value.
-		double interpclock = PlayClock + TICSPERFRAME * interpfrac;
+		float interpclock = PlayClock + TICSPERFRAME * interpfrac;
 		int pin = RS_STRETCH;
 		hud_drawsprite((320 - (tileWidth(RTILE_SCUBAMASK) >> 1) - 15), (200 - (tileHeight(RTILE_SCUBAMASK) >> 1) + BobVal(interpclock) * 16), 49152, 0, RTILE_SCUBAMASK, 0, p, 2 + 16 + pin);
 		hud_drawsprite((320 - tileWidth(RTILE_SCUBAMASK + 4)), (200 - tileHeight(RTILE_SCUBAMASK + 4)), 65536, 0, RTILE_SCUBAMASK + 4, 0, p, 2 + 16 + pin);
@@ -87,13 +87,13 @@ void displaymasks_r(int snum, int p, double interpfrac)
 //
 //---------------------------------------------------------------------------
 
-inline static void ShowMotorcycle(double x, double y, int tilenum, int shade, int orientation, int p, DAngle a)
+inline static void ShowMotorcycle(float x, float y, int tilenum, int shade, int orientation, int p, DAngle a)
 {
 	hud_drawsprite(x, y, 34816, a.Degrees(), tilenum, shade, p, 2 | orientation);
 }
 
 
-inline static void ShowBoat(double x, double y, int tilenum, int shade, int orientation, int p, DAngle a)
+inline static void ShowBoat(float x, float y, int tilenum, int shade, int orientation, int p, DAngle a)
 {
 	hud_drawsprite(x, y, 66048, a.Degrees(), tilenum, shade, p, 2 | orientation);
 }
@@ -105,9 +105,9 @@ inline static void ShowBoat(double x, double y, int tilenum, int shade, int orie
 //
 //---------------------------------------------------------------------------
 
-void displayweapon_r(int snum, double interpfrac)
+void displayweapon_r(int snum, float interpfrac)
 {
-	double weapon_sway, gun_pos, hard_landing, TiltStatus;
+	float weapon_sway, gun_pos, hard_landing, TiltStatus;
 
 	auto p = &ps[snum];
 	auto kb = &p->kickback_pic;
@@ -116,10 +116,10 @@ void displayweapon_r(int snum, double interpfrac)
 
 	if (cl_hudinterpolation)
 	{
-		weapon_sway = interpolatedvalue<double>(p->oweapon_sway, p->weapon_sway, interpfrac);
-		hard_landing = interpolatedvalue<double>(p->ohard_landing, p->hard_landing, interpfrac);
-		gun_pos = 80 - interpolatedvalue<double>(p->oweapon_pos * p->oweapon_pos, p->weapon_pos * p->weapon_pos, interpfrac);
-		TiltStatus = !SyncInput() ? p->TiltStatus : interpolatedvalue<double>(p->oTiltStatus, p->TiltStatus, interpfrac);
+		weapon_sway = interpolatedvalue<float>(p->oweapon_sway, p->weapon_sway, interpfrac);
+		hard_landing = interpolatedvalue<float>(p->ohard_landing, p->hard_landing, interpfrac);
+		gun_pos = 80 - interpolatedvalue<float>(p->oweapon_pos * p->oweapon_pos, p->weapon_pos * p->weapon_pos, interpfrac);
+		TiltStatus = !SyncInput() ? p->TiltStatus : interpolatedvalue<float>(p->oTiltStatus, p->TiltStatus, interpfrac);
 	}
 	else
 	{
@@ -130,12 +130,12 @@ void displayweapon_r(int snum, double interpfrac)
 	}
 
 	hard_landing *= 8.;
-	gun_pos -= fabs(p->GetActor()->spr.scale.X < 0.125 ? BobVal(weapon_sway * 4.) * 32 : BobVal(weapon_sway * 0.5) * 16) + hard_landing;
+	gun_pos -= fabs(p->GetActor()->spr.scale.X < 0.125 ? BobVal(weapon_sway * 4.f) * 32 : BobVal(weapon_sway * 0.5f) * 16) + hard_landing;
 
 	auto offpair = p->Angles.getWeaponOffsets(interpfrac);
 	auto offsets = offpair.first;
 	auto angle = offpair.second;
-	auto weapon_xoffset = 160 - 90 - (BobVal(512 + weapon_sway * 0.5) * (16384. / 1536.)) - 58 - p->weapon_ang;
+	auto weapon_xoffset = 160 - 90 - (BobVal(512 + weapon_sway * 0.5f) * (16384.f / 1536.f)) - 58 - p->weapon_ang;
 	auto shade = min(p->insector() && p->cursector->shadedsector == 1 ? 16 : p->GetActor()->spr.shade, 24);
 	auto pal = !p->insector()? 0 : p->GetActor()->spr.pal == 1? 1 : p->cursector->floorpal;
 	auto cw = p->last_weapon >= 0 ? p->last_weapon : p->curr_weapon;
@@ -295,8 +295,8 @@ void displayweapon_r(int snum, double interpfrac)
 			static const uint16_t kb_ox[] = { 310,342,364,418,350,316,282,288,0,0 };
 			static const uint16_t kb_oy[] = { 300,362,320,268,248,248,277,420,0,0 };
 
-			double x = ((kb_ox[kb_frames[*kb]] >> 1) - 12) + offsets.X;
-			double y = 200 - (244 - kb_oy[kb_frames[*kb]]) + offsets.Y;
+			float x = ((kb_ox[kb_frames[*kb]] >> 1) - 12) + offsets.X;
+			float y = 200 - (244 - kb_oy[kb_frames[*kb]]) + offsets.Y;
 			hud_drawpal(x, y, RTILE_KNEE + kb_frames[*kb], shade, 0, pal, angle);
 		};
 
@@ -312,8 +312,8 @@ void displayweapon_r(int snum, double interpfrac)
 			static const uint16_t kb_ox[] = { 580,676,310,491,356,210,310,614 };
 			static const uint16_t kb_oy[] = { 369,363,300,323,371,400,300,440 };
 
-			double x = ((kb_ox[kb_frames[*kb]] >> 1) - 12) + 20 + offsets.X;
-			double y = 210 - (244 - kb_oy[kb_frames[*kb]]) - 80 + offsets.Y;
+			float x = ((kb_ox[kb_frames[*kb]] >> 1) - 12) + 20 + offsets.X;
+			float y = 210 - (244 - kb_oy[kb_frames[*kb]]) - 80 + offsets.Y;
 			hud_drawpal(x, y, RTILE_SLINGBLADE + kb_frames[*kb], shade, 0, pal, angle);
 		};
 
@@ -448,8 +448,8 @@ void displayweapon_r(int snum, double interpfrac)
 		{
 			offsets.X -= 8;
 
-			double x;
-			double y;
+			float x;
+			float y;
 
 			static const uint8_t kb_frames3[] = { 0,0,1,1,2,2,5,5,6,6,7,7,8,8,0,0,0,0,0,0,0 };
 			static const uint8_t kb_frames2[] = { 0,0,3,3,4,4,5,5,6,6,7,7,8,8,0,0,20,20,21,21,21,21,20,20,20,20,0,0 };
@@ -580,7 +580,7 @@ void displayweapon_r(int snum, double interpfrac)
 
 		auto displaypistol = [&]
 		{
-			double x, y;
+			float x, y;
 
 			if ((*kb) < 22)
 			{

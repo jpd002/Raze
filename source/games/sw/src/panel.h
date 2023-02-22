@@ -125,7 +125,7 @@ struct PANEL_SPRITE
 	short tics, delay;                  // time vars
 	short ang, rotate_ang;
 	short sin_ndx, sin_amt, sin_arc_speed;
-	double bob_height_divider;
+	float bob_height_divider;
 	short shade, pal;
 	short kill_tics;
 	short WeaponType; // remember my own weapon type for weapons with secondary function
@@ -190,11 +190,11 @@ enum
 };
 
 
-PANEL_SPRITE* pSpawnSprite(PLAYER* pp, PANEL_STATE* state, uint8_t priority, double x, double y);
+PANEL_SPRITE* pSpawnSprite(PLAYER* pp, PANEL_STATE* state, uint8_t priority, float x, float y);
 void pSetSuicide(PANEL_SPRITE* psp);
 bool pKillScreenSpiteIDs(PLAYER* pp, short id);
-void PreUpdatePanel(double interpfrac);
-void UpdatePanel(double interpfrac);
+void PreUpdatePanel(float interpfrac);
+void UpdatePanel(float interpfrac);
 void PlayerUpdateArmor(PLAYER* pp,short value);
 void pToggleCrosshair(void);
 void pKillSprite(PANEL_SPRITE* psp);

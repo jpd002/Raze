@@ -49,7 +49,7 @@
 bool isActor(PContainerType *type);
 void AddActorInfo(PClass *cls);
 int GetIntConst(FxExpression* ex, FCompileContext& ctx);
-double GetFloatConst(FxExpression* ex, FCompileContext& ctx);
+float GetFloatConst(FxExpression* ex, FCompileContext& ctx);
 
 //==========================================================================
 //

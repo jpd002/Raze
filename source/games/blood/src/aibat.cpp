@@ -70,8 +70,8 @@ void batBiteSeqCallback(int, DBloodActor* actor)
 	DUDEINFO* pDudeInfo = getDudeInfo(actor->spr.type);
 	DUDEINFO* pDudeInfoT = getDudeInfo(pTarget->spr.type);
 
-	double height = (pDudeInfo->eyeHeight * actor->spr.scale.Y);
-	double height2 = (pDudeInfoT->eyeHeight * pTarget->spr.scale.Y);
+	float height = (pDudeInfo->eyeHeight * actor->spr.scale.Y);
+	float height2 = (pDudeInfoT->eyeHeight * pTarget->spr.scale.Y);
 	actFireVector(actor, 0., 0., DVector3(actor->spr.Angles.Yaw.ToVector() * 64, height2 - height), kVectorBatBite);
 }
 
@@ -101,10 +101,10 @@ static void batThinkTarget(DBloodActor* actor)
 			auto dvec = ppos.XY() - actor->spr.pos.XY();
 			auto pSector = pPlayer->actor->sector();
 
-			double nDist = dvec.Length();
+			float nDist = dvec.Length();
 			if (nDist > pDudeInfo->SeeDist() && nDist > pDudeInfo->HearDist())
 				continue;
-			double height = (pDudeInfo->eyeHeight * actor->spr.scale.Y);
+			float height = (pDudeInfo->eyeHeight * actor->spr.scale.Y);
 			if (!cansee(ppos, pSector, actor->spr.pos.plusZ(-height), actor->sector()))
 				continue;
 			DAngle nDeltaAngle = absangle(actor->spr.Angles.Yaw, dvec.Angle());
@@ -137,7 +137,7 @@ static void batThinkGoto(DBloodActor* actor)
 	DUDEINFO* pDudeInfo = getDudeInfo(actor->spr.type);
 	auto dvec = actor->xspr.TargetPos.XY() - actor->spr.pos.X;
 	auto nAngle = dvec.Angle();
-	double nDist = dvec.Length();
+	float nDist = dvec.Length();
 	aiChooseDirection(actor, nAngle);
 	if (nDist < 32 && absangle(actor->spr.Angles.Yaw, nAngle) < pDudeInfo->Periphery())
 		aiNewState(actor, &batSearch);
@@ -162,13 +162,13 @@ static void batThinkPonder(DBloodActor* actor)
 		aiNewState(actor, &batSearch);
 		return;
 	}
-	double nDist = dvec.Length();
+	float nDist = dvec.Length();
 	if (nDist <= pDudeInfo->SeeDist())
 	{
 		DAngle nDeltaAngle = absangle(actor->spr.Angles.Yaw, dvec.Angle());
-		double height = (pDudeInfo->eyeHeight * actor->spr.scale.Y);
-		double height2 = (getDudeInfo(pTarget->spr.type)->eyeHeight * pTarget->spr.scale.Y);
-		double top, bottom;
+		float height = (pDudeInfo->eyeHeight * actor->spr.scale.Y);
+		float height2 = (getDudeInfo(pTarget->spr.type)->eyeHeight * pTarget->spr.scale.Y);
+		float top, bottom;
 		GetActorExtents(actor, &top, &bottom);
 		if (cansee(pTarget->spr.pos, pTarget->sector(), actor->spr.pos.plusZ(-height), actor->sector()))
 		{
@@ -256,23 +256,23 @@ static void batThinkChase(DBloodActor* actor)
 		aiNewState(actor, &batSearch);
 		return;
 	}
-	double nDist = dvec.Length();
+	float nDist = dvec.Length();
 	if (nDist <= pDudeInfo->SeeDist())
 	{
 		DAngle nDeltaAngle = absangle(actor->spr.Angles.Yaw, dvec.Angle());
-		double height = pDudeInfo->eyeHeight * actor->spr.scale.Y;
+		float height = pDudeInfo->eyeHeight * actor->spr.scale.Y;
 		// Should be dudeInfo[pTarget->spr.type-kDudeBase]
-		double height2 = pDudeInfo->eyeHeight * pTarget->spr.scale.Y;
-		double top, bottom;
+		float height2 = pDudeInfo->eyeHeight * pTarget->spr.scale.Y;
+		float top, bottom;
 		GetActorExtents(actor, &top, &bottom);
 		if (cansee(pTarget->spr.pos, pTarget->sector(), actor->spr.pos.plusZ(-height), actor->sector()))
 		{
 			if (nDist < pDudeInfo->SeeDist() && nDeltaAngle <= pDudeInfo->Periphery())
 			{
 				aiSetTarget(actor, actor->GetTarget());
-				double floorZ = getflorzofslopeptr(actor->sector(), actor->spr.pos);
-				double floorDelta = floorZ - bottom;
-				double heightDelta = height2 - height;
+				float floorZ = getflorzofslopeptr(actor->sector(), actor->spr.pos);
+				float floorDelta = floorZ - bottom;
+				float heightDelta = height2 - height;
 				bool angWithinRange = nDeltaAngle < DAngle15;
 				if (heightDelta < 32 && nDist < 0x20 && angWithinRange)
 					aiNewState(actor, &batBite);
@@ -301,13 +301,13 @@ static void batMoveForward(DBloodActor* actor)
 	auto nAng = deltaangle(actor->spr.Angles.Yaw, actor->xspr.goalAng);
 	auto nTurnRange = pDudeInfo->TurnRange();
 	actor->spr.Angles.Yaw += clamp(nAng, -nTurnRange, nTurnRange);
-	double nAccel = pDudeInfo->FrontSpeed() * 4;
+	float nAccel = pDudeInfo->FrontSpeed() * 4;
 	if (abs(nAng) > DAngle60)
 		return;
 	if (actor->GetTarget() == nullptr)
 		actor->spr.Angles.Yaw += DAngle45;
 	auto dvec = actor->xspr.TargetPos.XY() - actor->spr.pos.X;
-	double nDist = dvec.Length();
+	float nDist = dvec.Length();
 	if ((unsigned int)Random(64) < 32 && nDist <= 0x20)
 		return;
 	
@@ -326,14 +326,14 @@ static void batMoveSwoop(DBloodActor* actor)
 	auto nAng = deltaangle(actor->spr.Angles.Yaw, actor->xspr.goalAng);
 	auto nTurnRange = pDudeInfo->TurnRange();
 	actor->spr.Angles.Yaw += clamp(nAng, -nTurnRange, nTurnRange);
-	double nAccel = pDudeInfo->FrontSpeed() * 4;
+	float nAccel = pDudeInfo->FrontSpeed() * 4;
 	if (abs(nAng) > DAngle60)
 	{
 		actor->xspr.goalAng += DAngle90;
 		return;
 	}
 	auto dvec = actor->xspr.TargetPos.XY() - actor->spr.pos.X;
-	double nDist = dvec.Length();
+	float nDist = dvec.Length();
 	if (Chance(0x600) && nDist <= 0x20)
 		return;
 	
@@ -350,14 +350,14 @@ static void batMoveFly(DBloodActor* actor)
 	auto nAng = deltaangle(actor->spr.Angles.Yaw, actor->xspr.goalAng);
 	auto nTurnRange = pDudeInfo->TurnRange();
 	actor->spr.Angles.Yaw += clamp(nAng, -nTurnRange, nTurnRange);
-	double nAccel = pDudeInfo->FrontSpeed() * 4;
+	float nAccel = pDudeInfo->FrontSpeed() * 4;
 	if (abs(nAng) > DAngle60)
 	{
 		actor->spr.Angles.Yaw += DAngle90;
 		return;
 	}
 	auto dvec = actor->xspr.TargetPos.XY() - actor->spr.pos.X;
-	double nDist = dvec.Length();
+	float nDist = dvec.Length();
 	if (Chance(0x4000) && nDist <= 0x20)
 		return;
 	AdjustVelocity(actor, ADJUSTER{

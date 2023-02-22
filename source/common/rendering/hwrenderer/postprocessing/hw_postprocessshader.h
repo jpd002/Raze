@@ -12,7 +12,7 @@ enum class PostProcessUniformType
 struct PostProcessUniformValue
 {
 	PostProcessUniformType Type = PostProcessUniformType::Undefined;
-	double Values[4] = { 0.0, 0.0, 0.0, 0.0 };
+	float Values[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 };
 
 struct PostProcessShader

@@ -181,7 +181,7 @@ bool ifsquished(DDukeActor* actor, int p)
 		return false;
 
 	auto sectp = actor->sector();
-	double floorceildist = sectp->floorz - sectp->ceilingz;
+	float floorceildist = sectp->floorz - sectp->ceilingz;
 
 	if (sectp->lotag != ST_23_SWINGING_DOOR)
 	{
@@ -218,7 +218,7 @@ bool ifsquished(DDukeActor* actor, int p)
 
 void hitradius_d(DDukeActor* actor, int  r, int  hp1, int  hp2, int  hp3, int  hp4)
 {
-	double radius = r * inttoworld;
+	float radius = r * inttoworld;
 	static const uint8_t statlist[] = { STAT_DEFAULT, STAT_ACTOR, STAT_STANDABLE, STAT_PLAYER, STAT_FALLER, STAT_ZOMBIEACTOR, STAT_MISC };
 
 	if(actor->spr.picnum != DTILE_SHRINKSPARK && !(actor->spr.picnum == DTILE_RPG && actor->spr.scale.X < 0.171875))
@@ -230,7 +230,7 @@ void hitradius_d(DDukeActor* actor, int  r, int  hp1, int  hp2, int  hp3, int  h
 			if ((dasectp->ceilingz- actor->spr.pos.Z) < radius * 16) // what value range is this supposed to be? The check that was here did not multiply correctly
 			{
 				auto wal = dasectp->walls.Data();
-				double d = (wal->pos - actor->spr.pos.XY()).Sum();
+				float d = (wal->pos - actor->spr.pos.XY()).Sum();
 				if (d < radius)
 					checkhitceiling(dasectp);
 				else
@@ -261,7 +261,7 @@ void hitradius_d(DDukeActor* actor, int  r, int  hp1, int  hp2, int  hp3, int  h
 		}
 	}
 
-	double q = zrand(32) - 16;
+	float q = zrand(32) - 16;
 
 	auto Owner = actor->GetOwner();
 	for (int x = 0; x < 7; x++)
@@ -303,7 +303,7 @@ void hitradius_d(DDukeActor* actor, int  r, int  hp1, int  hp2, int  hp3, int  h
 					continue;
 				}
 
-				double dist = (act2->getPosWithOffsetZ() - actor->spr.pos).Length();
+				float dist = (act2->getPosWithOffsetZ() - actor->spr.pos).Length();
 
 				if (dist < radius && cansee(act2->spr.pos.plusZ(-8), act2->sector(), actor->spr.pos.plusZ(-12), actor->sector()))
 				{
@@ -353,7 +353,7 @@ void hitradius_d(DDukeActor* actor, int  r, int  hp1, int  hp2, int  hp3, int  h
 						if (!actorflag(act2, SFLAG2_NORADIUSPUSH) && !bossguy(act2))
 						{
 							if (act2->vel.X < 0) act2->vel.X = 0;
-							act2->vel.X += ( (actor->spr.extra / 4.));
+							act2->vel.X += ( (actor->spr.extra / 4.f));
 						}
 
 						if (actorflag(act2, SFLAG_HITRADIUSCHECK))
@@ -409,7 +409,7 @@ int movesprite_ex_d(DDukeActor* actor, const DVector3& change, unsigned int clip
 	auto ppos = actor->spr.pos;
 
 	auto tex = TexMan.GetGameTexture(actor->spr.spritetexture());
-	ppos.Z -= tex->GetDisplayHeight() * actor->spr.scale.Y * 0.5;
+	ppos.Z -= tex->GetDisplayHeight() * actor->spr.scale.Y * 0.5f;
 
 	if (bg)
 	{
@@ -417,7 +417,7 @@ int movesprite_ex_d(DDukeActor* actor, const DVector3& change, unsigned int clip
 			clipmove(ppos, &dasectp, change * 0.5, 64., 4., 4., cliptype, result);
 		else 
 		{
-			double clipdist;
+			float clipdist;
 			if (actor->spr.picnum == DTILE_LIZMAN)
 				clipdist = 18.25;
 			else if (actorflag(actor, SFLAG_BADGUY))
@@ -459,7 +459,7 @@ int movesprite_ex_d(DDukeActor* actor, const DVector3& change, unsigned int clip
 	if (dasectp != nullptr && dasectp != actor->sector())
 		ChangeActorSect(actor, dasectp);
 
-	double daz = actor->spr.pos.Z + change.Z * 0.5;
+	float daz = actor->spr.pos.Z + change.Z * 0.5f;
 	if (daz > actor->ceilingz && daz <= actor->floorz)
 		actor->spr.pos.Z = daz;
 	else if (result.type == kHitNone)
@@ -663,7 +663,7 @@ void movefallers_d(void)
 					ssp(act, CLIPMASK0);
 				}
 
-				double grav;
+				float grav;
 				if (floorspace(act->sector())) grav = 0;
 				else
 				{
@@ -701,7 +701,7 @@ void movefallers_d(void)
 void movetransports_d(void)
 {
 	int warpspriteto;
-	double ll;
+	float ll;
 
 	DukeStatIterator iti(STAT_TRANSPORT);
 	while (auto act = iti.Next())
@@ -813,8 +813,8 @@ void movetransports_d(void)
 						ps[p].GetActor()->backupz();
 
 						// this is actually below the precision óf the original Build coordinate system...
-						ps[p].vel.X = ((krand() & 8192) ? 1 / 64. : -1 / 64.);
-						ps[p].vel.Y = ((krand() & 8192) ? 1 / 64. : -1 / 64.);
+						ps[p].vel.X = ((krand() & 8192) ? 1 / 64.f : -1 / 64.f);
+						ps[p].vel.Y = ((krand() & 8192) ? 1 / 64.f : -1 / 64.f);
 
 					}
 
@@ -915,7 +915,7 @@ void movetransports_d(void)
 								auto k = spawn(act2, DTILE_WATERSPLASH2);
 								if (k && sectlotag == 1 && act2->spr.statnum == 4)
 								{
-									k->vel.X = act2->vel.X * 0.5;
+									k->vel.X = act2->vel.X * 0.5f;
 									k->spr.Angles.Yaw = act2->spr.Angles.Yaw;
 									ssp(k, CLIPMASK0);
 								}
@@ -1002,18 +1002,18 @@ void handle_se06_d(DDukeActor* actor)
 	{
 		actor->temp_data[4]--;
 		if (actor->temp_data[4] >= (k - (k >> 3)))
-			actor->vel.X -= (k >> 5) / 16.;
+			actor->vel.X -= (k >> 5) / 16.f;
 		if (actor->temp_data[4] > ((k >> 1) - 1) && actor->temp_data[4] < (k - (k >> 3)))
 			actor->vel.X = 0;
 		if (actor->temp_data[4] < (k >> 1))
-			actor->vel.X += (k >> 5) / 16.;
+			actor->vel.X += (k >> 5) / 16.f;
 		if (actor->temp_data[4] < ((k >> 1) - (k >> 3)))
 		{
 			actor->temp_data[4] = 0;
-			actor->vel.X = k / 16.;
+			actor->vel.X = k / 16.f;
 		}
 	}
-	else actor->vel.X = k / 16.;
+	else actor->vel.X = k / 16.f;
 
 	DukeStatIterator it(STAT_EFFECTOR);
 	while (auto act2 = it.Next())
@@ -1028,7 +1028,7 @@ void handle_se06_d(DDukeActor* actor)
 				int x = Sgn((act2->spr.pos - actor->spr.pos).LengthSquared() - act2->temp_pos.X);
 				if (act2->spr.extra)
 					x = -x;
-				actor->vel.X += x / 16.;
+				actor->vel.X += x / 16.f;
 			}
 			act2->temp_data[4] = actor->temp_data[4];
 		}
@@ -1053,7 +1053,7 @@ static void handle_se28(DDukeActor* actor)
 
 	if (actor->temp_data[0] == 0)
 	{
-		double x;
+		float x;
 		findplayer(actor, &x);
 		if (x > 15500 / 16.)
 			return;
@@ -1103,10 +1103,10 @@ static void handle_se28(DDukeActor* actor)
 						act2->spr.cstat &= ~CSTAT_SPRITE_INVISIBLE;
 						spawn(act2, DTILE_SMALLSMOKE);
 
-						double x;
+						float x;
 						int p = findplayer(actor, &x);
 						auto psa = ps[p].GetActor();
-						double dist = (psa->spr.pos.XY() - act2->spr.pos.XY()).LengthSquared();
+						float dist = (psa->spr.pos.XY() - act2->spr.pos.XY()).LengthSquared();
 						if (dist < 49*48)
 						{
 							if (S_CheckActorSoundPlaying(psa, DUKE_LONGTERM_PAIN) < 1)
@@ -1322,7 +1322,7 @@ void moveeffectors_d(void)   //STATNUM 3
 void move_d(DDukeActor *actor, int playernum, int xvel)
 {
 	DAngle goalang, angdif;
-	double daxvel;
+	float daxvel;
 
 	int a = actor->spr.hitag;
 
@@ -1348,7 +1348,7 @@ void move_d(DDukeActor *actor, int playernum, int xvel)
 		if (ps[playernum].newOwner != nullptr)
 			goalang = (ps[playernum].GetActor()->opos.XY() - actor->spr.pos.XY()).Angle();
 		else goalang = (ps[playernum].GetActor()->spr.pos.XY() - actor->spr.pos.XY()).Angle();
-		angdif = DAngle22_5 * 0.25 * Sgn(deltaangle(actor->spr.Angles.Yaw, goalang).Degrees()); // this looks very wrong...
+		angdif = DAngle22_5 * 0.25f * Sgn(deltaangle(actor->spr.Angles.Yaw, goalang).Degrees()); // this looks very wrong...
 		actor->spr.Angles.Yaw += angdif;
 	}
 
@@ -1361,7 +1361,7 @@ void move_d(DDukeActor *actor, int playernum, int xvel)
 
 	if (a & face_player_smart)
 	{
-		DVector2 newpos = ps[playernum].GetActor()->spr.pos.XY() + (ps[playernum].vel.XY() * (4. / 3.));
+		DVector2 newpos = ps[playernum].GetActor()->spr.pos.XY() + (ps[playernum].vel.XY() * (4.f / 3.f));
 		goalang = (newpos - actor->spr.pos.XY()).Angle();
 		angdif = deltaangle(actor->spr.Angles.Yaw, goalang) * 0.25;
 		if (angdif > -DAngle22_5/16 && angdif < nullAngle) angdif = nullAngle;
@@ -1385,8 +1385,8 @@ void move_d(DDukeActor *actor, int playernum, int xvel)
 
 	auto moveptr = &ScriptCode[actor->temp_data[1]];
 
-	if (a & geth) actor->vel.X += (moveptr[0] / 16. - actor->vel.X) * 0.5;
-	if (a & getv) actor->vel.Z += (moveptr[1] / 16. - actor->vel.Z) * 0.5;
+	if (a & geth) actor->vel.X += (moveptr[0] / 16.f - actor->vel.X) * 0.5f;
+	if (a & getv) actor->vel.Z += (moveptr[1] / 16.f - actor->vel.Z) * 0.5f;
 
 	if (a & dodgebullet)
 		dodge(actor);
@@ -1406,7 +1406,7 @@ void move_d(DDukeActor *actor, int playernum, int xvel)
 			{
 				if (actor->spr.picnum == DTILE_COMMANDER)
 				{
-					double c, f;
+					float c, f;
 					calcSlope(actor->sector(), actor->spr.pos.X, actor->spr.pos.Y, &c, &f);
 					actor->floorz = f;
 					actor->ceilingz = c;
@@ -1427,14 +1427,14 @@ void move_d(DDukeActor *actor, int playernum, int xvel)
 				{
 					if (actor->vel.Z > 0)
 					{
-						double f = getflorzofslopeptr(actor->sector(), actor->spr.pos.X, actor->spr.pos.Y);
+						float f = getflorzofslopeptr(actor->sector(), actor->spr.pos.X, actor->spr.pos.Y);
 						actor->floorz = f;
 						if (actor->spr.pos.Z > f - 30)
 							actor->spr.pos.Z = f - 30;
 					}
 					else
 					{
-						double c = getceilzofslopeptr(actor->sector(), actor->spr.pos.X, actor->spr.pos.Y);
+						float c = getceilzofslopeptr(actor->sector(), actor->spr.pos.X, actor->spr.pos.Y);
 						actor->ceilingz = c;
 						if (actor->spr.pos.Z < c + 50)
 						{
@@ -1450,7 +1450,7 @@ void move_d(DDukeActor *actor, int playernum, int xvel)
 					actor->spr.pos.Z = actor->floorz;
 				if (actor->vel.Z < 0)
 				{
-					double c = getceilzofslopeptr(actor->sector(), actor->spr.pos.X, actor->spr.pos.Y);
+					float c = getceilzofslopeptr(actor->sector(), actor->spr.pos.X, actor->spr.pos.Y);
 					if (actor->spr.pos.Z < c + 66)
 					{
 						actor->spr.pos.Z = c + 66;
@@ -1478,7 +1478,7 @@ void move_d(DDukeActor *actor, int playernum, int xvel)
 				}
 				else
 				{
-					ps[playernum].vel.XY() *= gs.playerfriction - 0.125;
+					ps[playernum].vel.XY() *= gs.playerfriction - 0.125f;
 				}
 			}
 			else if (!actorflag(actor, SFLAG2_FLOATING))

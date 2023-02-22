@@ -236,9 +236,9 @@ bool TestSpikeMatchActive(short match)
 //
 //---------------------------------------------------------------------------
 
-int DoSpikeMove(DSWActor* actor, double *lptr)
+int DoSpikeMove(DSWActor* actor, float *lptr)
 {
-    double zval;
+    float zval;
 
     zval = *lptr;
 
@@ -305,7 +305,7 @@ void SpikeAlign(DSWActor* actor)
 
 void MoveSpritesWithSpike(sectortype* sect)
 {
-    double cz,fz;
+    float cz,fz;
 
     SWSectIterator it(sect);
     while (auto actor = it.Next())

@@ -114,7 +114,7 @@ static const WEAPONICON gWeaponIcon[] = {
 
 static tspritetype* viewAddEffect(tspriteArray& tsprites, int nTSprite, VIEW_EFFECT nViewEffect)
 {
-	double s;
+	float s;
 	assert(nViewEffect >= 0 && nViewEffect < kViewEffectMax);
 	auto pTSprite = tsprites.get(nTSprite);
 	auto owneractor = static_cast<DBloodActor*>(pTSprite->ownerActor);
@@ -126,7 +126,7 @@ static tspritetype* viewAddEffect(tspriteArray& tsprites, int nTSprite, VIEW_EFF
 		int perc = (100 * owneractor->xspr.data3) / kMaxPatrolSpotValue;
 		int width = (94 * owneractor->xspr.data3) / kMaxPatrolSpotValue;
 
-		double top, bottom;
+		float top, bottom;
 		GetSpriteExtents(pTSprite, &top, &bottom);
 
 		auto pNSprite2 = viewInsertTSprite(tsprites, pTSprite->sectp, 32767, pTSprite);
@@ -173,7 +173,7 @@ static tspritetype* viewAddEffect(tspriteArray& tsprites, int nTSprite, VIEW_EFF
 	case kViewEffectFlag:
 	case kViewEffectBigFlag:
 	{
-		double top, bottom;
+		float top, bottom;
 		GetSpriteExtents(pTSprite, &top, &bottom);
 		auto pNSprite = viewInsertTSprite(tsprites, pTSprite->sectp, 32767, pTSprite);
 		if (!pNSprite)
@@ -233,7 +233,7 @@ static tspritetype* viewAddEffect(tspriteArray& tsprites, int nTSprite, VIEW_EFF
 		if (!pNSprite)
 			break;
 
-		double top, bottom;
+		float top, bottom;
 		GetSpriteExtents(pTSprite, &top, &bottom);
 		pNSprite->pos.Z = top;
 		pNSprite->shade = 26;
@@ -261,7 +261,7 @@ static tspritetype* viewAddEffect(tspriteArray& tsprites, int nTSprite, VIEW_EFF
 			if (!pNSprite)
 				break;
 
-			double nLen = 8.0 * (i + 1);
+			float nLen = 8.0 * (i + 1);
 			auto vect = nAng.ToVector() * nLen;
 			pNSprite->pos = pTSprite->pos + vect;
 			assert(pSector);
@@ -300,7 +300,7 @@ static tspritetype* viewAddEffect(tspriteArray& tsprites, int nTSprite, VIEW_EFF
 		if (!pNSprite)
 			break;
 
-		double top, bottom;
+		float top, bottom;
 		GetSpriteExtents(pTSprite, &top, &bottom);
 		pNSprite->pos.Z = top;
 		if (IsDudeSprite(pTSprite))
@@ -318,7 +318,7 @@ static tspritetype* viewAddEffect(tspriteArray& tsprites, int nTSprite, VIEW_EFF
 		if (!pNSprite)
 			break;
 
-		double top, bottom;
+		float top, bottom;
 		GetSpriteExtents(pTSprite, &top, &bottom);
 		pNSprite->pos.Z = bottom;
 		if (pTSprite->type >= kDudeBase && pTSprite->type < kDudeMax)
@@ -336,7 +336,7 @@ static tspritetype* viewAddEffect(tspriteArray& tsprites, int nTSprite, VIEW_EFF
 		if (!pNSprite)
 			break;
 
-		double top, bottom;
+		float top, bottom;
 		GetSpriteExtents(pTSprite, &top, &bottom);
 		pNSprite->pos.Z = top;
 		pNSprite->picnum = 2101;
@@ -351,7 +351,7 @@ static tspritetype* viewAddEffect(tspriteArray& tsprites, int nTSprite, VIEW_EFF
 		if (!pNSprite)
 			break;
 
-		double top, bottom;
+		float top, bottom;
 		GetSpriteExtents(pTSprite, &top, &bottom);
 		pNSprite->pos.Z = bottom;
 		pNSprite->picnum = 2101;
@@ -369,13 +369,13 @@ static tspritetype* viewAddEffect(tspriteArray& tsprites, int nTSprite, VIEW_EFF
 		if (pNSprite->sectp->portalflags == PORTAL_SECTOR_FLOOR && !VanillaMode()) // if floor has ror, find actual floor
 		{
 			DVector3 cPos = pNSprite->pos;
-			double cZrel = cPos.Z;
+			float cZrel = cPos.Z;
 			auto cSect = pNSprite->sectp;
 			for (int i = 0; i < 16; i++) // scan through max stacked sectors
 			{
 				if (!CheckLink(cPos, &cSect)) // if no more floors underneath, abort
 					break;
-				const double newFloorZ = getflorzofslopeptr(cSect, cPos.X, cPos.Z);
+				const float newFloorZ = getflorzofslopeptr(cSect, cPos.X, cPos.Z);
 				cZrel += newFloorZ - cPos.Z; // get height difference for next sector's ceiling/floor, and add to relative height for shadow
 				if (cSect->portalflags != PORTAL_SECTOR_FLOOR) // if current sector is not open air, use as floor for shadow casting, otherwise continue to next sector
 					break;
@@ -393,8 +393,8 @@ static tspritetype* viewAddEffect(tspriteArray& tsprites, int nTSprite, VIEW_EFF
 			pNSprite->picnum = 800;
 		pNSprite->pal = 5;
 		auto tex = TexMan.GetGameTexture(pNSprite->spritetexture());
-		double height = tex->GetDisplayHeight();
-		double center = height / 2 + tex->GetDisplayTopOffset();
+		float height = tex->GetDisplayHeight();
+		float center = height / 2 + tex->GetDisplayTopOffset();
 		pNSprite->pos.Z -= (pNSprite->scale.Y) * (height - center);
 		break;
 	}
@@ -439,7 +439,7 @@ static tspritetype* viewAddEffect(tspriteArray& tsprites, int nTSprite, VIEW_EFF
 		sectortype* pSector = pTSprite->sectp;
 		pNSprite->pos = { pTSprite->pos.X, pTSprite->pos.Y, pSector->floorz };
 		pNSprite->picnum = 624;
-		uint8_t nShade = (uint8_t)clamp(pSector->floorz - pTSprite->pos.Z, 0., 255.);
+		uint8_t nShade = (uint8_t)clamp(pSector->floorz - pTSprite->pos.Z, 0.f, 255.f);
 		pNSprite->shade = nShade - 32;
 		pNSprite->pal = 2;
 		pNSprite->scale = DVector2(nShade * REPEAT_SCALE, nShade * REPEAT_SCALE);
@@ -524,11 +524,11 @@ static void viewApplyDefaultPal(tspritetype* pTSprite, sectortype const* pSector
 static int GetOctant(const DVector2& dPos)
 {
 	static const uint8_t OctantTable[8] = { 5, 6, 2, 1, 4, 7, 3, 0 };
-	double vc = fabs(dPos.X) - fabs(dPos.Y);
+	float vc = fabs(dPos.X) - fabs(dPos.Y);
 	return OctantTable[7 - (dPos.X < 0) - (dPos.Y < 0) * 2 - (vc < 0) * 4];
 }
 
-void viewProcessSprites(tspriteArray& tsprites, const DVector3& cPos, DAngle cA, double interpfrac)
+void viewProcessSprites(tspriteArray& tsprites, const DVector3& cPos, DAngle cA, float interpfrac)
 {
 	PLAYER* pPlayer = &gPlayer[gViewIndex];
 	int nViewSprites = tsprites.Size();
@@ -625,7 +625,7 @@ void viewProcessSprites(tspriteArray& tsprites, const DVector3& cPos, DAngle cA,
 			}
 			else
 			{
-				double top, bottom;
+				float top, bottom;
 				GetSpriteExtents(pTSprite, &top, &bottom);
 				if (getflorzofslopeptr(pTSprite->sectp, pTSprite->pos) > bottom)
 					nAnim = 1;
@@ -791,7 +791,7 @@ void viewProcessSprites(tspriteArray& tsprites, const DVector3& cPos, DAngle cA,
 				if (pTSprite->type != kMissileFlareRegular) break;
 				sectortype* pSector1 = pTSprite->sectp;
 
-				double zDiff = pTSprite->pos.Z - pSector1->ceilingz;
+				float zDiff = pTSprite->pos.Z - pSector1->ceilingz;
 				if ((pSector1->ceilingstat & CSTAT_SECTOR_SKY) == 0 && zDiff < 64) 
 				{
 					viewAddEffect(tsprites, nTSprite, kViewEffectCeilGlow);
@@ -954,7 +954,7 @@ void viewProcessSprites(tspriteArray& tsprites, const DVector3& cPos, DAngle cA,
 //
 //---------------------------------------------------------------------------
 
-void GameInterface::processSprites(tspriteArray& tsprites, const DVector3& view, DAngle viewang, double interpfrac)
+void GameInterface::processSprites(tspriteArray& tsprites, const DVector3& view, DAngle viewang, float interpfrac)
 {
 	viewProcessSprites(tsprites, view, viewang, interpfrac);
 }

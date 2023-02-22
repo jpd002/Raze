@@ -66,7 +66,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(DShape2DTransform, Clear, Shape2DTransform_Clear)
 	return 0;
 }
 
-static void Shape2DTransform_Rotate(DShape2DTransform* self, double angle)
+static void Shape2DTransform_Rotate(DShape2DTransform* self, float angle)
 {
 	self->transform = DMatrix3x3::Rotate2D(DEG2RAD(angle)) * self->transform;
 }
@@ -79,7 +79,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(DShape2DTransform, Rotate, Shape2DTransform_Rotate
 	return 0;
 }
 
-static void Shape2DTransform_Scale(DShape2DTransform* self, double x, double y)
+static void Shape2DTransform_Scale(DShape2DTransform* self, float x, float y)
 {
 	self->transform = DMatrix3x3::Scale2D(DVector2(x, y)) * self->transform;
 }
@@ -93,7 +93,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(DShape2DTransform, Scale, Shape2DTransform_Scale)
 	return 0;
 }
 
-static void Shape2DTransform_Translate(DShape2DTransform* self, double x, double y)
+static void Shape2DTransform_Translate(DShape2DTransform* self, float x, float y)
 {
 	self->transform = DMatrix3x3::Translate2D(DVector2(x, y)) * self->transform;
 }
@@ -109,7 +109,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(DShape2DTransform, Translate, Shape2DTransform_Tra
 
 static void Shape2DTransform_From2D(
 	DShape2DTransform* self,
-	double m00, double m01, double m10, double m11, double vx, double vy
+	float m00, float m01, float m10, float m11, float vx, float vy
 )
 {
 	self->transform.Cells[0][0] = m00;
@@ -165,7 +165,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(DShape2D, Clear, Shape2D_Clear)
 	return 0;
 }
 
-static void Shape2D_PushVertex(DShape2D* self, double x, double y)
+static void Shape2D_PushVertex(DShape2D* self, float x, float y)
 {
 	self->mVertices.Push(DVector2(x, y));
 	self->bufferInfo->needsVertexUpload = true;
@@ -180,7 +180,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(DShape2D, PushVertex, Shape2D_PushVertex)
 	return 0;
 }
 
-static void Shape2D_PushCoord(DShape2D* self, double u, double v)
+static void Shape2D_PushCoord(DShape2D* self, float u, float v)
 {
 	self->mCoords.Push(DVector2(u, v));
 	self->bufferInfo->needsVertexUpload = true;
@@ -430,9 +430,9 @@ void F2DDrawer::AddTexture(FGameTexture* img, DrawParms& parms)
 	if (parms.style.BlendOp == STYLEOP_None) return;	// not supposed to be drawn.
 	assert(img && img->isValid());
 
-	double xscale = parms.destwidth / parms.texwidth;
-	double yscale = parms.destheight / parms.texheight;
-	double u1, v1, u2, v2;
+	float xscale = parms.destwidth / parms.texwidth;
+	float yscale = parms.destheight / parms.texheight;
+	float u1, v1, u2, v2;
 	PalEntry vertexcolor;
 
 	RenderCommand dg;
@@ -475,17 +475,17 @@ void F2DDrawer::AddTexture(FGameTexture* img, DrawParms& parms)
 
 	if (parms.rotateangle == 0)
 	{
-		double x = parms.x - parms.left * xscale;
-		double y = parms.y - parms.top * yscale;
-		double w = parms.destwidth;
-		double h = parms.destheight;
+		float x = parms.x - parms.left * xscale;
+		float y = parms.y - parms.top * yscale;
+		float w = parms.destwidth;
+		float h = parms.destheight;
 
 
 		// This is crap. Only kept for backwards compatibility with scripts that may have used it.
 		// Note that this only works for unflipped and unrotated full textures.
 		if (parms.windowleft > 0 || parms.windowright < parms.texwidth)
 		{
-			double wi = min(parms.windowright, parms.texwidth);
+			float wi = min(parms.windowright, parms.texwidth);
 			x += parms.windowleft * xscale;
 			w -= (parms.texwidth - wi + parms.windowleft) * xscale;
 
@@ -499,12 +499,12 @@ void F2DDrawer::AddTexture(FGameTexture* img, DrawParms& parms)
 			(t * DVector3(x + w, y,     1.0)).XY(),
 			(t * DVector3(x + w, y + h, 1.0)).XY()
 		};
-		double minx = std::min_element(tCorners.begin(), tCorners.end(), [] (auto d0, auto d1) { return d0.X < d1.X; })->X;
-		double maxx = std::max_element(tCorners.begin(), tCorners.end(), [] (auto d0, auto d1) { return d0.X < d1.X; })->X;
-		double miny = std::min_element(tCorners.begin(), tCorners.end(), [] (auto d0, auto d1) { return d0.Y < d1.Y; })->Y;
-		double maxy = std::max_element(tCorners.begin(), tCorners.end(), [] (auto d0, auto d1) { return d0.Y < d1.Y; })->Y;
+		float minx = std::min_element(tCorners.begin(), tCorners.end(), [] (auto d0, auto d1) { return d0.X < d1.X; })->X;
+		float maxx = std::max_element(tCorners.begin(), tCorners.end(), [] (auto d0, auto d1) { return d0.X < d1.X; })->X;
+		float miny = std::min_element(tCorners.begin(), tCorners.end(), [] (auto d0, auto d1) { return d0.Y < d1.Y; })->Y;
+		float maxy = std::max_element(tCorners.begin(), tCorners.end(), [] (auto d0, auto d1) { return d0.Y < d1.Y; })->Y;
 
-		if (minx < (double)parms.lclip || miny < (double)parms.uclip || maxx >(double)parms.rclip || maxy >(double)parms.dclip)
+		if (minx < (float)parms.lclip || miny < (float)parms.uclip || maxx >(float)parms.rclip || maxy >(float)parms.dclip)
 		{
 			dg.mScissor[0] = parms.lclip + int(offset.X);
 			dg.mScissor[1] = parms.uclip + int(offset.Y);
@@ -527,25 +527,25 @@ void F2DDrawer::AddTexture(FGameTexture* img, DrawParms& parms)
 	}
 	else
 	{
-		double radang = parms.rotateangle * (pi::pi() / 180.);
-		double cosang = cos(radang);
-		double sinang = sin(radang);
-		double xd1 = -parms.left;
-		double yd1 = -parms.top;
-		double xd2 = xd1 + parms.texwidth;
-		double yd2 = yd1 + parms.texheight;
+		float radang = parms.rotateangle * (pi::pi() / 180.);
+		float cosang = cos(radang);
+		float sinang = sin(radang);
+		float xd1 = -parms.left;
+		float yd1 = -parms.top;
+		float xd2 = xd1 + parms.texwidth;
+		float yd2 = yd1 + parms.texheight;
 
-		double x1 = parms.x + xscale * (xd1 * cosang + yd1 * sinang);
-		double y1 = parms.y - yscale * (xd1 * sinang - yd1 * cosang);
+		float x1 = parms.x + xscale * (xd1 * cosang + yd1 * sinang);
+		float y1 = parms.y - yscale * (xd1 * sinang - yd1 * cosang);
 
-		double x2 = parms.x + xscale * (xd1 * cosang + yd2 * sinang);
-		double y2 = parms.y - yscale * (xd1 * sinang - yd2 * cosang);
+		float x2 = parms.x + xscale * (xd1 * cosang + yd2 * sinang);
+		float y2 = parms.y - yscale * (xd1 * sinang - yd2 * cosang);
 
-		double x3 = parms.x + xscale * (xd2 * cosang + yd1 * sinang);
-		double y3 = parms.y - yscale * (xd2 * sinang - yd1 * cosang);
+		float x3 = parms.x + xscale * (xd2 * cosang + yd1 * sinang);
+		float y3 = parms.y - yscale * (xd2 * sinang - yd1 * cosang);
 
-		double x4 = parms.x + xscale * (xd2 * cosang + yd2 * sinang);
-		double y4 = parms.y - yscale * (xd2 * sinang - yd2 * cosang);
+		float x4 = parms.x + xscale * (xd2 * cosang + yd2 * sinang);
+		float y4 = parms.y - yscale * (xd2 * sinang - yd2 * cosang);
 
 		dg.mScissor[0] = parms.lclip + int(offset.X);
 		dg.mScissor[1] = parms.uclip + int(offset.Y);
@@ -651,11 +651,11 @@ void F2DDrawer::AddShape(FGameTexture* img, DShape2D* shape, DrawParms& parms)
 		(t * DVector3(shape->maxx, shape->miny, 1.0)).XY(),
 		(t * DVector3(shape->maxx, shape->maxy, 1.0)).XY()
 	};
-	double minx = std::min_element(tCorners.begin(), tCorners.end(), [] (auto d0, auto d1) { return d0.X < d1.X; })->X;
-	double maxx = std::max_element(tCorners.begin(), tCorners.end(), [] (auto d0, auto d1) { return d0.X < d1.X; })->X;
-	double miny = std::min_element(tCorners.begin(), tCorners.end(), [] (auto d0, auto d1) { return d0.Y < d1.Y; })->Y;
-	double maxy = std::max_element(tCorners.begin(), tCorners.end(), [] (auto d0, auto d1) { return d0.Y < d1.Y; })->Y;
-	if (minx < (double)parms.lclip || miny < (double)parms.uclip || maxx >(double)parms.rclip || maxy >(double)parms.dclip)
+	float minx = std::min_element(tCorners.begin(), tCorners.end(), [] (auto d0, auto d1) { return d0.X < d1.X; })->X;
+	float maxx = std::max_element(tCorners.begin(), tCorners.end(), [] (auto d0, auto d1) { return d0.X < d1.X; })->X;
+	float miny = std::min_element(tCorners.begin(), tCorners.end(), [] (auto d0, auto d1) { return d0.Y < d1.Y; })->Y;
+	float maxy = std::max_element(tCorners.begin(), tCorners.end(), [] (auto d0, auto d1) { return d0.Y < d1.Y; })->Y;
+	if (minx < (float)parms.lclip || miny < (float)parms.uclip || maxx >(float)parms.rclip || maxy >(float)parms.dclip)
 	{
 		dg.mScissor[0] = parms.lclip + int(offset.X);
 		dg.mScissor[1] = parms.uclip + int(offset.Y);
@@ -714,8 +714,8 @@ void F2DDrawer::AddShape(FGameTexture* img, DShape2D* shape, DrawParms& parms)
 //==========================================================================
 
 void F2DDrawer::AddPoly(FGameTexture *texture, FVector2 *points, int npoints,
-		double originx, double originy, double scalex, double scaley,
-		DAngle rotation, const FColormap &colormap, PalEntry flatcolor, double fadelevel,
+		float originx, float originy, float scalex, float scaley,
+		DAngle rotation, const FColormap &colormap, PalEntry flatcolor, float fadelevel,
 		uint32_t *indices, size_t indexcount)
 {
 	RenderCommand poly;
@@ -727,7 +727,7 @@ void F2DDrawer::AddPoly(FGameTexture *texture, FVector2 *points, int npoints,
 	poly.mDesaturate = colormap.Desaturation;
 
 	PalEntry color0; 
-	double invfade = 1. - fadelevel;
+	float invfade = 1. - fadelevel;
 
 	color0.r = uint8_t(colormap.LightColor.r * invfade);
 	color0.g = uint8_t(colormap.LightColor.g * invfade);
@@ -874,7 +874,7 @@ float F2DDrawer::GetClassicFlatScalarHeight()
 	return sh;
 }
 
-void F2DDrawer::AddFlatFill(int left, int top, int right, int bottom, FGameTexture *src, int local_origin, double flatscale, PalEntry color, ERenderStyle style)
+void F2DDrawer::AddFlatFill(int left, int top, int right, int bottom, FGameTexture *src, int local_origin, float flatscale, PalEntry color, ERenderStyle style)
 {
 	float fU1, fU2, fV1, fV2;
 
@@ -1075,7 +1075,7 @@ void F2DDrawer::AddLine(const DVector2& v1, const DVector2& v2, const IntRect* c
 //
 //==========================================================================
 
-void F2DDrawer::AddThickLine(const DVector2& v1, const DVector2& v2, double thickness, uint32_t color, uint8_t alpha)
+void F2DDrawer::AddThickLine(const DVector2& v1, const DVector2& v2, float thickness, uint32_t color, uint8_t alpha)
 {
 	PalEntry p = (PalEntry)color;
 	p.a = alpha;

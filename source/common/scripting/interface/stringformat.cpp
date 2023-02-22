@@ -539,7 +539,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(FStringStruct, ToInt, StringToInt)
 	ACTION_RETURN_INT((int)self->ToLong(base));
 }
 
-static double StringToDbl(FString *self)
+static float StringToDbl(FString *self)
 {
 	return self->ToDouble();
 }

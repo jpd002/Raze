@@ -236,7 +236,7 @@ void CFX::fxProcess(void)
 		}
 		if (!actor->vel.isZero())
 		{
-			double floorZ, ceilZ;
+			float floorZ, ceilZ;
 			calcSlope(pSector, actor->spr.pos, &ceilZ, &floorZ);
 			if (ceilZ > actor->spr.pos.Z && !(pSector->ceilingstat & CSTAT_SECTOR_SKY))
 			{
@@ -320,7 +320,7 @@ void fxSpawnPodStuff(DBloodActor* actor, int)
 //
 //---------------------------------------------------------------------------
 
-void fxSpawnEjectingBrass(DBloodActor* actor, double z, double dist, int rdist)
+void fxSpawnEjectingBrass(DBloodActor* actor, float z, float dist, int rdist)
 {
 	DVector3 pos(actor->spr.pos.XY() + actor->clipdist * actor->spr.Angles.Yaw.ToVector() + (actor->spr.Angles.Yaw + DAngle90).ToVector() * dist, z); 
 
@@ -330,7 +330,7 @@ void fxSpawnEjectingBrass(DBloodActor* actor, double z, double dist, int rdist)
 		if (!VanillaMode())
 			pBrass->spr.Angles.Yaw = RandomAngle();
 		int iDist = (rdist << 18) / 120 + Random2(((rdist / 4) << 18) / 120);
-		double nDist = iDist / 65536.;
+		float nDist = iDist / 65536.;
 		DAngle nAngle = actor->spr.Angles.Yaw + Random2A(56) + DAngle90;
 		pBrass->vel.XY() = nAngle.ToVector() * nDist;
 		pBrass->vel.Z = actor->vel.Z - 2 - Random2(40) / 30.;
@@ -343,7 +343,7 @@ void fxSpawnEjectingBrass(DBloodActor* actor, double z, double dist, int rdist)
 //
 //---------------------------------------------------------------------------
 
-void fxSpawnEjectingShell(DBloodActor* actor, double z, double dist, int rdist)
+void fxSpawnEjectingShell(DBloodActor* actor, float z, float dist, int rdist)
 {
 	DVector3 pos(actor->spr.pos.XY() + actor->clipdist * actor->spr.Angles.Yaw.ToVector() + (actor->spr.Angles.Yaw + DAngle90).ToVector() * dist, z);
 
@@ -353,7 +353,7 @@ void fxSpawnEjectingShell(DBloodActor* actor, double z, double dist, int rdist)
 		if (!VanillaMode())
 			pShell->spr.Angles.Yaw = RandomAngle();
 		int iDist = (rdist << 18) / 120 + Random2(((rdist / 4) << 18) / 120);
-		double nDist = iDist / 65536.;
+		float nDist = iDist / 65536.;
 		DAngle nAngle = actor->spr.Angles.Yaw + Random2A(56) + DAngle90;
 		pShell->vel.XY() = nAngle.ToVector() * nDist;
 		pShell->vel.Z = actor->vel.Z - 2 - Random2(28) / 30.;

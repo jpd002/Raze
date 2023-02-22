@@ -115,11 +115,11 @@ inline int RANDOM(void)
     randomseed = ((randomseed * 21 + 1) & 65535);
     return randomseed;
 }
-inline double RandomRangeF(double range)
+inline float RandomRangeF(float range)
 {
     return RANDOM() * range / 65536;
 }
-inline DAngle RandomAngle(double range = 360.)
+inline DAngle RandomAngle(float range = 360.)
 {
 	return DAngle::fromDeg(RandomRangeF(range));
 }
@@ -129,7 +129,7 @@ inline DAngle RandomAngle(DAngle range)
 }
 
 int RANDOM_P2(int pwr_of_2) { return (RANDOM() & (pwr_of_2 - 1)); }
-double RANDOM_P2F(int pwr_of_2, int shift) { return (RANDOM() & ((pwr_of_2 << shift) - 1)) * (1./(1 << shift)); }
+float RANDOM_P2F(int pwr_of_2, int shift) { return (RANDOM() & ((pwr_of_2 << shift) - 1)) * (1./(1 << shift)); }
 
 //
 // Map directions/degrees
@@ -178,7 +178,7 @@ enum
     MIN_ACTIVE_RANGE = 20000,
 };
 
-constexpr double CIRCLE_CAMERA_DIST_MINF = 12000. / 65536.;
+constexpr float CIRCLE_CAMERA_DIST_MINF = 12000. / 65536.;
 
 constexpr int32_t FIXED(int32_t msw, int32_t lsw)
 {
@@ -205,7 +205,7 @@ int StdRandomRange(int range);
 
 
 // actual Z for TOS and BOS - handles both WYSIWYG and old style
-inline double GetSpriteZOfTop(const spritetypebase* sp)
+inline float GetSpriteZOfTop(const spritetypebase* sp)
 {
     auto tex = TexMan.GetGameTexture(sp->spritetexture());
     auto sizez = tex->GetDisplayHeight() * sp->scale.Y;
@@ -214,7 +214,7 @@ inline double GetSpriteZOfTop(const spritetypebase* sp)
         sp->pos.Z - sizez;
 }
 
-inline double GetSpriteZOfBottom(const spritetypebase* sp)
+inline float GetSpriteZOfBottom(const spritetypebase* sp)
 {
     auto tex = TexMan.GetGameTexture(sp->spritetexture());
     auto sizez = tex->GetDisplayHeight() * sp->scale.Y;
@@ -714,12 +714,12 @@ struct USER
 
     DVector3 pos;
 	DVector3 change; // precalculated vectors
-    double hiz, loz;
-    double oz; // serialized copy of sprite.oz
-    double z_tgt;
-    double ceiling_dist;
-    double floor_dist;
-    double zclip; // z height to move up for clipmove
+    float hiz, loz;
+    float oz; // serialized copy of sprite.oz
+    float z_tgt;
+    float ceiling_dist;
+    float floor_dist;
+    float zclip; // z height to move up for clipmove
 		
 
     int Flags;
@@ -742,7 +742,7 @@ struct USER
     int16_t jump_grav;
 
     // clipmove
-    double lo_step;
+    float lo_step;
     int active_range;
     sectortype* hi_sectp, *lo_sectp;
 
@@ -768,8 +768,8 @@ struct USER
     int16_t BladeDamageTics;
 
     unsigned int Radius;    // for distance checking
-    double fRadius() const { return Radius * inttoworld; }
-    double  OverlapZ;  // for z overlap variable
+    float fRadius() const { return Radius * inttoworld; }
+    float  OverlapZ;  // for z overlap variable
 
     //
     // Only have a place for actors
@@ -783,10 +783,10 @@ struct USER
     int16_t scale_tgt;
 
     // zig zagging
-    double DistCheck;
+    float DistCheck;
 
-    double Dist;
-    double TargetDist;
+    float Dist;
+    float TargetDist;
     int16_t WaitTics;
 
     // track
@@ -797,8 +797,8 @@ struct USER
 
     // sliding variables - slide backwards etc
     DAngle slide_ang;
-    double slide_vel;
-    double slide_dec;
+    float slide_vel;
+    float slide_dec;
 
     int16_t motion_blur_dist;
     int16_t motion_blur_num;
@@ -1052,8 +1052,8 @@ struct TARGET_SORT
 {
     DSWActor* actor;
     DAngle dangle;
-    double dst;
-    double weight;
+    float dst;
+    float weight;
 };
 
 enum { MAX_TARGET_SORT = 16 };
@@ -1087,7 +1087,7 @@ struct SWING
 struct SINE_WAVE_FLOOR
 {
     sectortype* sectp;
-    double floorOrigz, ceilingOrigz, Range;
+    float floorOrigz, ceilingOrigz, Range;
     int16_t sintable_ndx, speed_shift;
     uint8_t flags;
 };
@@ -1104,8 +1104,8 @@ extern SINE_WAVE_FLOOR SineWaveFloor[MAX_SINE_WAVE][21];
 struct SINE_WALL
 {
     walltype* wallp;
-	double origXY;
-	double Range;
+	float origXY;
+	float Range;
     int16_t sintable_ndx, speed_shift, type;
 };
 
@@ -1218,7 +1218,7 @@ struct SECTOR_OBJECT
     walltype
         * morph_wall_point;       // actual wall point to drag
 
-    double
+    float
            target_dist,    // distance to next point
            zdelta;         // z delta from original
 
@@ -1227,23 +1227,23 @@ struct SECTOR_OBJECT
            vel_tgt,        // target velocity
            update;         // Distance from player at which you continue updating
 
-    double  zorig_floor[MAX_SO_SECTOR],      // original z values for all sectors
+    float  zorig_floor[MAX_SO_SECTOR],      // original z values for all sectors
            z_tgt;          // target z delta
     int    z_rate;         // rate at which z aproaches target
     // only works for single player.
-    double bob_diff,       // bobbing difference for the frame
+    float bob_diff,       // bobbing difference for the frame
            floor_loz,      // floor low z
            floor_hiz,      // floor hi z
            bob_amt;        // bob amount max in z coord
 
     // variables set by mappers for drivables
-    double drive_angspeed;
+    float drive_angspeed;
     int    drive_angslide,
            drive_speed,
            drive_slide,
            flags;
 
-    double crush_z,
+    float crush_z,
 	       morph_z,        // morphing point z
            morph_z_min,    // morphing point z min
            morph_z_max;
@@ -1258,9 +1258,9 @@ struct SECTOR_OBJECT
             point,          // the point on the track that the sector object is headed toward
             vel_rate,       // rate at which velocity aproaches target
             dir;            // direction traveling on the track
-    double  clipdist;       // cliping distance for operational sector objects
-    double  clipbox_dist[MAX_CLIPBOX]; // mult-clip box variables (clipdist equivalent)
-    double  clipbox_vdist[MAX_CLIPBOX]; // mult-clip box variables
+    float  clipdist;       // cliping distance for operational sector objects
+    float  clipbox_dist[MAX_CLIPBOX]; // mult-clip box variables (clipdist equivalent)
+    float  clipbox_vdist[MAX_CLIPBOX]; // mult-clip box variables
     DAngle  clipbox_ang[MAX_CLIPBOX]; // mult-clip box variables
 
 
@@ -1286,7 +1286,7 @@ struct SECTOR_OBJECT
     // values for whole SO
             scale_rand_freq;    // freqency of direction change - based on rand(1024)
 
-    double  scale_dist,         // distance from center
+    float  scale_dist,         // distance from center
             scale_dist_min,     // absolute min
             scale_dist_max,     // absolute max
             scale_speed,        // speed of scaling
@@ -1306,7 +1306,7 @@ struct SECTOR_OBJECT
             morph_rand_freq;        // freq of dir change
 
     DAngle  morph_ang;              // angle moving from CENTER
-    double  morph_speed,            // speed of movement
+    float  morph_speed,            // speed of movement
             morph_dist_max,         // radius boundry
             morph_dist,             // dist from CENTER
             morph_z_speed;          // z speed for morph point
@@ -1360,7 +1360,7 @@ enum
 };
 
 // make sure this does not overflow when converted to a Build int coordinate and survives a round trip through conversions.
-constexpr double MAXSO = 0x7fffffe0 / 32; 
+constexpr float MAXSO = 0x7fffffe0 / 32; 
 static_assert(MAXSO == int(MAXSO * worldtoint) * inttoworld);
 
 inline bool SO_EMPTY(SECTOR_OBJECT* sop) { return (sop->pmid.X == MAXSO); }
@@ -1437,21 +1437,21 @@ void RefreshInfoLine(PLAYER* pp);
 void DoAnim(int numtics);
 void AnimDelete(int animtype, int animindex, DSWActor*);
 short AnimGetGoal(int animtype, int animindex, DSWActor*);
-int AnimSet(int animtype, int animindex, DSWActor* animactor, double thegoal, double thevel);
-int AnimSet(int animtype, sectortype* animindex, double thegoal, double thevel)
+int AnimSet(int animtype, int animindex, DSWActor* animactor, float thegoal, float thevel);
+int AnimSet(int animtype, sectortype* animindex, float thegoal, float thevel)
 {
     return AnimSet(animtype, sectindex(animindex), nullptr, thegoal, thevel);
 }
 
 short AnimSetCallback(short anim_ndx, ANIM_CALLBACKp call, SECTOR_OBJECT* data);
-short AnimSetVelAdj(short anim_ndx, double vel_adj);
+short AnimSetVelAdj(short anim_ndx, float vel_adj);
 
 void EnemyDefaults(DSWActor* actor, ACTOR_ACTION_SET* action, PERSONALITY* person);
 
-void getzrangepoint(const DVector3& pos, sectortype* sect, double* hiz, Collision* ceilhit, double* loz, Collision* florhit);
+void getzrangepoint(const DVector3& pos, sectortype* sect, float* hiz, Collision* ceilhit, float* loz, Collision* florhit);
 
-Collision move_sprite(DSWActor* actor, const DVector3& change, double ceildist, double flordist, uint32_t cliptype, int numtics);
-Collision move_missile(DSWActor* actor, const DVector3& change, double ceildist, double flordist, uint32_t cliptype, int numtics);
+Collision move_sprite(DSWActor* actor, const DVector3& change, float ceildist, float flordist, uint32_t cliptype, int numtics);
+Collision move_missile(DSWActor* actor, const DVector3& change, float ceildist, float flordist, uint32_t cliptype, int numtics);
 
 
 DSWActor* DoPickTarget(DSWActor*, DAngle max_delta_ang, int skip_targets);
@@ -1487,8 +1487,8 @@ inline bool FAF_ConnectArea(sectortype* sect)
 
 void FAFhitscan(const DVector3& start, sectortype* sect, const DVector3& vect, HitInfo& hit, int32_t clipmask);
 bool FAFcansee(const DVector3& start, sectortype* sects, const DVector3& end, sectortype* secte);
-void FAFgetzrange(const DVector3& pos, sectortype* sect, double* hiz, Collision* ceilhit, double* loz, Collision* florhit, double clipdist, int32_t clipmask);
-void FAFgetzrangepoint(const DVector3& pos, sectortype* sect, double* hiz, Collision* ceilhit, double* loz, Collision* florhit);
+void FAFgetzrange(const DVector3& pos, sectortype* sect, float* hiz, Collision* ceilhit, float* loz, Collision* florhit, float clipdist, int32_t clipmask);
+void FAFgetzrangepoint(const DVector3& pos, sectortype* sect, float* hiz, Collision* ceilhit, float* loz, Collision* florhit);
 
 
 enum SoundType
@@ -1537,7 +1537,7 @@ constexpr int ACTORMOVETICS = (synctics << 1);
 constexpr int TICSPERMOVEMENT = synctics;
 
 
-constexpr double GETZRANGE_CLIP_ADJ = 0.5;
+constexpr float GETZRANGE_CLIP_ADJ = 0.5;
 
 
 extern int *lastpacket2clock;
@@ -1593,7 +1593,7 @@ void computergetinput(int snum,InputPacket *syn); // jplayer.c
 
 void SetupMirrorTiles(void);    // rooms.c
 bool FAF_Sector(sectortype* sect); // rooms.c
-double GetZadjustment(sectortype* sect,short hitag);  // rooms.c
+float GetZadjustment(sectortype* sect,short hitag);  // rooms.c
 
 void InitSetup(void);   // setup.c
 
@@ -1614,7 +1614,7 @@ void LoadGameDescr(short save_num, char *descr);    // save.c
 void SetRotatorActive(DSWActor* actor); // rotator.c
 
 bool VatorSwitch(short match, short setting); // vator.c
-void MoveSpritesWithSector(sectortype* sect,double z_amt,bool type);  // vator.c
+void MoveSpritesWithSector(sectortype* sect,float z_amt,bool type);  // vator.c
 void SetVatorActive(DSWActor*);   // vator.c
 
 void DoSpikeMatch(short match); // spike.c
@@ -1655,7 +1655,7 @@ extern int OrigCommPlayers;
 extern uint8_t PlayerGravity;
 extern short wait_active_check_offset;
 //extern short Zombies;
-extern double PlaxCeilGlobZadjust, PlaxFloorGlobZadjust;
+extern float PlaxCeilGlobZadjust, PlaxFloorGlobZadjust;
 extern bool left_foot;
 extern bool bosswasseen[3];
 extern DSWActor* BossSpriteNum[3];
@@ -1682,7 +1682,7 @@ struct GameInterface : public ::GameInterface
     std::pair<DVector3, DAngle> GetCoordinates() override;
     void UpdateSounds() override;
     void ErrorCleanup() override;
-    void GetInput(ControlInfo* const hidInput, double const scaleAdjust, InputPacket* input = nullptr) override;
+    void GetInput(ControlInfo* const hidInput, float const scaleAdjust, InputPacket* input = nullptr) override;
     void DrawBackground(void) override;
     void Ticker(void) override;
     void Render() override;
@@ -1693,12 +1693,12 @@ struct GameInterface : public ::GameInterface
 	void LevelCompleted(MapRecord *map, int skill) override;
 	void NextLevel(MapRecord *map, int skill) override;
 	void NewGame(MapRecord *map, int skill, bool) override;
-    bool DrawAutomapPlayer(const DVector2& mxy, const DVector2& cpos, const DAngle cang, const DVector2& xydim, const double czoom, double const interpfrac) override;
-    void WarpToCoords(double x, double y, double z, DAngle ang) override;
+    bool DrawAutomapPlayer(const DVector2& mxy, const DVector2& cpos, const DAngle cang, const DVector2& xydim, const float czoom, float const interpfrac) override;
+    void WarpToCoords(float x, float y, float z, DAngle ang) override;
     void ToggleThirdPerson() override;
     void SwitchCoopView() override;
-    void processSprites(tspriteArray& tsprites, const DVector3& view, DAngle viewang, double smoothRatio) override;
-    void UpdateCameras(double smoothratio) override;
+    void processSprites(tspriteArray& tsprites, const DVector3& view, DAngle viewang, float smoothRatio) override;
+    void UpdateCameras(float smoothratio) override;
     void EnterPortal(DCoreActor* viewer, int type) override;
     void LeavePortal(DCoreActor* viewer, int type) override;
     void ExitFromMenu() override;
@@ -1733,16 +1733,16 @@ struct PLAYER
     SECTOR_OBJECT* sop_remote;
     SECTOR_OBJECT* sop;  // will either be sop_remote or sop_control
 
-    double hiz, loz;
-    double opbob_amt, pbob_amt;
+    float hiz, loz;
+    float opbob_amt, pbob_amt;
 
     int jump_count, jump_speed;     // jumping
-    double z_speed;
+    float z_speed;
     int climb_ndx;
-    double p_ceiling_dist,p_floor_dist;
+    float p_ceiling_dist,p_floor_dist;
     sectortype* hi_sectp, *lo_sectp;
 
-    double circle_camera_dist;
+    float circle_camera_dist;
     DVector3 si; // save player interp position for PlayerSprite
     DAngle siang;
 
@@ -1767,7 +1767,7 @@ struct PLAYER
 
     // variables that do not fit into sprite structure
     PlayerAngles Angles;
-    double recoil_amt;
+    float recoil_amt;
     int16_t recoil_speed;
     int16_t recoil_ndx;
     DAngle recoil_ohorizoff, recoil_horizoff;
@@ -1785,7 +1785,7 @@ struct PLAYER
     int16_t WadeDepth;
     int16_t bob_ndx;
     int16_t bcnt; // bob count
-    double bob_z, obob_z;
+    float bob_z, obob_z;
 
     //Multiplayer variables
     InputPacket input;
@@ -1871,7 +1871,7 @@ struct PLAYER
     bool IsAI;                      // Is this and AI character?
     int16_t fta,ftq;                  // First time active and first time quote, for talking in multiplayer games
     int16_t NumFootPrints;            // Number of foot prints left to lay down
-    uint8_t WpnUziType;                // Toggle between single or double uzi's if you own 2.
+    uint8_t WpnUziType;                // Toggle between single or float uzi's if you own 2.
     uint8_t WpnShotgunType;            // Shotgun has normal or fully automatic fire
     uint8_t WpnShotgunAuto;            // 50-0 automatic shotgun rounds
     uint8_t WpnShotgunLastShell;       // Number of last shell fired
@@ -1888,16 +1888,16 @@ struct PLAYER
 
     char cookieQuote[256];          // Should be an FString but must be POD for now so that PLAYER remains POD.
     int cookieTime;
-    double height;
+    float height;
 
     uint8_t WpnReloadState;
 
-    double getViewHeightDiff()
+    float getViewHeightDiff()
     {
         return actor->viewzoffset + height;
     }
 
-    void posZset(const double val)
+    void posZset(const float val)
     {
         actor->spr.pos.Z = val - actor->viewzoffset;
     }
@@ -1979,7 +1979,7 @@ inline int16_t SP_TAG13(DSWActor* actor) { return int16_t(uint8_t(actor->spr.xof
 inline void SET_SP_TAG13(DSWActor* actor, int val) { actor->spr.xoffset = uint8_t(val); actor->spr.yoffset = uint8_t(val >> 8); }
 
 // actual Z for TOS and BOS - handles both WYSIWYG and old style
-inline double ActorZOfTop(DSWActor* actor)
+inline float ActorZOfTop(DSWActor* actor)
 {
     return GetSpriteZOfTop(&actor->spr);
 }
@@ -1989,7 +1989,7 @@ inline DVector3 ActorVectOfTop(DSWActor* actor)
     return DVector3(actor->spr.pos.XY(), ActorZOfTop(actor));
 }
 
-inline double ActorZOfBottom(DSWActor* actor)
+inline float ActorZOfBottom(DSWActor* actor)
 {
     return GetSpriteZOfBottom(&actor->spr);
 }
@@ -1999,7 +1999,7 @@ inline DVector3 ActorVectOfBottom(DSWActor* actor)
 	return DVector3(actor->spr.pos.XY(), ActorZOfBottom(actor));
 }
 
-inline double ActorZOfMiddle(DSWActor* actor)
+inline float ActorZOfMiddle(DSWActor* actor)
 {
 	return (ActorZOfTop(actor) + ActorZOfBottom(actor)) * 0.5;
 }
@@ -2009,13 +2009,13 @@ inline DVector3 ActorVectOfMiddle(DSWActor* actor)
     return DVector3(actor->spr.pos.XY(), ActorZOfMiddle(actor));
 }
 
-inline double ActorSizeZ(DSWActor* actor)
+inline float ActorSizeZ(DSWActor* actor)
 {
     auto tex = TexMan.GetGameTexture(actor->spr.spritetexture());
     return (tex->GetDisplayHeight() * actor->spr.scale.Y);
 }
 
-inline double ActorUpperZ(DSWActor* actor)
+inline float ActorUpperZ(DSWActor* actor)
 {
     return (ActorZOfTop(actor) + (ActorSizeZ(actor) * 0.25));
 }
@@ -2025,7 +2025,7 @@ inline DVector3 ActorUpperVect(DSWActor* actor)
     return DVector3(actor->spr.pos.XY(), ActorUpperZ(actor));
 }
 
-inline double ActorLowerZ(DSWActor* actor)
+inline float ActorLowerZ(DSWActor* actor)
 {
     return (ActorZOfBottom(actor) - (ActorSizeZ(actor) * 0.25));
 }
@@ -2036,7 +2036,7 @@ inline DVector3 ActorLowerVect(DSWActor* actor)
 }
 
 // Z size of top (TOS) and bottom (BOS) part of sprite
-inline double ActorSizeToTop(DSWActor* a)
+inline float ActorSizeToTop(DSWActor* a)
 {
     auto tex = TexMan.GetGameTexture(a->spr.spritetexture());
     return (ActorSizeZ(a) + tex->GetDisplayTopOffset()) * 0.5;
@@ -2054,7 +2054,7 @@ inline bool Facing(DSWActor* actor1, DSWActor* actor2)
 }
 
 // Given a z height and sprite return the correct y repeat value
-inline int GetRepeatFromHeight(DSWActor* sp, double zh)
+inline int GetRepeatFromHeight(DSWActor* sp, float zh)
 {
     auto tex = TexMan.GetGameTexture(sp->spr.spritetexture());
     return int(zh * 64) / int(tex->GetDisplayHeight());
@@ -2085,14 +2085,14 @@ inline void PlaySound(int num, DSWActor* actor, int flags, int channel = 8, ECha
 struct ANIM
 {
 	int animtype, animindex;
-	double goal;
-	double vel;
-	double vel_adj;
+	float goal;
+	float vel;
+	float vel_adj;
 	TObjPtr<DSWActor*> animactor;
 	ANIM_CALLBACKp callback;
 	SECTOR_OBJECT* callbackdata;    // only gets used in one place for this so having a proper type makes serialization easier.
 
-	double getValue()
+	float getValue()
 	{
 		switch (animtype)
 		{
@@ -2113,7 +2113,7 @@ struct ANIM
 		}
 	}
 
-    void setValue(double value)
+    void setValue(float value)
     {
         switch (animtype)
         {
@@ -2166,7 +2166,7 @@ struct USERSAVE
 // save player info when moving to a new level (shortened to only cover the fields that actually are copied back.)
 extern USERSAVE puser[MAX_SW_PLAYERS_REG];
 
-constexpr double JUMP_FACTOR = 1. / 256.;
+constexpr float JUMP_FACTOR = 1. / 256.;
 
 END_SW_NS
 

@@ -121,7 +121,7 @@ struct GameInterface : public ::GameInterface
 	bool CanSave() override;
 	std::pair<DVector3, DAngle> GetCoordinates() override;
 	void UpdateSounds() override;
-	void GetInput(ControlInfo* const hidInput, double const scaleAdjust, InputPacket* packet = nullptr) override;
+	void GetInput(ControlInfo* const hidInput, float const scaleAdjust, InputPacket* packet = nullptr) override;
 	void Ticker() override;
 	void DrawBackground() override;
 	void Startup() override;
@@ -130,14 +130,14 @@ struct GameInterface : public ::GameInterface
 	void NewGame(MapRecord* sng, int skill, bool) override;
 	void NextLevel(MapRecord* map, int skill) override;
 	void LevelCompleted(MapRecord* map, int skill) override;
-	bool DrawAutomapPlayer(const DVector2& mxy, const DVector2& cpos, const DAngle cang, const DVector2& xydim, const double czoom, double const interpfrac) override;
-	DAngle playerPitchMin() override { return DAngle::fromDeg(54.575); }
-	DAngle playerPitchMax() override { return DAngle::fromDeg(-43.15); }
-	void WarpToCoords(double x, double y, double z, DAngle a) override;
+	bool DrawAutomapPlayer(const DVector2& mxy, const DVector2& cpos, const DAngle cang, const DVector2& xydim, const float czoom, float const interpfrac) override;
+	DAngle playerPitchMin() override { return DAngle::fromDeg(54.575f); }
+	DAngle playerPitchMax() override { return DAngle::fromDeg(-43.15f); }
+	void WarpToCoords(float x, float y, float z, DAngle a) override;
 	void ToggleThirdPerson() override;
 	void SwitchCoopView() override;
 	void ToggleShowWeapon() override;
-	void processSprites(tspriteArray& tsprites, const DVector3& view, DAngle viewang, double interpfrac) override;
+	void processSprites(tspriteArray& tsprites, const DVector3& view, DAngle viewang, float interpfrac) override;
 	void EnterPortal(DCoreActor* viewer, int type) override;
 	void LeavePortal(DCoreActor* viewer, int type) override;
 	void LoadTextureInfo(TilesetBuildInfo& info) override;

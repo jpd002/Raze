@@ -325,8 +325,8 @@ FFont::FFont (const char *name, const char *nametemplate, const char *filetempla
 				auto pic = *charlump;
 				if (pic != nullptr)
 				{
-					double fheight = pic->GetDisplayHeight();
-					double yoffs = pic->GetDisplayTopOffset();
+					float fheight = pic->GetDisplayHeight();
+					float yoffs = pic->GetDisplayTopOffset();
 
 					int height = int(fheight + abs(yoffs) + 0.5);
 					if (height > fontheight)
@@ -672,9 +672,9 @@ static int compare (const void *arg1, const void *arg2)
 //
 //==========================================================================
 
-int FFont::GetLuminosity (uint32_t *colorsused, TArray<double> &Luminosity, int* minlum, int* maxlum)
+int FFont::GetLuminosity (uint32_t *colorsused, TArray<float> &Luminosity, int* minlum, int* maxlum)
 {
-	double min, max, diver;
+	float min, max, diver;
 
 	Luminosity.Resize(256);
 	Luminosity[0] = 0.0; // [BL] Prevent uninitalized memory
@@ -865,12 +865,12 @@ int FFont::GetCharWidth (int code) const
 //
 //==========================================================================
 
-double GetBottomAlignOffset(FFont *font, int c)
+float GetBottomAlignOffset(FFont *font, int c)
 {
 	int w;
 	auto tex_zero = font->GetChar('0', CR_UNDEFINED, &w);
 	auto texc = font->GetChar(c, CR_UNDEFINED, &w);
-	double offset = 0;
+	float offset = 0;
 	if (texc) offset += texc->GetDisplayTopOffset();
 	if (tex_zero) offset += -tex_zero->GetDisplayTopOffset() + tex_zero->GetDisplayHeight();
 	return offset;

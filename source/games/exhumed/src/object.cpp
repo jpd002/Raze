@@ -58,7 +58,7 @@ struct TrailPoint
 struct Bob
 {
     sectortype* pSector;
-    double Z;
+    float Z;
     uint8_t nPhase;
     uint8_t field_3;
     uint16_t sBobID;
@@ -81,7 +81,7 @@ struct Elev
     int nSpeed2;
     int16_t nCountZOffsets; // count of items in zOffsets
     int16_t nCurZOffset;
-    double zOffsets[8]; // different Z offsets
+    float zOffsets[8]; // different Z offsets
     int16_t nRunRec;
 };
 
@@ -400,11 +400,11 @@ DExhumedActor* BuildWallSprite(sectortype* pSector)
 
 DExhumedActor* FindWallSprites(sectortype* pSector)
 {
-    double min_x = DBL_MAX;
-    double min_y = DBL_MAX;
+    float min_x = DBL_MAX;
+    float min_y = DBL_MAX;
 
-    double max_x = -DBL_MAX;
-    double max_y = -DBL_MAX;
+    float max_x = -DBL_MAX;
+    float max_y = -DBL_MAX;
 
 	for (auto& wal : pSector->walls)
     {
@@ -439,8 +439,8 @@ DExhumedActor* FindWallSprites(sectortype* pSector)
         {
             if ((actor->spr.cstat & (CSTAT_SPRITE_ALIGNMENT_WALL | CSTAT_SPRITE_ONE_SIDE)) == (CSTAT_SPRITE_ALIGNMENT_WALL | CSTAT_SPRITE_ONE_SIDE))
             {
-                double act_x = actor->spr.pos.X;
-                double act_y = actor->spr.pos.Y;
+                float act_x = actor->spr.pos.X;
+                float act_y = actor->spr.pos.Y;
 
                 if ((act_x >= min_x) && (max_x >= act_x) && (act_y >= min_y) && (act_y <= max_y))
                 {
@@ -503,7 +503,7 @@ int BuildElevF(int nChannel, sectortype* pSector, DExhumedActor* nWallSprite, in
 
         Elevator[ElevCount].nCountZOffsets++;
 
-        Elevator[ElevCount].zOffsets[nVal] = va_arg(zlist, double);
+        Elevator[ElevCount].zOffsets[nVal] = va_arg(zlist, float);
     }
     va_end(zlist);
 
@@ -556,7 +556,7 @@ int BuildElevC(int arg1, int nChannel, sectortype* pSector, DExhumedActor* nWall
 
         Elevator[ElevCount].nCountZOffsets++;
 
-        Elevator[ElevCount].zOffsets[nVal] = va_arg(zlist, double);
+        Elevator[ElevCount].zOffsets[nVal] = va_arg(zlist, float);
     }
     va_end(zlist);
 
@@ -569,9 +569,9 @@ int BuildElevC(int arg1, int nChannel, sectortype* pSector, DExhumedActor* nWall
 //
 //---------------------------------------------------------------------------
 
-static double LongSeek(double* pZVal, double a2, double a3, double a4)
+static float LongSeek(float* pZVal, float a2, float a3, float a4)
 {
-    double v4 = a2 - *pZVal;
+    float v4 = a2 - *pZVal;
 
     if (v4 < 0)
     {
@@ -590,7 +590,7 @@ static double LongSeek(double* pZVal, double a2, double a3, double a4)
     return v4;
 }
 
-static inline DVector2 LongSeek(DVector2& pZVals, const DVector2& a2, double a3, double a4)
+static inline DVector2 LongSeek(DVector2& pZVals, const DVector2& a2, float a3, float a4)
 {
     return DVector2(LongSeek(&pZVals.X, a2.X, a3, a4), LongSeek(&pZVals.Y, a2.Y, a3, a4));
 }
@@ -607,7 +607,7 @@ int CheckSectorSprites(sectortype* pSector, int nVal)
 
     if (nVal)
     {
-        double nZDiff = pSector->floorz - pSector->ceilingz;
+        float nZDiff = pSector->floorz - pSector->ceilingz;
 
         ExhumedSectIterator it(pSector);
         while (auto pActor= it.Next())
@@ -652,16 +652,16 @@ int CheckSectorSprites(sectortype* pSector, int nVal)
 //
 //---------------------------------------------------------------------------
 
-void MoveSectorSprites(sectortype* pSector, double z)
+void MoveSectorSprites(sectortype* pSector, float z)
 {
-    double newz = pSector->floorz;
-    double oldz = newz - z;
-    double minz = min(newz, oldz);
-    double maxz = max(newz, oldz);
+    float newz = pSector->floorz;
+    float oldz = newz - z;
+    float minz = min(newz, oldz);
+    float maxz = max(newz, oldz);
     ExhumedSectIterator it(pSector);
     while (auto pActor = it.Next())
     {
-        double actz = pActor->spr.pos.Z;
+        float actz = pActor->spr.pos.Z;
         if ((pActor->spr.statnum != 200 && actz > minz - zmaptoworld && actz < maxz + zmaptoworld) || pActor->spr.statnum >= 900)
         {
 			pActor->spr.pos.Z = newz;
@@ -796,16 +796,16 @@ void AIElev::Tick(RunListEvent* ev)
     auto pSector =Elevator[nElev].pSector;
     DExhumedActor* pElevSpr = Elevator[nElev].pActor;
 
-    double move = 0; // initialise to *something*
+    float move = 0; // initialise to *something*
 
     if (var_18 & 0x2)
     {
         int nZOffset = Elevator[nElev].nCurZOffset;
-        double nZVal = Elevator[nElev].zOffsets[nZOffset];
+        float nZVal = Elevator[nElev].zOffsets[nZOffset];
 
         StartInterpolation(pSector, Interp_Sect_Floorz);
-        double fz = pSector->floorz;
-        double nVal = LongSeek(&fz, nZVal, Elevator[nElev].nSpeed1 / 256., Elevator[nElev].nSpeed2 / 256.);
+        float fz = pSector->floorz;
+        float nVal = LongSeek(&fz, nZVal, Elevator[nElev].nSpeed1 / 256., Elevator[nElev].nSpeed2 / 256.);
         pSector->floorz = fz;
         move = nVal;
 
@@ -840,13 +840,13 @@ void AIElev::Tick(RunListEvent* ev)
     else
     {
         // loc_20FC3:
-        double ceilZ = pSector->ceilingz;
+        float ceilZ = pSector->ceilingz;
 
         int nZOffset = Elevator[nElev].nCurZOffset;
-        double zVal = Elevator[nElev].zOffsets[nZOffset];
+        float zVal = Elevator[nElev].zOffsets[nZOffset];
 
         StartInterpolation(pSector, Interp_Sect_Ceilingz);
-        double nVal = LongSeek(&ceilZ, zVal, Elevator[nElev].nSpeed1 / 256., Elevator[nElev].nSpeed2 / 256.);
+        float nVal = LongSeek(&ceilZ, zVal, Elevator[nElev].nSpeed1 / 256., Elevator[nElev].nSpeed2 / 256.);
         move = nVal;
 
         if (!nVal)
@@ -1834,7 +1834,7 @@ void AIEnergyBlock::RadialDamage(RunListEvent* ev)
         return;
     }
 
-    double nFloorZ = pSector->floorz;
+    float nFloorZ = pSector->floorz;
 
     pSector->setfloorz(pActor->spr.pos.Z);
 	pActor->spr.pos.Z--;
@@ -2215,7 +2215,7 @@ void DoDrips()
     {
         sBob[i].nPhase += 4;
 
-        double amount = BobVal(sBob[i].nPhase << 3) * 4.;
+        float amount = BobVal(sBob[i].nPhase << 3) * 4.;
         auto pSector =sBob[i].pSector;
 
         if (sBob[i].field_3)
@@ -2224,7 +2224,7 @@ void DoDrips()
         }
         else
         {
-            double nFloorZ = pSector->floorz;
+            float nFloorZ = pSector->floorz;
             pSector->setfloorz(amount + sBob[i].Z);
             MoveSectorSprites(pSector, pSector->floorz - nFloorZ);
         }
@@ -2288,7 +2288,7 @@ void AddSectorBob(sectortype* pSector, int nHitag, int bx)
     auto nBobs = sBob.Reserve(1);
     sBob[nBobs].field_3 = bx;
 
-    double Z;
+    float Z;
 
     if (bx == 0) {
         Z = pSector->floorz;
@@ -2580,7 +2580,7 @@ void PostProcess()
     {
         for (auto& sect: sector)
         {
-            double maxval = 300000;
+            float maxval = 300000;
 
             if (sect.Speed && sect.Depth && !(sect.Flag & kSectLava))
             {
@@ -2595,8 +2595,8 @@ void PostProcess()
 
                     if (&sect != &sectj && sectj.Speed && !(sect.Flag & kSectLava))
                     {
-						double xVal = abs(sect.walls[0].pos.X - sectj.walls[0].pos.X);
-						double yVal = abs(sect.walls[0].pos.Y - sectj.walls[0].pos.Y);
+						float xVal = abs(sect.walls[0].pos.X - sectj.walls[0].pos.X);
+						float yVal = abs(sect.walls[0].pos.Y - sectj.walls[0].pos.Y);
 
                         if (xVal < 15000/16. && yVal < 15000/16. && (xVal + yVal < maxval))
                         {

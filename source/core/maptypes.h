@@ -36,18 +36,18 @@ Prepared for public release: 03/21/2003 - Charlie Wiederhold, 3D Realms
 void MarkVerticesForSector(int sector);
 
 // Build conversion factors
-static constexpr double zmaptoworld = (1 / 256.);	// this for necessary conversions to convert map data to floating point representation.
-static constexpr double maptoworld = (1 / 16.);	// this for necessary conversions to convert map data to floating point representation.
-static constexpr double REPEAT_SCALE = (1 / 64.);	// map's 'repeat' values use 2.6 fixed point.
-static constexpr double INV_REPEAT_SCALE = 64;
+static constexpr float zmaptoworld = (1 / 256.);	// this for necessary conversions to convert map data to floating point representation.
+static constexpr float maptoworld = (1 / 16.);		// this for necessary conversions to convert map data to floating point representation.
+static constexpr float REPEAT_SCALE = (1 / 64.);	// map's 'repeat' values use 2.6 fixed point.
+static constexpr float INV_REPEAT_SCALE = 64;
 
 // These are refactoring markers that should be eliminated.
-static constexpr double zinttoworld = (1 / 256.); // this is for conversions needed to make floats coexist with existing code.
-static constexpr double inttoworld = (1 / 16.); // this is for conversions needed to make floats coexist with existing code.
-static constexpr double zworldtoint = 256.;
-static constexpr double worldtoint = 16.;
-static constexpr double scaletoint = 64;		// refactoring marker of the stuff above
-static constexpr double inttoscale = (1/64.);	// map's 'repeat' values use 2.6 fixed point.
+static constexpr float zinttoworld = (1 / 256.); // this is for conversions needed to make floats coexist with existing code.
+static constexpr float inttoworld = (1 / 16.); // this is for conversions needed to make floats coexist with existing code.
+static constexpr float zworldtoint = 256.;
+static constexpr float worldtoint = 16.;
+static constexpr float scaletoint = 64;			// refactoring marker of the stuff above
+static constexpr float inttoscale = (1/64.);	// map's 'repeat' values use 2.6 fixed point.
 
 //=============================================================================
 //
@@ -265,7 +265,7 @@ struct walltype
 	// Blood is the only game which extends the wall struct.
 	Blood::XWALL* _xw;
 	DVector2 baseWall;
-	double length; // cached value to avoid calling sqrt repeatedly.
+	float length; // cached value to avoid calling sqrt repeatedly.
 
 	int xpan() const { return int(xpan_); }
 	int ypan() const { return int(ypan_); }
@@ -282,7 +282,7 @@ struct walltype
 	DVector2 center() const { return(point2Wall()->pos + pos) / 2; }
 	DAngle normalAngle() const { return delta().Angle() + DAngle90; }
 	bool twoSided() const { return nextsector >= 0; }
-	double Length();
+	float Length();
 	void calcLength();	// this is deliberately not inlined and stored in a file where it can't be found at compile time.
 	void move(const DVector2& vec)
 	{
@@ -326,18 +326,18 @@ struct sectortype
 	// Debug hack job for finding all places where ceilingz and floorz get written to.
 	// If the engine does not compile with this block on, we got a problem.
 	// Since this is only for compile verification there's no need to provide a working implementation.
-	const double floorz, ceilingz;
-	sectortype(double a = 0, double b = 0) : ceilingz(a), floorz(b) {}
+	const float floorz, ceilingz;
+	sectortype(float a = 0, float b = 0) : ceilingz(a), floorz(b) {}
 
 
 #else
 	// Do not change directly!
-	double floorz, ceilingz;
+	float floorz, ceilingz;
 
-	void setceilingz(double cc, bool temp = false);
-	void setfloorz(double cc, bool temp = false);
-	void addceilingz(double cc, bool temp = false);
-	void addfloorz(double cc, bool temp = false);
+	void setceilingz(float cc, bool temp = false);
+	void setfloorz(float cc, bool temp = false);
+	void addceilingz(float cc, bool temp = false);
+	void addfloorz(float cc, bool temp = false);
 
 	void setzfrommap(int c, int f)
 	{
@@ -392,10 +392,10 @@ struct sectortype
 			BLD_NS::XSECTOR* _xs;
 			TObjPtr<DCoreActor*> upperLink;
 			TObjPtr<DCoreActor*> lowerLink;
-			double baseFloor;
-			double baseCeil;
-			double velFloor;
-			double velCeil;
+			float baseFloor;
+			float baseCeil;
+			float velFloor;
+			float velCeil;
 			uint8_t slopewallofs; // This was originally the repurposed filler byte.
 		};
 		struct // Exhumed
@@ -403,7 +403,7 @@ struct sectortype
 			sectortype* pSoundSect;
 			sectortype* pAbove;
 			sectortype* pBelow;
-			double Depth;
+			float Depth;
 			short Sound;
 			short Flag;
 			short Damage;
@@ -623,7 +623,7 @@ inline void walltype::moved()
 	sectorp()->dirty = EDirty::AllDirty;
 }
 
-inline double walltype::Length()
+inline float walltype::Length()
 {
 	if ((lengthflags & 1) || (point2Wall()->lengthflags & 2))
 	{
@@ -635,22 +635,22 @@ inline double walltype::Length()
 
 #ifndef SECTOR_HACKJOB
 
-inline void sectortype::setceilingz(double cc, bool temp)
+inline void sectortype::setceilingz(float cc, bool temp)
 {
 	ceilingz = cc;
 	if (!temp) MarkVerticesForSector(sector.IndexOf(this));
 }
-inline void sectortype::setfloorz(double cc, bool temp)
+inline void sectortype::setfloorz(float cc, bool temp)
 {
 	floorz = cc;
 	if (!temp) MarkVerticesForSector(sector.IndexOf(this));
 }
-inline void sectortype::addceilingz(double cc, bool temp)
+inline void sectortype::addceilingz(float cc, bool temp)
 {
 	ceilingz += cc;
 	if (!temp) MarkVerticesForSector(sector.IndexOf(this));
 }
-inline void sectortype::addfloorz(double cc, bool temp)
+inline void sectortype::addfloorz(float cc, bool temp)
 {
 	floorz += cc;
 	if (!temp) MarkVerticesForSector(sector.IndexOf(this));
@@ -715,9 +715,9 @@ void PostProcessLevel(const uint8_t* checksum, const FString& mapname, SpawnSpri
 // should only be used to read angles from map-loaded data (for proper documentation)
 constexpr DAngle mapangle(int mapang)
 {
-	return DAngle::fromBuild(mapang);
+	return DAngle::fromBuild((float)mapang);
 }
-inline DAngle maphoriz(double maphoriz)
+inline DAngle maphoriz(float maphoriz)
 {
 	return DAngle::fromRad(g_atan2(maphoriz, 128.));
 }

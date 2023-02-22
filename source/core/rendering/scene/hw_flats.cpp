@@ -73,7 +73,7 @@ void HWFlat::SetupLights(HWDrawInfo *di, FLightNode * node, FDynLightData &light
 
 		// we must do the side check here because gl_GetLight needs the correct plane orientation
 		// which we don't have for Legacy-style 3D-floors
-		double planeh = plane.plane.ZatPoint(light->Pos);
+		float planeh = plane.plane.ZatPoint(light->Pos);
 		if ((planeh<light->Z() && ceiling) || (planeh>light->Z() && !ceiling))
 		{
 			node = node->nextLight;
@@ -123,7 +123,7 @@ void HWFlat::MakeVertices(HWDrawInfo* di)
 	else
 	{
 		DVector2 pos[4];
-		double ofsz[4];
+		float ofsz[4];
 		auto cstat = Sprite->cstat;
 		if (tspriteGetSlope(Sprite)) cstat &= ~CSTAT_SPRITE_YFLIP;	// NBlood doesn't y-flip slope sprites.
 		GetFlatSpritePosition(Sprite, Sprite->pos.XY(), pos, ofsz, true);
@@ -432,7 +432,7 @@ void HWFlat::ProcessFlatSprite(HWDrawInfo* di, tspritetype* sprite, sectortype* 
 	{
 		DVector2 pos = { di->Viewpoint.Pos.X, -di->Viewpoint.Pos.Y };
 
-		double myz = !(sprite->clipdist & TSPR_SLOPESPRITE) ? z : -spriteGetZOfSlopef(sprite, pos, tspriteGetSlope(sprite));
+		float myz = !(sprite->clipdist & TSPR_SLOPESPRITE) ? z : -spriteGetZOfSlopef(sprite, pos, tspriteGetSlope(sprite));
 		if ((di->Viewpoint.Pos.Z < myz) == ((sprite->cstat & CSTAT_SPRITE_YFLIP) == 0))
 			return;
 	}

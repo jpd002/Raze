@@ -79,7 +79,7 @@ USERSAVE puser[MAX_SW_PLAYERS_REG];
 bool NightVision = false;
 extern int FinishAnim;
 
-constexpr double INPUT_SCALE = (105. / 64.); // Old code used << 6 to get a Q14.18 value
+constexpr float INPUT_SCALE = (105. / 64.); // Old code used << 6 to get a Q14.18 value
 
 // the smaller the number the slower the going
 #define PLAYER_RUN_FRICTION (50000L)
@@ -95,9 +95,9 @@ constexpr double INPUT_SCALE = (105. / 64.); // Old code used << 6 to get a Q14.
 #define PLAYER_DIVE_FRICTION (49152L)
 
 // only for z direction climbing
-constexpr double PLAYER_CLIMB_FRICTION = FixedToFloat(45056);
-constexpr double TANK_FRICTION = FixedToFloat(53248);
-constexpr double PLAYER_SLIDE_FRICTION = FixedToFloat(53248);
+constexpr float PLAYER_CLIMB_FRICTION = FixedToFloat(45056);
+constexpr float TANK_FRICTION = FixedToFloat(53248);
+constexpr float PLAYER_SLIDE_FRICTION = FixedToFloat(53248);
 
 #define JUMP_STUFF 4
 
@@ -1156,7 +1156,7 @@ DSWActor* DoPickTarget(DSWActor* actor, DAngle max_delta_ang, int skip_targets)
     int16_t* shp;
     unsigned ndx;
     TARGET_SORT* ts;
-    double ang_weight, dist_weight;
+    float ang_weight, dist_weight;
 
     // !JIM! Watch out for max_delta_ang of zero!
     if (max_delta_ang == nullAngle) max_delta_ang = minAngle;
@@ -1184,7 +1184,7 @@ DSWActor* DoPickTarget(DSWActor* actor, DAngle max_delta_ang, int skip_targets)
             }
 
             // Only look at closest ones
-            double dist = (actor->spr.pos - itActor->spr.pos).Length();
+            float dist = (actor->spr.pos - itActor->spr.pos).Length();
             if (dist > PICK_DIST)
                 continue;
 
@@ -1209,9 +1209,9 @@ DSWActor* DoPickTarget(DSWActor* actor, DAngle max_delta_ang, int skip_targets)
             DVector3 apos = actor->spr.pos;
             DVector2 ipos = itActor->spr.pos.XY();
 
-            double ezh = ActorZOfTop(itActor) + (ActorSizeZ(itActor) * 0.25);
-            double ezhm = ActorZOfTop(itActor) + (ActorSizeZ(itActor) * 0.5);
-            double ezhl = ActorZOfBottom(itActor) - (ActorSizeZ(itActor) * 0.25);
+            float ezh = ActorZOfTop(itActor) + (ActorSizeZ(itActor) * 0.25);
+            float ezhm = ActorZOfTop(itActor) + (ActorSizeZ(itActor) * 0.5);
+            float ezhl = ActorZOfBottom(itActor) - (ActorSizeZ(itActor) * 0.25);
 
             if (actor->hasU() && actor->user.PlayerP)
                 apos.Z = actor->user.PlayerP->actor->getOffsetZ();
@@ -1529,7 +1529,7 @@ void UpdatePlayerSpriteAngle(PLAYER* pp)
 //
 //---------------------------------------------------------------------------
 
-void DoPlayerTurnVehicle(PLAYER* pp, DAngle& plyaw, float avel, double zz, double floordist)
+void DoPlayerTurnVehicle(PLAYER* pp, DAngle& plyaw, float avel, float zz, float floordist)
 {
     SECTOR_OBJECT* sop = pp->sop;
 
@@ -1675,9 +1675,9 @@ void DoPlayerSlopeTilting(PLAYER* pp)
 
 void DoPlayerBob(PLAYER* pp)
 {
-    double amt;
+    float amt;
 
-    double dist = (pp->actor->spr.pos.XY() - pp->actor->opos.XY()).Length();
+    float dist = (pp->actor->spr.pos.XY() - pp->actor->opos.XY()).Length();
 
     if (dist > 32)
         dist = 0;
@@ -1710,7 +1710,7 @@ void DoPlayerBob(PLAYER* pp)
 //
 //---------------------------------------------------------------------------
 
-void DoPlayerBeginRecoil(PLAYER* pp, double pix_amt)
+void DoPlayerBeginRecoil(PLAYER* pp, float pix_amt)
 {
     pp->Flags |= (PF_RECOIL);
 
@@ -1749,7 +1749,7 @@ void DoPlayerRecoil(PLAYER* pp)
 //
 //---------------------------------------------------------------------------
 
-void DoPlayerSpriteBob(PLAYER* pp, double player_height, double bobamt, short bob_speed)
+void DoPlayerSpriteBob(PLAYER* pp, float player_height, float bobamt, short bob_speed)
 {
     pp->bob_ndx = (pp->bob_ndx + (synctics << bob_speed)) & 2047;
     pp->pbob_amt = bobamt * BobVal(pp->bob_ndx);
@@ -1765,7 +1765,7 @@ void UpdatePlayerUnderSprite(PLAYER* pp)
 {
     DSWActor* act_over = pp->actor;
 
-    double water_level_z, zdiff;
+    float water_level_z, zdiff;
     bool above_water, in_dive_area;
 
     if (Prediction)
@@ -1976,12 +1976,12 @@ void PlayerCheckValidMove(PLAYER* pp)
 //
 //---------------------------------------------------------------------------
 
-void PlayerSectorBound(PLAYER* pp, double amt)
+void PlayerSectorBound(PLAYER* pp, float amt)
 {
     if (!pp->insector())
         return;
 
-    double cz,fz;
+    float cz,fz;
 
     // player should never go into a sector
 
@@ -2234,7 +2234,7 @@ void DoPlayerSectorUpdatePreMove(PLAYER* pp)
 void DoPlayerSectorUpdatePostMove(PLAYER* pp)
 {
     auto sect = pp->cursector;
-    double fz,cz;
+    float fz,cz;
 
     // need to do updatesectorz if in connect area
     if (sect != nullptr && FAF_ConnectArea(sect))
@@ -2318,8 +2318,8 @@ void DoTankTreads(PLAYER* pp)
     if (Prediction)
         return;
 
-    double vel = pp->vect.Length() * 64;
-	double dot =  pp->vect.dot(pp->actor->spr.Angles.Yaw.ToVector());
+    float vel = pp->vect.Length() * 64;
+	float dot =  pp->vect.dot(pp->actor->spr.Angles.Yaw.ToVector());
     if (dot < 0)
         reverse = true;
 
@@ -2465,7 +2465,7 @@ void DriveCrush(PLAYER* pp, DVector2* quad)
             if (actor->spr.pos.Z < sop->crush_z)
                 continue;
 
-			double const vel = pp->vect.Length() * 8;
+			float const vel = pp->vect.Length() * 8;
             if (vel < 70.3125)
             {
                 DoActorBeginSlide(actor, pp->vect.Angle(), vel);
@@ -2612,7 +2612,7 @@ void DoPlayerMoveVehicle(PLAYER* pp)
         pp->vect.X = pp->vect.Y = 0;
 
     pp->lastcursector = pp->cursector;
-    double zz = pp->actor->getOffsetZ() + 10;
+    float zz = pp->actor->getOffsetZ() + 10;
 
     DVector2 pos[4], opos[4];
 
@@ -2640,7 +2640,7 @@ void DoPlayerMoveVehicle(PLAYER* pp)
     OperateSectorObject(pp->sop, pp->actor->spr.Angles.Yaw, { MAXSO, MAXSO });
     pp->setcursector(pp->sop->op_main_sector); // for speed
 
-    double floordist = abs(zz - pp->sop->floor_loz);
+    float floordist = abs(zz - pp->sop->floor_loz);
 
 
     if (RectClip)
@@ -2658,7 +2658,7 @@ void DoPlayerMoveVehicle(PLAYER* pp)
 
         if (!ret)
         {
-			double vel = pp->vect.Length() * 1024;
+			float vel = pp->vect.Length() * 1024;
 
             if (vel > 13000)
             {
@@ -2719,7 +2719,7 @@ void DoPlayerMoveVehicle(PLAYER* pp)
 
         if (actor->user.coll.type != kHitNone)
         {
-			double vel = pp->vect.Length() * 1024;
+			float vel = pp->vect.Length() * 1024;
 
             if (vel > 13000)
             {
@@ -2870,12 +2870,12 @@ void DoPlayerBeginForceJump(PLAYER* pp)
 //
 //---------------------------------------------------------------------------
 
-bool PlayerCeilingHit(PLAYER* pp, double zlimit)
+bool PlayerCeilingHit(PLAYER* pp, float zlimit)
 {
     return (pp->actor->getOffsetZ() < zlimit);
 }
 
-bool PlayerFloorHit(PLAYER* pp, double zlimit)
+bool PlayerFloorHit(PLAYER* pp, float zlimit)
 {
     return (pp->actor->getOffsetZ() > zlimit);
 }
@@ -2890,7 +2890,7 @@ void DoPlayerJump(PLAYER* pp)
 {
     short i;
 
-    // reset flag key for double jumps
+    // reset flag key for float jumps
     if (!(pp->input.actions & SB_JUMP))
     {
         pp->KeyPressBits |= SB_JUMP;
@@ -3070,9 +3070,9 @@ void StackedWaterSplash(PLAYER* pp)
 void DoPlayerFall(PLAYER* pp)
 {
     short i;
-    double depth;
+    float depth;
 
-    // reset flag key for double jumps
+    // reset flag key for float jumps
     if (!(pp->input.actions & SB_JUMP))
     {
         pp->KeyPressBits |= SB_JUMP;
@@ -3113,12 +3113,12 @@ void DoPlayerFall(PLAYER* pp)
         if (depth == 0)
             depth = pp->WadeDepth;
 
-        double recoil_amnt;
+        float recoil_amnt;
 
         if (depth > 20)
             recoil_amnt = 0;
         else
-            recoil_amnt = min(pp->jump_speed * 6 * JUMP_FACTOR, 35.);
+            recoil_amnt = min(pp->jump_speed * 6 * JUMP_FACTOR, 35.f);
 
         // need a test for head hits a sloped ceiling while falling
         // if player gets to close the Ceiling while Falling
@@ -3268,8 +3268,8 @@ void DoPlayerClimb(PLAYER* pp)
     if (abs(pp->vect.X) < 0.05 && abs(pp->vect.Y) < 0.05)
         pp->vect.X = pp->vect.Y = 0;
 
-    double climbVel = pp->vect.Length();
-    double dot = pp->vect.dot(pp->actor->spr.Angles.Yaw.ToVector());
+    float climbVel = pp->vect.Length();
+    float dot = pp->vect.dot(pp->actor->spr.Angles.Yaw.ToVector());
     if (dot < 0)
         climbVel = -climbVel;
 
@@ -3289,7 +3289,7 @@ void DoPlayerClimb(PLAYER* pp)
         // move player to center of ladder
         for (i = synctics; i; i--)
         {
-            const double ADJ_AMT = 0.5;
+            const float ADJ_AMT = 0.5;
 
             auto ppos = plActor->spr.pos.XY();
             // player
@@ -3455,7 +3455,7 @@ int DoPlayerWadeSuperJump(PLAYER* pp)
 {
     HitInfo hit{};
     unsigned i;
-    double zh = pp->cursector->floorz - pp->WadeDepth - 2;
+    float zh = pp->cursector->floorz - pp->WadeDepth - 2;
 
     if (Prediction) return false;   // !JIM! 8/5/97 Teleporter FAFhitscan SuperJump bug.
 
@@ -3469,8 +3469,8 @@ int DoPlayerWadeSuperJump(PLAYER* pp)
 
             if (hit.hitSector != nullptr && abs(hit.hitSector->floorz - pp->actor->getOffsetZ()) < 50)
             {
-				double dist = (pp->actor->spr.pos.XY() - hit.hitpos.XY()).Length();
-				double comp = (pp->actor->clipdist + 16);
+				float dist = (pp->actor->spr.pos.XY() - hit.hitpos.XY()).Length();
+				float comp = (pp->actor->clipdist + 16);
                 if (dist < comp)
                     return true;
             }
@@ -3528,7 +3528,7 @@ void DoPlayerBeginCrawl(PLAYER* pp)
 //
 //---------------------------------------------------------------------------
 
-bool PlayerFallTest(PLAYER* pp, double player_height)
+bool PlayerFallTest(PLAYER* pp, float player_height)
 {
     // If the floor is far below you, fall hard instead of adjusting height
     if (abs(pp->actor->getOffsetZ() - pp->loz) > player_height + PLAYER_FALL_HEIGHTF)
@@ -3748,7 +3748,7 @@ void DoPlayerFly(PLAYER* pp)
 DSWActor* FindNearSprite(DSWActor* actor, short stat)
 {
     int fs;
-    double dist, near_dist = 937.5;
+    float dist, near_dist = 937.5;
     DSWActor* near_fp = nullptr;
 
 
@@ -3789,7 +3789,7 @@ bool PlayerOnLadder(PLAYER* pp)
 
     neartag(pp->actor->getPosWithOffsetZ(), pp->cursector, pp->actor->spr.Angles.Yaw, near, 64. + 48., NT_Lotag | NT_Hitag);
 
-    double dir = pp->vect.dot(pp->actor->spr.Angles.Yaw.ToVector());
+    float dir = pp->vect.dot(pp->actor->spr.Angles.Yaw.ToVector());
 
     if (dir < 0)
         return false;
@@ -5121,7 +5121,7 @@ void DoPlayerOperateMatch(PLAYER* pp, bool starting)
 void DoPlayerBeginOperate(PLAYER* pp)
 {
     SECTOR_OBJECT* sop;
-    double cz, fz;
+    float cz, fz;
     int i;
 
     sop = PlayerOnObject(pp->cursector);
@@ -5224,7 +5224,7 @@ void DoPlayerBeginOperate(PLAYER* pp)
 
 void DoPlayerBeginRemoteOperate(PLAYER* pp, SECTOR_OBJECT* sop)
 {
-    double cz, fz;
+    float cz, fz;
     int i;
 
     pp->sop_remote = pp->sop = pp->sop_control = sop;
@@ -5525,7 +5525,7 @@ void DoPlayerDeathJump(PLAYER* pp)
 
 void DoPlayerDeathFall(PLAYER* pp)
 {
-    double loz;
+    float loz;
 
     for (int i = 0; i < synctics; i++)
     {
@@ -5699,8 +5699,8 @@ enum
     PLAYER_DEATH_HORIZ_FALL_VALUE = -50
 };
 
-constexpr DAngle PLAYER_DEATH_HORIZ_UP_VALUEF = DAngle::fromDeg(-22.922);
-constexpr DAngle PLAYER_DEATH_HORIZ_JUMP_VALUEF = DAngle::fromDeg(-21.33686);
+constexpr DAngle PLAYER_DEATH_HORIZ_UP_VALUEF = DAngle::fromDeg(-22.922f);
+constexpr DAngle PLAYER_DEATH_HORIZ_JUMP_VALUEF = DAngle::fromDeg(-21.33686f);
 constexpr DAngle PLAYER_DEATH_HORIZ_FALL_VALUEF = -PLAYER_DEATH_HORIZ_JUMP_VALUEF;
 
 void DoPlayerBeginDie(PLAYER* pp)
@@ -5912,7 +5912,7 @@ void DoPlayerBeginDie(PLAYER* pp)
 //
 //---------------------------------------------------------------------------
 
-static inline void DoPlayerDeathHoriz(PLAYER* pp, const DAngle target, const double speed)
+static inline void DoPlayerDeathHoriz(PLAYER* pp, const DAngle target, const float speed)
 {
     auto& pitch = pp->actor->spr.Angles.Pitch;
     auto pspeed = DAngle::fromDeg(speed);
@@ -6130,7 +6130,7 @@ void DoPlayerDeathCheckKick(PLAYER* pp)
             if (!(itActor->spr.extra & SPRX_PLAYER_OR_ENEMY))
                 continue;
 
-			double dist = (itActor->spr.pos.XY() - plActor->spr.pos.XY()).Length();
+			float dist = (itActor->spr.pos.XY() - plActor->spr.pos.XY()).Length();
 
             if (dist < itActor->user.fRadius() + 6.25)
             {
@@ -6529,7 +6529,7 @@ void DoPlayerRun(PLAYER* pp)
         if (pp->KeyPressBits & SB_JUMP)
         {
             pp->KeyPressBits &= ~SB_JUMP;
-            // make sure you stand at full heights for jumps/double jumps
+            // make sure you stand at full heights for jumps/float jumps
             pp->posZset(pp->loz - PLAYER_HEIGHTF);
             DoPlayerBeginJump(pp);
             return;
@@ -6839,7 +6839,7 @@ void PlayerGlobal(PLAYER* pp)
     {
         if (pp->hi_sectp && pp->lo_sectp)
         {
-            const double PLAYER_MIN_HEIGHT = 20;
+            const float PLAYER_MIN_HEIGHT = 20;
 
             if (abs(pp->loz - pp->hiz) < PLAYER_MIN_HEIGHT)
             {
@@ -7245,7 +7245,7 @@ void InitMultiPlayerInfo(const DVector3& spawnpos, const DAngle startang)
     short pnum;
     unsigned stat;
     int tag;
-    double fz,cz;
+    float fz,cz;
     static short MultiStatList[] =
     {
         STAT_MULTI_START,

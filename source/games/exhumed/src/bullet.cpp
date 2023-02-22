@@ -434,7 +434,7 @@ MOVEEND:
         {
 
             HitInfo hit{};
-            double dz = -pBullet->nPitch *2;
+            float dz = -pBullet->nPitch *2;
 			hitscan(apos, pActor->sector(), DVector3(pActor->spr.Angles.Yaw.ToVector() * 1024, dz), hit, CLIPMASK1);
             pos = hit.hitpos;
             hitactor = hit.actor();
@@ -504,7 +504,7 @@ HITSPRITE:
 
                     if (nType != 3 || RandomSize(2) == 0)
                     {
-                        double zOffset = RandomSize(8) / 32.;
+                        float zOffset = RandomSize(8) / 32.;
 
                         if (!RandomBit()) {
                             zOffset = -zOffset;
@@ -559,7 +559,7 @@ void SetBulletEnemy(int nBullet, DExhumedActor* pEnemy)
 //
 //---------------------------------------------------------------------------
 
-DExhumedActor* BuildBullet(DExhumedActor* pActor, int nType, double fZOffset, DAngle nAngle, DExhumedActor* pTarget, int nDoubleDamage, int nPitch)
+DExhumedActor* BuildBullet(DExhumedActor* pActor, int nType, float fZOffset, DAngle nAngle, DExhumedActor* pTarget, int nDoubleDamage, int nPitch)
 {
     Bullet sBullet;
     bulletInfo *pBulletInfo = &BulletInfo[nType];
@@ -576,7 +576,7 @@ DExhumedActor* BuildBullet(DExhumedActor* pActor, int nType, double fZOffset, DA
                 sBullet.pActor = insertActor(pActor->sector(), 200);
                 sBullet.pActor->spr.Angles.Yaw = nAngle;
 
-                double nHeight = GetActorHeight(pTarget);
+                float nHeight = GetActorHeight(pTarget);
 
 				assert(pTarget->sector());
 
@@ -608,7 +608,7 @@ DExhumedActor* BuildBullet(DExhumedActor* pActor, int nType, double fZOffset, DA
     }
 
     auto pBulletActor = insertActor(pSector, 200);
-	double fHeight = GetActorHeight(pActor) * 0.75;
+	float fHeight = GetActorHeight(pActor) * 0.75;
 
     if (fZOffset == INT_MAX) {
         fZOffset = -fHeight;
@@ -686,7 +686,7 @@ DExhumedActor* BuildBullet(DExhumedActor* pActor, int nType, double fZOffset, DA
     pBulletActor->spr.pos.Z += fZOffset;
     pBulletActor->backuppos();
 
-    double nVertVel = 0;
+    float nVertVel = 0;
 
     pSector = pBulletActor->sector();
 
@@ -725,7 +725,7 @@ DExhumedActor* BuildBullet(DExhumedActor* pActor, int nType, double fZOffset, DA
                 fHeight *= 0.5;
             }
 
-            double fTop = pTarget->spr.pos.Z - fHeight;
+            float fTop = pTarget->spr.pos.Z - fHeight;
 
             DVector2 xy;
 
@@ -757,7 +757,7 @@ DExhumedActor* BuildBullet(DExhumedActor* pActor, int nType, double fZOffset, DA
                 xy = pTarget->spr.pos.XY() - pBulletActor->spr.pos.XY();
             }
 
-            double nSqrt = xy.Length();
+            float nSqrt = xy.Length();
             if (nSqrt > 0)
             {
                 nVertVel = ((fTop - pBulletActor->spr.pos.Z) * pBulletInfo->field_4) / (nSqrt * 16);

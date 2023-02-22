@@ -2388,7 +2388,7 @@ extern ACTOR_ACTION_SET PlayerNinjaActionSet;
 void InitPlayerSprite(PLAYER* pp, const DVector3& spawnpos, const DAngle startang)
 {
     int pnum = int(pp - Player);
-    double fz,cz;
+    float fz,cz;
     extern bool NewGame;
 
     COVER_SetReverb(0); // Turn off any echoing that may have been going before

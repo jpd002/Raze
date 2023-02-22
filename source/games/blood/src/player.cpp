@@ -810,7 +810,7 @@ void playerStart(int nPlayer, int bNewLevel)
 	seqSpawn(pDudeInfo->seqStartID, actor, -1);
 	if (nPlayer == myconnectindex)
 		actor->spr.cstat2 |= CSTAT2_SPRITE_MAPPED;
-	double top, bottom;
+	float top, bottom;
 	GetActorExtents(actor, &top, &bottom);
 	actor->spr.pos.Z -= bottom - actor->spr.pos.Z;
 	actor->spr.pal = 11 + (pPlayer->teamId & 3);
@@ -1388,15 +1388,15 @@ void CheckPickUp(PLAYER* pPlayer)
 	{
 		if (itemactor->spr.flags & 32)
 			continue;
-		double dx = abs(ppos.X - itemactor->spr.pos.X);
+		float dx = abs(ppos.X - itemactor->spr.pos.X);
 		if (dx > 48)
 			continue;
-		double dy = abs(ppos.Y - itemactor->spr.pos.Y);
+		float dy = abs(ppos.Y - itemactor->spr.pos.Y);
 		if (dy > 48)
 			continue;
-		double top, bottom;
+		float top, bottom;
 		GetActorExtents(plActor, &top, &bottom);
-		double vb = 0;
+		float vb = 0;
 		if (itemactor->spr.pos.Z < top)
 			vb = (top - itemactor->spr.pos.Z);
 		else if (itemactor->spr.pos.Z > bottom)
@@ -1425,7 +1425,7 @@ int ActionScan(PLAYER* pPlayer, HitInfo* out)
 	*out = {};
 	auto pos = DVector3(plActor->spr.Angles.Yaw.ToVector(), pPlayer->slope);
 	int hit = HitScan(pPlayer->actor, pPlayer->zView, pos, 0x10000040, 128);
-	double hitDist = (plActor->spr.pos.XY() - gHitInfo.hitpos.XY()).Length();
+	float hitDist = (plActor->spr.pos.XY() - gHitInfo.hitpos.XY()).Length();
 	if (hitDist < 64)
 	{
 		switch (hit)
@@ -1577,9 +1577,9 @@ void ProcessInput(PLAYER* pPlayer)
 
 	if ((pInput->fvel || pInput->svel) && (pPlayer->posture == 1 || actor->xspr.height < 256))
 	{
-		const double speed = pPlayer->posture == 1? 1. : 1. - (actor->xspr.height < 256 ? actor->xspr.height * (1. / 256.) : 0);
-		const double& fvAccel = pInput->fvel > 0 ? pPosture->frontAccel : pPosture->backAccel;
-		const double& svAccel = pPosture->sideAccel;
+		const float speed = pPlayer->posture == 1? 1. : 1. - (actor->xspr.height < 256 ? actor->xspr.height * (1. / 256.) : 0);
+		const float& fvAccel = pInput->fvel > 0 ? pPosture->frontAccel : pPosture->backAccel;
+		const float& svAccel = pPosture->sideAccel;
 		actor->vel.XY() += DVector2(pInput->fvel * fvAccel, pInput->svel * svAccel).Rotated(actor->spr.Angles.Yaw) * speed;
 	}
 
@@ -1778,10 +1778,10 @@ void playerProcess(PLAYER* pPlayer)
 	DBloodActor* actor = pPlayer->actor;
 	POSTURE* pPosture = &pPlayer->pPosture[pPlayer->lifeMode][pPlayer->posture];
 	powerupProcess(pPlayer);
-	double top, bottom;
+	float top, bottom;
 	GetActorExtents(actor, &top, &bottom);
-	double dzflor = (bottom - actor->spr.pos.Z) / 4;
-	double dzceil = (actor->spr.pos.Z - top) / 4;
+	float dzflor = (bottom - actor->spr.pos.Z) / 4;
+	float dzceil = (actor->spr.pos.Z - top) / 4;
 
 	if (!gNoClip)
 	{
@@ -1801,7 +1801,7 @@ void playerProcess(PLAYER* pPlayer)
 	}
 	ProcessInput(pPlayer);
 	pPlayer->zViewVel = interpolatedvalue(pPlayer->zViewVel, actor->vel.Z, FixedToFloat(0x7000));
-	double dz = pPlayer->actor->spr.pos.Z - pPosture->eyeAboveZ - pPlayer->zView;
+	float dz = pPlayer->actor->spr.pos.Z - pPosture->eyeAboveZ - pPlayer->zView;
 	if (dz > 0)
 		pPlayer->zViewVel += dz * FixedToFloat(0xa000);
 	else
@@ -1814,8 +1814,8 @@ void playerProcess(PLAYER* pPlayer)
 	else
 		pPlayer->zWeaponVel += dz * FixedToFloat(0xc00);
 	pPlayer->zWeapon += pPlayer->zWeaponVel;
-	pPlayer->bobPhase = max(pPlayer->bobPhase - 4, 0.);
-	double nSpeed = actor->vel.XY().Length();
+	pPlayer->bobPhase = max(pPlayer->bobPhase - 4, 0.f);
+	float nSpeed = actor->vel.XY().Length();
 	if (pPlayer->posture == 1)
 	{
 		pPlayer->bobAmp = (pPlayer->bobAmp + 17) & 2047;
@@ -1835,12 +1835,12 @@ void playerProcess(PLAYER* pPlayer)
 			if (running)
 			{
 				if (pPlayer->bobPhase < 60)
-					pPlayer->bobPhase = min(pPlayer->bobPhase + nSpeed, 60.);
+					pPlayer->bobPhase = min(pPlayer->bobPhase + nSpeed, 60.f);
 			}
 			else
 			{
 				if (pPlayer->bobPhase < 30)
-					pPlayer->bobPhase = min(pPlayer->bobPhase + nSpeed, 30.);
+					pPlayer->bobPhase = min(pPlayer->bobPhase + nSpeed, 30.f);
 			}
 		}
 		pPlayer->bobHeight = pPosture->bobV * pPlayer->bobPhase * BobVal(pPlayer->bobAmp * 2);
@@ -1901,12 +1901,12 @@ void playerProcess(PLAYER* pPlayer)
 //
 //---------------------------------------------------------------------------
 
-DBloodActor* playerFireMissile(PLAYER* pPlayer, double xyoff, const DVector3& dv, int nType)
+DBloodActor* playerFireMissile(PLAYER* pPlayer, float xyoff, const DVector3& dv, int nType)
 {
 	return actFireMissile(pPlayer->actor, xyoff, pPlayer->zWeapon - pPlayer->actor->spr.pos.Z, dv, nType);
 }
 
-DBloodActor* playerFireThing(PLAYER* pPlayer, double xyoff, double zvel, int thingType, double nSpeed)
+DBloodActor* playerFireThing(PLAYER* pPlayer, float xyoff, float zvel, int thingType, float nSpeed)
 {
 	return actFireThing(pPlayer->actor, xyoff, pPlayer->zWeapon - pPlayer->actor->spr.pos.Z, pPlayer->slope * 0.25 + zvel, thingType, nSpeed);
 }
@@ -2106,7 +2106,7 @@ int playerDamageSprite(DBloodActor* source, PLAYER* pPlayer, DAMAGE_TYPE nDamage
 				break;
 			default:
 			{
-				double top, bottom;
+				float top, bottom;
 				GetActorExtents(pActor, &top, &bottom);
 				DVector3 gibPos(pActor->spr.pos.XY(), top);
 				DVector3 gibVel(pActor->vel.XY() * 0.5, -FixedToFloat(0xccccc));
@@ -2262,8 +2262,8 @@ int UseAmmo(PLAYER* pPlayer, int nAmmoType, int nDec)
 void voodooTarget(PLAYER* pPlayer)
 {
 	DBloodActor* actor = pPlayer->actor;
-	double aimz = pPlayer->flt_aim().Z;
-	double dz = pPlayer->zWeapon - pPlayer->actor->spr.pos.Z;
+	float aimz = pPlayer->flt_aim().Z;
+	float dz = pPlayer->zWeapon - pPlayer->actor->spr.pos.Z;
 	if (UseAmmo(pPlayer, 9, 0) < 8)
 	{
 		pPlayer->voodooTargets = 0;

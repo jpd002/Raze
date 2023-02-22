@@ -18,7 +18,7 @@ class DBloodActor : public DCoreActor
 	HAS_OBJECT_POINTERS
 
 public:
-	double dudeSlope; // Q18.14 format
+	float dudeSlope; // Q18.14 format
 	bool hasx;
 	XSPRITE xspr;
 	SPRITEHIT hit;
@@ -153,7 +153,7 @@ using BloodStatIterator = TStatIterator<DBloodActor>;
 using BloodSectIterator = TSectIterator<DBloodActor>;
 using BloodSpriteIterator = TSpriteIterator<DBloodActor>;
 
-inline void GetActorExtents(DBloodActor* actor, double* top, double* bottom)
+inline void GetActorExtents(DBloodActor* actor, float* top, float* bottom)
 {
 	GetSpriteExtents(&actor->spr, top, bottom);
 }
@@ -174,16 +174,16 @@ inline bool IsTargetTeammate(DBloodActor* pSource, DBloodActor* pTarget)
 template<typename T>
 void AdjustVelocity(DBloodActor *actor, T adjuster)
 {
-	double nCos = actor->spr.Angles.Yaw.Cos();
-	double nSin = actor->spr.Angles.Yaw.Sin();
-	double t1 = actor->vel.X * nCos + actor->vel.Y * nSin;
-	double t2 = actor->vel.X * nSin - actor->vel.Y * nCos;
+	float nCos = actor->spr.Angles.Yaw.Cos();
+	float nSin = actor->spr.Angles.Yaw.Sin();
+	float t1 = actor->vel.X * nCos + actor->vel.Y * nSin;
+	float t2 = actor->vel.X * nSin - actor->vel.Y * nCos;
 	adjuster(actor, t1, t2);
 	actor->vel.X = t1 * nCos + t2 * nSin;
 	actor->vel.Y = t1 * nSin - t2 * nCos;
 }
 
 // just so we don't have to type this out several dozen times
-#define ADJUSTER [=](DBloodActor* actor, double& t1, double& t2)
+#define ADJUSTER [=](DBloodActor* actor, float& t1, float& t2)
 
 END_BLD_NS

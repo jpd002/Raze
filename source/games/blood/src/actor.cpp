@@ -2541,16 +2541,16 @@ void actInit(TArray<DBloodActor*>& actors)
 //
 //---------------------------------------------------------------------------
 
-static void ConcussSprite(DBloodActor* source, DBloodActor* actor, const DVector3& pos, double damage)
+static void ConcussSprite(DBloodActor* source, DBloodActor* actor, const DVector3& pos, float damage)
 {
 	auto vect = actor->spr.pos - pos;
 
-	double dist2 = vect.LengthSquared() + 0x4000;
+	float dist2 = vect.LengthSquared() + 0x4000;
 	damage *= 0x4000 / dist2;
 
 	if (actor->spr.flags & kPhysMove)
 	{
-		double mass = 0;
+		float mass = 0;
 		if (actor->IsDudeActor())
 		{
 			mass = getDudeInfo(actor->spr.type)->mass;
@@ -2574,7 +2574,7 @@ static void ConcussSprite(DBloodActor* source, DBloodActor* actor, const DVector
 		if (mass > 0)
 		{
 			auto tex = TexMan.GetGameTexture(actor->spr.spritetexture());
-			double size = (tex->GetDisplayWidth() * actor->spr.scale.X * tex->GetDisplayHeight() * actor->spr.scale.Y) / 0x20000;
+			float size = (tex->GetDisplayWidth() * actor->spr.scale.X * tex->GetDisplayHeight() * actor->spr.scale.Y) / 0x20000;
 			actor->vel += vect * Scale(damage, size, mass);
 		}
 	}
@@ -2587,12 +2587,12 @@ static void ConcussSprite(DBloodActor* source, DBloodActor* actor, const DVector
 //
 //---------------------------------------------------------------------------
 
-void actWallBounceVector(DBloodActor* actor, walltype* pWall, double factor)
+void actWallBounceVector(DBloodActor* actor, walltype* pWall, float factor)
 {
 	auto delta = pWall->delta().Unit();
 	auto vel = actor->vel.XY();
-	double t = vel.X * -delta.Y + vel.Y * delta.X;
-	double t2 = t * (factor+1);
+	float t = vel.X * -delta.Y + vel.Y * delta.X;
+	float t2 = t * (factor+1);
 	actor->vel.XY() = (vel - DVector2(-delta.Y * t2, delta.X * t2));
 }
 
@@ -2602,12 +2602,12 @@ void actWallBounceVector(DBloodActor* actor, walltype* pWall, double factor)
 //
 //---------------------------------------------------------------------------
 
-DVector4 actFloorBounceVector(DBloodActor* actor, double oldz, sectortype* pSector, double factor)
+DVector4 actFloorBounceVector(DBloodActor* actor, float oldz, sectortype* pSector, float factor)
 {
-	double t = 1. - factor;
+	float t = 1. - factor;
 	if (pSector->floorheinum == 0)
 	{
-		double t2 = oldz * t;
+		float t2 = oldz * t;
 		return { actor->vel.X, actor->vel.Y, oldz - t2, t2};
 	}
 
@@ -2645,7 +2645,7 @@ void actRadiusDamage(DBloodActor* source, const DVector3& pos, sectortype* pSect
 					if (!CheckSector(sectorMap, act2)) continue;
 					if (!CheckProximity(act2, pos, pSector, nDist << 4)) continue;
 
-					double dist = (pos - act2->spr.pos).Length();
+					float dist = (pos - act2->spr.pos).Length();
 					if (dist > nDist) continue;
 
 					int totaldmg;
@@ -2669,7 +2669,7 @@ void actRadiusDamage(DBloodActor* source, const DVector3& pos, sectortype* pSect
 
 			if (act2->xspr.locked) continue;
 
-			double dist = (pos.XY() - act2->spr.pos.XY()).Length();
+			float dist = (pos.XY() - act2->spr.pos.XY()).Length();
 			if (dist > nDist) continue;
 
 			int totaldmg;
@@ -2709,7 +2709,7 @@ static void actNapalmMove(DBloodActor* actor)
 		actor->vel.Zero();
 		for (int i = 0; i < 2; i++)
 		{
-			double t1 = RandomD(3.2) + 3.2;
+			float t1 = RandomD(3.2) + 3.2;
 			auto rndang = Random2A(0x71);
 			actor->spr.Angles.Yaw = (ang + rndang).Normalized360();
 			auto spawned = actFireThing(actor, 0., 0., -0.5774, kThingNapalmBall, t1);
@@ -2731,7 +2731,7 @@ static DBloodActor* actSpawnFloor(DBloodActor* actor)
 	auto pSector = actor->sector();
 	auto pos = actor->spr.pos;
 	updatesector(pos, &pSector);
-	double zFloor = getflorzofslopeptr(pSector, pos.X, pos.Y);
+	float zFloor = getflorzofslopeptr(pSector, pos.X, pos.Y);
 	auto spawned = actSpawnSprite(pSector, DVector3(pos.XY(), zFloor), 3, 0);
 	if (spawned) spawned->spr.cstat &= ~CSTAT_SPRITE_BLOCK_ALL;
 	return spawned;
@@ -2848,7 +2848,7 @@ DBloodActor* actDropObject(DBloodActor* actor, int nType)
 
 	if (act2)
 	{
-		double top, bottom;
+		float top, bottom;
 		GetActorExtents(act2, &top, &bottom);
 		if (bottom >= act2->spr.pos.Z)
 			act2->spr.pos.Z -= (bottom - act2->spr.pos.Z);
@@ -2958,7 +2958,7 @@ static bool actKillModernDude(DBloodActor* actor, DAMAGE_TYPE damageType)
 				else if (Chance(0x2000)) nGibType = GIBTYPE_5;
 				else nGibType = GIBTYPE_17;
 
-				double top, bottom;
+				float top, bottom;
 				GetActorExtents(actor, &top, &bottom);
 				DVector3 gibPos(actor->spr.pos.XY(), top);
 				DVector3 gibVel(actor->vel.XY() * 0.5, -FixedToFloat(0xccccc));
@@ -3196,7 +3196,7 @@ static int checkDamageType(DBloodActor* actor, DAMAGE_TYPE damageType)
 
 static void spawnGibs(DBloodActor* actor, int type, fixed_t velz)
 {
-	double top, bottom;
+	float top, bottom;
 	GetActorExtents(actor, &top, &bottom);
 	DVector3 gibPos(actor->spr.pos.XY(), top);
 	DVector3 gibVel(actor->vel.XY() * 0.5, FixedToFloat(velz));
@@ -4074,7 +4074,7 @@ static void actImpactMissile(DBloodActor* missileActor, int hitCode)
 
 static void actKickObject(DBloodActor* kicker, DBloodActor* kicked)
 {
-	double nSpeed = max(kicker->vel.XY().Length() * 2, FixedToFloat(0xaaaaa));
+	float nSpeed = max(kicker->vel.XY().Length() * 2, FixedToFloat(0xaaaaa));
 	kicked->vel.X = nSpeed * (kicker->spr.Angles.Yaw + Random2A(85)).Cos();
 	kicked->vel.Y = nSpeed * (kicker->spr.Angles.Yaw + Random2A(85)).Sin();
 	kicked->vel.Z = nSpeed * -0.5;
@@ -4475,7 +4475,7 @@ void actAirDrag(DBloodActor* actor, fixed_t drag)
 		XSECTOR* pXSector = &pSector->xs();
 		if (pXSector->windVel && (pXSector->windAlways || pXSector->busy))
 		{
-			double wind = FixedToFloat<4>(pXSector->windVel);
+			float wind = FixedToFloat<4>(pXSector->windVel);
 			if (!pXSector->windAlways && pXSector->busy) wind *= FixedToFloat(pXSector->busy);
 			windvel = pXSector->windAng.ToVector() * wind;
 		}
@@ -4496,7 +4496,7 @@ static Collision MoveThing(DBloodActor* actor)
 	const THINGINFO* pThingInfo = &thingInfo[actor->spr.type - kThingBase];
 	auto pSector = actor->sector();
 	assert(pSector);
-	double top, bottom;
+	float top, bottom;
 	Collision lhit;
 
 	lhit.setNone();
@@ -4546,7 +4546,7 @@ static Collision MoveThing(DBloodActor* actor)
 
 	actor->spr.pos.Z += actor->vel.Z;
 
-	double ceilZ, floorZ;
+	float ceilZ, floorZ;
 	Collision ceilColl, floorColl;
 	GetZRange(actor, &ceilZ, &ceilColl, &floorZ, &floorColl, actor->clipdist, CLIPMASK0);
 	GetActorExtents(actor, &top, &bottom);
@@ -4576,7 +4576,7 @@ static Collision MoveThing(DBloodActor* actor)
 		actor->hit.florhit = floorColl;
 		actor->spr.pos.Z += floorZ - bottom;
 
-		double veldiff = actor->vel.Z - actor->sector()->velFloor;
+		float veldiff = actor->vel.Z - actor->sector()->velFloor;
 		if (veldiff > 0)
 		{
 			actor->spr.flags |= 4;
@@ -4632,7 +4632,7 @@ static Collision MoveThing(DBloodActor* actor)
 	if (top <= ceilZ)
 	{
 		actor->hit.ceilhit = ceilColl;
-		actor->spr.pos.Z += max(ceilZ - top, 0.);
+		actor->spr.pos.Z += max(ceilZ - top, 0.f);
 		if (actor->vel.Z < 0)
 		{
 			actor->vel.XY() *= 0.75;
@@ -4659,8 +4659,8 @@ static Collision MoveThing(DBloodActor* actor)
 
 	if (bottom >= floorZ)
 	{
-		double nVel = actor->vel.XY().Length();
-		double nVelClipped = min(nVel, (16. / 15.));
+		float nVel = actor->vel.XY().Length();
+		float nVelClipped = min(nVel, (16.f / 15.f));
 		Collision& coll = floorColl;
 
 		if (coll.type == kHitSprite)
@@ -4699,11 +4699,11 @@ void MoveDude(DBloodActor* actor)
 	}
 
 	DUDEINFO* pDudeInfo = getDudeInfo(actor->spr.type);
-	double top, bottom;
+	float top, bottom;
 	GetActorExtents(actor, &top, &bottom);
-	double bz = (bottom - actor->spr.pos.Z) / 4;
-	double tz = (actor->spr.pos.Z - top) / 4;
-	double wdf = actor->clipdist;
+	float bz = (bottom - actor->spr.pos.Z) / 4;
+	float tz = (actor->spr.pos.Z - top) / 4;
+	float wdf = actor->clipdist;
 	auto pSector = actor->sector();
 	int nAiStateType = (actor->xspr.aiState) ? actor->xspr.aiState->stateType : -1;
 
@@ -4834,19 +4834,19 @@ void MoveDude(DBloodActor* actor)
 	if (pPlayer) wdf += 1;
 	if (actor->vel.Z) actor->spr.pos.Z += actor->vel.Z;
 
-	double ceilZ, floorZ;
+	float ceilZ, floorZ;
 	Collision ceilColl, floorColl;
 	GetZRange(actor, &ceilZ, &ceilColl, &floorZ, &floorColl, wdf, CLIPMASK0, PARALLAXCLIP_CEILING | PARALLAXCLIP_FLOOR);
 	GetActorExtents(actor, &top, &bottom);
 
 	if (actor->spr.flags & 2)
 	{
-		double vc = FixedToFloat(58254);
+		float vc = FixedToFloat(58254);
 		if (bDepth)
 		{
 			if (bUnderwater)
 			{
-				double cz = getceilzofslopeptr(pSector, actor->spr.pos);
+				float cz = getceilzofslopeptr(pSector, actor->spr.pos);
 				if (cz > top)
 					vc += ((bottom - cz) * -FixedToFloat(80099)) / (bottom - top);
 				else
@@ -4854,7 +4854,7 @@ void MoveDude(DBloodActor* actor)
 			}
 			else
 			{
-				double fz = getflorzofslopeptr(pSector, actor->spr.pos);
+				float fz = getflorzofslopeptr(pSector, actor->spr.pos);
 				if (fz < bottom)
 					vc += ((bottom - fz) * -FixedToFloat(80099)) / (bottom - top);
 			}
@@ -5039,7 +5039,7 @@ void MoveDude(DBloodActor* actor)
 	GetActorExtents(actor, &top, &bottom);
 	if (pPlayer && bottom >= floorZ)
 	{
-		double floorZ2 = floorZ;
+		float floorZ2 = floorZ;
 		auto floorColl2 = floorColl;
 		GetZRange(actor, &ceilZ, &ceilColl, &floorZ, &floorColl, actor->clipdist, CLIPMASK0, PARALLAXCLIP_CEILING | PARALLAXCLIP_FLOOR);
 		if (bottom <= floorZ && actor->spr.pos.Z - floorZ2 < bz)
@@ -5052,7 +5052,7 @@ void MoveDude(DBloodActor* actor)
 	{
 		actor->hit.florhit = floorColl;
 		actor->spr.pos.Z += floorZ - bottom;
-		double veldiff = actor->vel.Z - actor->sector()->velFloor;
+		float veldiff = actor->vel.Z - actor->sector()->velFloor;
 		if (veldiff > 0)
 		{
 			auto vec4 = actFloorBounceVector(actor, veldiff, actor->sector(), 0);
@@ -5120,17 +5120,17 @@ void MoveDude(DBloodActor* actor)
 	if (top <= ceilZ)
 	{
 		actor->hit.ceilhit = ceilColl;
-		actor->spr.pos.Z += max(ceilZ - top, 0.);
+		actor->spr.pos.Z += max(ceilZ - top, 0.f);
 
 		if (actor->vel.Z <= 0 && (actor->spr.flags & 4))
-			actor->vel.Z = -actor->vel.Z * (1. / 8.);
+			actor->vel.Z = -actor->vel.Z * (1.f / 8.f);
 	}
 	else
 		actor->hit.ceilhit.setNone();
 
 	GetActorExtents(actor, &top, &bottom);
 
-	actor->xspr.height = int(max(floorZ - bottom, 0.));
+	actor->xspr.height = int(max(floorZ - bottom, 0.f));
 	if (actor->vel.X != 0 || actor->vel.Y != 0)
 	{
 		if (floorColl.type == kHitSprite)
@@ -5187,17 +5187,17 @@ int MoveMissile(DBloodActor* actor)
 
 		if (target->spr.statnum == kStatDude && target->hasX() && target->xspr.health > 0)
 		{
-			double vel = missileInfo[actor->spr.type - kMissileBase].fVelocity();
+			float vel = missileInfo[actor->spr.type - kMissileBase].fVelocity();
 			actor->vel.XY() = DVector2(vel, 0).Rotated((target->spr.pos - actor->spr.pos).Angle());
 
-			double deltaz = (target->spr.pos.Z - actor->spr.pos.Z) / (10 * 256);
+			float deltaz = (target->spr.pos.Z - actor->spr.pos.Z) / (10 * 256);
 
 			if (target->spr.pos.Z < actor->spr.pos.Z) deltaz = -deltaz;
 			actor->vel.Z += deltaz;
 		}
 	}
 	auto vel = actor->vel;
-	double top, bottom;
+	float top, bottom;
 	GetActorExtents(actor, &top, &bottom);
 	int i = 1;
 	const int bakCompat = enginecompatibility_mode;
@@ -5233,7 +5233,7 @@ int MoveMissile(DBloodActor* actor)
 			if (!gHitInfo.hitWall->twoSided()) cliptype = 0;
 			else
 			{
-				double fz, cz;
+				float fz, cz;
 				calcSlope(clipmoveresult.hitWall->nextSector(), ppos, &cz, &fz);
 				if (ppos.Z <= cz || ppos.Z >= fz) cliptype = 0;
 				else cliptype = 4;
@@ -5261,13 +5261,13 @@ int MoveMissile(DBloodActor* actor)
 		}
 		if (cliptype >= 0 && cliptype != 3)
 		{
-			double nVel = actor->vel.XY().Length();
+			float nVel = actor->vel.XY().Length();
 			ppos.XY() -= actor->vel.XY() / nVel;
 			vel.Z -= actor->vel.Z / nVel;
 			updatesector(ppos, &pSector);
 			pSector2 = pSector;
 		}
-		double ceilZ, floorZ;
+		float ceilZ, floorZ;
 		Collision ceilColl, floorColl;
 		GetZRangeAtXYZ(ppos, pSector2, &ceilZ, &ceilColl, &floorZ, &floorColl, actor->clipdist, CLIPMASK0);
 		GetActorExtents(actor, &top, &bottom);
@@ -5282,7 +5282,7 @@ int MoveMissile(DBloodActor* actor)
 		if (top <= ceilZ)
 		{
 			actor->hit.ceilhit = ceilColl;
-			vel.Z += std::max(ceilZ - top, 0.);
+			vel.Z += std::max(ceilZ - top, 0.f);
 			cliptype = 1;
 		}
 		actor->spr.pos = ppos.plusZ(vel.Z);
@@ -5613,12 +5613,12 @@ static void actCheckThings()
 			viewBackupSpriteLoc(actor);
 			if (pXSector && pXSector->panVel)
 			{
-				double top, bottom;
+				float top, bottom;
 				GetActorExtents(actor, &top, &bottom);
 				if (getflorzofslopeptr(pSector, actor->spr.pos) <= bottom)
 				{
 					DAngle angle = pXSector->panAngle;
-					double speed = 0;
+					float speed = 0;
 					if (pXSector->panAlways || pXSector->state || pXSector->busy)
 					{
 						speed = pXSector->panVel / 128.;
@@ -5883,7 +5883,7 @@ static void actCheckTraps()
 			if (actor->xspr.state && seqGetStatus(actor) < 0)
 			{
 				auto pos = actor->spr.pos;
-				double t = actor->xspr.data1 * (128. / 120.);
+				float t = actor->xspr.data1 * (128. / 120.);
 				auto vec = actor->spr.Angles.Yaw.ToVector() * t;
 				for (int i = 0; i < 2; i++)
 				{
@@ -6024,12 +6024,12 @@ static void actCheckDudes()
 
 		if (pXSector)
 		{
-			double top, bottom;
+			float top, bottom;
 			GetActorExtents(actor, &top, &bottom);
 			if (getflorzofslopeptr(pSector, actor->spr.pos) <= bottom)
 			{
 				DAngle angle = pXSector->panAngle;
-				double speed = 0;
+				float speed = 0;
 				if (pXSector->panAlways || pXSector->state || pXSector->busy)
 				{
 					speed = pXSector->panVel / 128.;
@@ -6158,7 +6158,7 @@ DBloodActor* actSpawnSprite(DBloodActor* source, int nStat)
 //
 //---------------------------------------------------------------------------
 
-DBloodActor* actSpawnDude(DBloodActor* source, int nType, double dist)
+DBloodActor* actSpawnDude(DBloodActor* source, int nType, float dist)
 {
 	auto spawned = actSpawnSprite(source, kStatDude);
 	if (!spawned) return nullptr;
@@ -6318,7 +6318,7 @@ DBloodActor* actSpawnThing(sectortype* pSector, const DVector3& pos, int nThingT
 //
 //---------------------------------------------------------------------------
 
-DBloodActor* actFireThing(DBloodActor* actor, double xyoff, double zoff, double zvel, int thingType, double nSpeed)
+DBloodActor* actFireThing(DBloodActor* actor, float xyoff, float zoff, float zvel, int thingType, float nSpeed)
 {
 	assert(thingType >= kThingBase && thingType < kThingMax);
 
@@ -6422,7 +6422,7 @@ void actBuildMissile(DBloodActor* spawned, DBloodActor* actor)
 //
 //---------------------------------------------------------------------------
 
-DBloodActor* actFireMissile(DBloodActor* actor, double xyoff, double zoff, DVector3 dv, int nType)
+DBloodActor* actFireMissile(DBloodActor* actor, float xyoff, float zoff, DVector3 dv, int nType)
 {
 	assert(nType >= kMissileBase && nType < kMissileMax);
 	bool impact = false;
@@ -6430,7 +6430,7 @@ DBloodActor* actFireMissile(DBloodActor* actor, double xyoff, double zoff, DVect
 
 	auto vect = actor->spr.pos.plusZ(zoff) + (actor->spr.Angles.Yaw + DAngle90).ToVector() * xyoff;
 
-	double clipdist = pMissileInfo->fClipDist() + actor->clipdist;
+	float clipdist = pMissileInfo->fClipDist() + actor->clipdist;
 	vect += actor->spr.Angles.Yaw.ToVector() * clipdist;
 
 	int hit = HitScan(actor, vect.Z, DVector3(vect.XY() - actor->spr.pos.XY(), 0), CLIPMASK0, clipdist * 4); 
@@ -6593,7 +6593,7 @@ bool actCanSplatWall(walltype* pWall)
 //
 //---------------------------------------------------------------------------
 
-void actFireVector(DBloodActor* shooter, double offset, double zoffset, DVector3 dv, VECTOR_TYPE vectorType, double nRange)
+void actFireVector(DBloodActor* shooter, float offset, float zoffset, DVector3 dv, VECTOR_TYPE vectorType, float nRange)
 {
 	// this function expects a vector with unit length in XY. Let's not depend on all callers doing it.
 	dv /= dv.XY().Length(); 
@@ -6689,7 +6689,7 @@ void actFireVector(DBloodActor* shooter, double offset, double zoffset, DVector3
 				int mass = thingInfo[actor->spr.type - kThingBase].mass;
 				if (mass > 0 && pVectorData->impulse)
 				{
-					double thrust = double(pVectorData->impulse) / (mass * 1024);
+					float thrust = float(pVectorData->impulse) / (mass * 1024);
 					actor->vel += dv * thrust;
 				}
 				if (pVectorData->burnTime)
@@ -6717,7 +6717,7 @@ void actFireVector(DBloodActor* shooter, double offset, double zoffset, DVector3
 
 				if (mass > 0 && pVectorData->impulse)
 				{
-					double thrust = double(pVectorData->impulse) / (mass * 1024);
+					float thrust = float(pVectorData->impulse) / (mass * 1024);
 					actor->vel += dv * thrust;
 				}
 				if (pVectorData->burnTime)
@@ -6727,7 +6727,7 @@ void actFireVector(DBloodActor* shooter, double offset, double zoffset, DVector3
 				}
 				if (Chance(pVectorData->fxChance))
 				{
-					double tt = gVectorData[19].fMaxDist();
+					float tt = gVectorData[19].fMaxDist();
 					dv.X += FixedToFloat<14>(Random3(4000)); // random messiness...
 					dv.Y += FixedToFloat<14>(Random3(4000));
 					dv.Z += FixedToFloat<14>(Random3(4000));
@@ -6773,7 +6773,7 @@ void actFireVector(DBloodActor* shooter, double offset, double zoffset, DVector3
 					if (actor->xspr.physAttr & kPhysDebrisVector) 
 					{
 						int mass = max(actor->spriteMass.mass, 10);
-						double thrust = double(pVectorData->impulse) / (mass * 4096);
+						float thrust = float(pVectorData->impulse) / (mass * 4096);
 						actor->vel += dv * thrust;
 
 						if (pVectorData->burnTime != 0) {

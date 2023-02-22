@@ -243,7 +243,7 @@ bool isanearoperator(int lotag)
 //
 //---------------------------------------------------------------------------
 
-int findplayer(const DDukeActor* actor, double* d)
+int findplayer(const DDukeActor* actor, float* d)
 {
 	int j, closest_player;
 	const auto s = actor->spr.pos;
@@ -254,12 +254,12 @@ int findplayer(const DDukeActor* actor, double* d)
 		return myconnectindex;
 	}
 
-	double closest = 0x7fffffff;
+	float closest = 0x7fffffff;
 	closest_player = 0;
 
 	for (j = connecthead; j >= 0; j = connectpoint2[j])
 	{
-		double x = (ps[j].GetActor()->getPrevPosWithOffsetZ() - s).plusZ(28).Sum();
+		float x = (ps[j].GetActor()->getPrevPosWithOffsetZ() - s).plusZ(28).Sum();
 		if (x < closest && ps[j].GetActor()->spr.extra > 0)
 		{
 			closest_player = j;
@@ -277,17 +277,17 @@ int findplayer(const DDukeActor* actor, double* d)
 //
 //---------------------------------------------------------------------------
 
-int findotherplayer(int p, double* d)
+int findotherplayer(int p, float* d)
 {
 	int j, closest_player;
 
-	double closest = 0x7fffffff;
+	float closest = 0x7fffffff;
 	closest_player = p;
 
 	for (j = connecthead; j >= 0; j = connectpoint2[j])
 		if (p != j && ps[j].GetActor()->spr.extra > 0)
 		{
-			double x = (ps[j].GetActor()->getPrevPosWithOffsetZ() - ps[p].GetActor()->getPosWithOffsetZ()).Sum();
+			float x = (ps[j].GetActor()->getPrevPosWithOffsetZ() - ps[p].GetActor()->getPosWithOffsetZ()).Sum();
 
 			if (x < closest)
 			{
@@ -306,7 +306,7 @@ int findotherplayer(int p, double* d)
 //
 //---------------------------------------------------------------------------
 
-double getanimatevalue(int type, int index)
+float getanimatevalue(int type, int index)
 {
 	switch (type)
 	{
@@ -324,7 +324,7 @@ double getanimatevalue(int type, int index)
 	}
 }
 
-double getanimatevalue(int i)
+float getanimatevalue(int i)
 {
 	return getanimatevalue(animates[i].type, animates[i].target);
 }
@@ -335,7 +335,7 @@ double getanimatevalue(int i)
 //
 //---------------------------------------------------------------------------
 
-void setanimatevalue(int type, int index, double value)
+void setanimatevalue(int type, int index, float value)
 {
 	static int scratch;
 	switch (type)
@@ -361,7 +361,7 @@ void setanimatevalue(int type, int index, double value)
 	}
 }
 
-void setanimatevalue(int i, double value)
+void setanimatevalue(int i, float value)
 {
 	return setanimatevalue(animates[i].type, animates[i].target, value);
 }
@@ -376,8 +376,8 @@ void doanimations(void)
 {
 	for (int i = animates.Size() - 1; i >= 0; i--)
 	{
-		double a = getanimatevalue(i);
-		double const v = animates[i].vel * TICSPERFRAME;
+		float a = getanimatevalue(i);
+		float const v = animates[i].vel * TICSPERFRAME;
 		auto dasectp = animates[i].sect;
 		int type = animates[i].type;
 
@@ -456,7 +456,7 @@ int getanimationindex(int animtype, sectortype* animtargetp)
 //
 //---------------------------------------------------------------------------
 
-static int dosetanimation(sectortype* animsect, int animtype, int animtarget, double thegoal, double thevel)
+static int dosetanimation(sectortype* animsect, int animtype, int animtarget, float thegoal, float thevel)
 {
 	int j = -1;
 
@@ -483,13 +483,13 @@ static int dosetanimation(sectortype* animsect, int animtype, int animtarget, do
 	return(j);
 }
 
-int setanimation(sectortype* animsect, int animtype, walltype* animtarget, double thegoal, double thevel)
+int setanimation(sectortype* animsect, int animtype, walltype* animtarget, float thegoal, float thevel)
 {
 	assert(animtype == anim_vertexx || animtype == anim_vertexy);
 	return dosetanimation(animsect, animtype, wallindex(animtarget), thegoal, thevel);
 }
 
-int setanimation(sectortype* animsect, int animtype, sectortype* animtarget, double thegoal, double thevel)
+int setanimation(sectortype* animsect, int animtype, sectortype* animtarget, float thegoal, float thevel)
 {
 	assert(animtype == anim_ceilingz || animtype == anim_floorz);
 	return dosetanimation(animsect, animtype, sectindex(animtarget), thegoal, thevel);
@@ -552,7 +552,7 @@ bool activatewarpelevators(DDukeActor* actor, int d) //Parm = sectoreffectornum
 
 static void handle_st09(sectortype* sptr, DDukeActor* actor)
 {
-	double dax, day, dax2, day2, sp;
+	float dax, day, dax2, day2, sp;
 	walltype* wallfind[2];
 
 	sp = (sptr->extra >> 4) / 16.;
@@ -709,7 +709,7 @@ static void handle_st18(sectortype* sptr, DDukeActor* actor)
 		auto sectp = nextsectorneighborzptr(sptr, sptr->floorz, Find_FloorUp);
 		if (sectp == nullptr) sectp = nextsectorneighborzptr(sptr, sptr->floorz, Find_FloorDown);
 		if (sectp == nullptr) return;
-		double speed = sptr->extra / 256.;
+		float speed = sptr->extra / 256.;
 		setanimation(sptr, anim_floorz, sptr, sectp->floorz, speed);
 		setanimation(sptr, anim_ceilingz, sptr, sectp->floorz + sptr->ceilingz - sptr->floorz, speed);
 		callsound(sptr, actor);
@@ -724,7 +724,7 @@ static void handle_st18(sectortype* sptr, DDukeActor* actor)
 
 static void handle_st29(sectortype* sptr, DDukeActor* actor)
 {
-	double j;
+	float j;
 
 	if (sptr->lotag & 0x8000)
 		j = nextsectorneighborzptr(sptr, sptr->ceilingz, Find_FloorDown | Find_Safe)->floorz;
@@ -759,7 +759,7 @@ static void handle_st29(sectortype* sptr, DDukeActor* actor)
 
 static void handle_st20(sectortype* sptr, DDukeActor* actor)
 {
-	double j = 0;
+	float j = 0;
 REDODOOR:
 
 	if (sptr->lotag & 0x8000)
@@ -804,7 +804,7 @@ REDODOOR:
 static void handle_st21(sectortype* sptr, DDukeActor* actor)
 {
 	int i = getanimationindex(anim_floorz, sptr);
-	double j;
+	float j;
 	if (i >= 0)
 	{
 		if (animates[i].goal == sptr->ceilingz)
@@ -834,8 +834,8 @@ static void handle_st21(sectortype* sptr, DDukeActor* actor)
 static void handle_st22(sectortype* sptr, DDukeActor* actor)
 {
 	int j;
-	double z;
-	double speed = sptr->extra / 256.;
+	float z;
+	float speed = sptr->extra / 256.;
 	if ((sptr->lotag & 0x8000))
 	{
 		z = (sptr->ceilingz + sptr->floorz) * 0.5;
@@ -1408,7 +1408,7 @@ void allignwarpelevators(void)
 //
 //---------------------------------------------------------------------------
 
-void moveclouds(double interpfrac)
+void moveclouds(float interpfrac)
 {
 	// The math here is very messy.. :(
 	int myclock = interpfrac < 0.5 ? PlayClock-2 : PlayClock;

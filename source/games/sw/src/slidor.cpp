@@ -301,7 +301,7 @@ void DoSlidorInterp(DSWActor* actor, INTERP_FUNC interp_func)
 //
 //---------------------------------------------------------------------------
 
-int DoSlidorMoveWalls(DSWActor* actor, double amt)
+int DoSlidorMoveWalls(DSWActor* actor, float amt)
 {
     auto sect = actor->sector();
 
@@ -429,7 +429,7 @@ int DoSlidorMoveWalls(DSWActor* actor, double amt)
 
 int DoSlidorInstantClose(DSWActor* actor)
 {
-    double diff;
+    float diff;
 
     auto startwall = actor->sector()->walls.Data();
     auto wal = startwall;

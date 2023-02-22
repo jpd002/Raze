@@ -37,7 +37,7 @@ static actionSeq LavadudeSeq[] = {
     {42, 1}
 };
 
-DExhumedActor* BuildLavaLimb(DExhumedActor* pActor, int move, double height)
+DExhumedActor* BuildLavaLimb(DExhumedActor* pActor, int move, float height)
 {
     auto pLimbActor = insertActor(pActor->sector(), 118);
 

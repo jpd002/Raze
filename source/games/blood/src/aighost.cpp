@@ -66,14 +66,14 @@ void ghostSlashSeqCallback(int, DBloodActor* actor)
 	auto target = actor->GetTarget();
 	DUDEINFO* pDudeInfo = getDudeInfo(actor->spr.type);
 	DUDEINFO* pDudeInfoT = getDudeInfo(target->spr.type);
-	double height = (pDudeInfo->eyeHeight * actor->spr.scale.Y);
-	double height2 = (pDudeInfoT->eyeHeight * target->spr.scale.Y);
+	float height = (pDudeInfo->eyeHeight * actor->spr.scale.Y);
+	float height2 = (pDudeInfoT->eyeHeight * target->spr.scale.Y);
 	DVector3 dv(actor->spr.Angles.Yaw.ToVector() * 64, height - height2);
 
 	sfxPlay3DSound(actor, 1406, 0, 0);
 	actFireVector(actor, 0, 0, dv, kVectorGhost);
-	double r1 = RandomF(50, 8);
-	double r2 = RandomF(50, 8);
+	float r1 = RandomF(50, 8);
+	float r2 = RandomF(50, 8);
 	actFireVector(actor, 0, 0, dv + DVector2(r2, -r1), kVectorGhost);
 	r1 = RandomF(50, 8);
 	r2 = RandomF(50, 8);
@@ -91,11 +91,11 @@ void ghostBlastSeqCallback(int, DBloodActor* actor)
 	wrand(); // ???
 	if (!actor->ValidateTarget(__FUNCTION__)) return;
 	auto target = actor->GetTarget();
-	double height = (actor->spr.scale.Y * getDudeInfo(actor->spr.type)->eyeHeight);
+	float height = (actor->spr.scale.Y * getDudeInfo(actor->spr.type)->eyeHeight);
 	DVector3 pos(actor->spr.pos.XY(), height);
 
 	DVector3 Aim(actor->spr.Angles.Yaw.ToVector(), actor->dudeSlope);
-	double nClosest = 0x7fffffff;
+	float nClosest = 0x7fffffff;
 
 	BloodStatIterator it(kStatDude);
 	while (auto actor2 = it.Next())
@@ -104,7 +104,7 @@ void ghostBlastSeqCallback(int, DBloodActor* actor)
 			continue;
 
 		auto pos2 = actor2->spr.pos;
-		double nDist = (pos2 - pos).Length();
+		float nDist = (pos2 - pos).Length();
 		if (nDist == 0 || nDist > 0x280)
 			continue;
 
@@ -114,20 +114,20 @@ void ghostBlastSeqCallback(int, DBloodActor* actor)
 		tvec.XY() += actor->spr.Angles.Yaw.ToVector() * nDist;
 		tvec.Z += actor->dudeSlope * nDist;
 
-		double tsr = nDist * 9.23828125;
-		double top, bottom;
+		float tsr = nDist * 9.23828125;
+		float top, bottom;
 		GetActorExtents(actor2, &top, &bottom);
 		if (tvec.Z - tsr > bottom || tvec.Z + tsr < top)
 			continue;
 
-		double nDist2 = (tvec - pos2).Length();
+		float nDist2 = (tvec - pos2).Length();
 		if (nDist2 < nClosest)
 		{
 			DAngle nAngle = (pos2.XY() - pos.XY()).Angle();
 			DAngle nDeltaAngle = absangle(nAngle, actor->spr.Angles.Yaw);
 			if (nDeltaAngle <= DAngle45)
 			{
-				double tz1 = actor2->spr.pos.Z - actor->spr.pos.Z;
+				float tz1 = actor2->spr.pos.Z - actor->spr.pos.Z;
 
 				if (cansee(pos, actor->sector(), pos2, actor2->sector()))
 				{
@@ -180,10 +180,10 @@ static void ghostThinkTarget(DBloodActor* actor)
 			auto ppos = pPlayer->actor->spr.pos;
 			auto dvect = ppos.XY() - actor->spr.pos;
 			auto pSector = pPlayer->actor->sector();
-			double nDist = dvect.Length();
+			float nDist = dvect.Length();
 			if (nDist > pDudeInfo->SeeDist() && nDist > pDudeInfo->HearDist())
 				continue;
-			double height = (pDudeInfo->eyeHeight * actor->spr.scale.Y);
+			float height = (pDudeInfo->eyeHeight * actor->spr.scale.Y);
 			if (!cansee(ppos, pSector, actor->spr.pos.plusZ(-height), actor->sector()))
 				continue;
 			DAngle nDeltaAngle = absangle(actor->spr.Angles.Yaw, dvect.Angle());
@@ -220,7 +220,7 @@ static void ghostThinkGoto(DBloodActor* actor)
 	DUDEINFO* pDudeInfo = getDudeInfo(actor->spr.type);
 	auto dvec = actor->xspr.TargetPos.XY() - actor->spr.pos.XY();
 	DAngle nAngle = dvec.Angle();
-	double nDist = dvec.Length();
+	float nDist = dvec.Length();
 	aiChooseDirection(actor, nAngle);
 	if (nDist < 32 && absangle(actor->spr.Angles.Yaw, nAngle) < pDudeInfo->Periphery())
 		aiNewState(actor, &ghostSearch);
@@ -296,23 +296,23 @@ static void ghostThinkChase(DBloodActor* actor)
 		aiNewState(actor, &ghostSearch);
 		return;
 	}
-	double nDist = dxy.Length();
+	float nDist = dxy.Length();
 	if (nDist <= pDudeInfo->SeeDist())
 	{
 		DAngle nDeltaAngle = absangle(actor->spr.Angles.Yaw, dxyAngle);
-		double height = pDudeInfo->eyeHeight * actor->spr.scale.Y;
+		float height = pDudeInfo->eyeHeight * actor->spr.scale.Y;
 		// Should be dudeInfo[target->spr.type-kDudeBase]
-		double height2 = pDudeInfo->eyeHeight * target->spr.scale.Y;
-		double top, bottom;
+		float height2 = pDudeInfo->eyeHeight * target->spr.scale.Y;
+		float top, bottom;
 		GetActorExtents(actor, &top, &bottom);
 		if (cansee(target->spr.pos, target->sector(), actor->spr.pos.plusZ(-height), actor->sector()))
 		{
 			if (nDist < pDudeInfo->SeeDist() && nDeltaAngle <= pDudeInfo->Periphery())
 			{
 				aiSetTarget(actor, actor->GetTarget());
-				double floorZ = getflorzofslopeptr(actor->sector(), actor->spr.pos);
-				double floorDelta = floorZ - bottom;
-				double heightDelta = height2 - height;
+				float floorZ = getflorzofslopeptr(actor->sector(), actor->spr.pos);
+				float floorDelta = floorZ - bottom;
+				float heightDelta = height2 - height;
 				bool angWithinRange = nDeltaAngle < DAngle15;
 				switch (actor->spr.type) {
 				case kDudePhantasm:
@@ -388,13 +388,13 @@ static void ghostMoveForward(DBloodActor* actor)
 	auto nAng = deltaangle(actor->spr.Angles.Yaw, actor->xspr.goalAng);
 	auto nTurnRange = pDudeInfo->TurnRange();
 	actor->spr.Angles.Yaw += clamp(nAng, -nTurnRange, nTurnRange);
-	double nAccel = pDudeInfo->FrontSpeed() * 4;
+	float nAccel = pDudeInfo->FrontSpeed() * 4;
 	if (abs(nAng) > DAngle60)
 		return;
 	if (actor->GetTarget() == nullptr)
 		actor->spr.Angles.Yaw += DAngle45;
 	auto dvec = actor->xspr.TargetPos.XY() - actor->spr.pos.XY();
-	double nDist = dvec.Length();
+	float nDist = dvec.Length();
 	if ((unsigned int)Random(64) < 32 && nDist <= 0x40)
 		return;
 	AdjustVelocity(actor, ADJUSTER{
@@ -415,14 +415,14 @@ static void ghostMoveSlow(DBloodActor* actor)
 	auto nAng = deltaangle(actor->spr.Angles.Yaw, actor->xspr.goalAng);
 	auto nTurnRange = pDudeInfo->TurnRange();
 	actor->spr.Angles.Yaw += clamp(nAng, -nTurnRange, nTurnRange);
-	double nAccel = pDudeInfo->FrontSpeed() * 4;
+	float nAccel = pDudeInfo->FrontSpeed() * 4;
 	if (abs(nAng) > DAngle60)
 	{
 		actor->xspr.goalAng += DAngle90;
 		return;
 	}
 	auto dvec = actor->xspr.TargetPos.XY() - actor->spr.pos.XY();
-	double nDist = dvec.Length();
+	float nDist = dvec.Length();
 	if (Chance(0x600) && nDist <= 0x40)
 		return;
 	AdjustVelocity(actor, ADJUSTER{
@@ -446,14 +446,14 @@ static void ghostMoveSwoop(DBloodActor* actor)
 	auto nAng = deltaangle(actor->spr.Angles.Yaw, actor->xspr.goalAng);
 	auto nTurnRange = pDudeInfo->TurnRange();
 	actor->spr.Angles.Yaw += clamp(nAng, -nTurnRange, nTurnRange);
-	double nAccel = pDudeInfo->FrontSpeed() * 4;
+	float nAccel = pDudeInfo->FrontSpeed() * 4;
 	if (abs(nAng) > DAngle60)
 	{
 		actor->xspr.goalAng += DAngle90;
 		return;
 	}
 	auto dvec = actor->xspr.TargetPos.XY() - actor->spr.pos.XY();
-	double nDist = dvec.Length();
+	float nDist = dvec.Length();
 	if (Chance(0x600) && nDist <= 0x40)
 		return;
 	AdjustVelocity(actor, ADJUSTER{
@@ -476,14 +476,14 @@ static void ghostMoveFly(DBloodActor* actor)
 	auto nAng = deltaangle(actor->spr.Angles.Yaw, actor->xspr.goalAng);
 	auto nTurnRange = pDudeInfo->TurnRange();
 	actor->spr.Angles.Yaw += clamp(nAng, -nTurnRange, nTurnRange);
-	double nAccel = pDudeInfo->FrontSpeed() * 4;
+	float nAccel = pDudeInfo->FrontSpeed() * 4;
 	if (abs(nAng) > DAngle60)
 	{
 		actor->spr.Angles.Yaw += DAngle90;
 		return;
 	}
 	auto dvec = actor->xspr.TargetPos.XY() - actor->spr.pos.XY();
-	double nDist = dvec.Length();
+	float nDist = dvec.Length();
 	if (Chance(0x4000) && nDist <= 0x40)
 		return;
 	AdjustVelocity(actor, ADJUSTER{

@@ -133,7 +133,7 @@ public:
 	union
 	{
 		int Value;
-		double Float;
+		float Float;
 		void *Pad;
 	};
 
@@ -143,7 +143,7 @@ public:
 #ifdef __PS2__
 	PSymbolConstNumeric(FName name, PType *type, uint32_t val) : PSymbolConst(name, type), Value((int)val) {}
 #endif
-	PSymbolConstNumeric(FName name, PType *type, double val) : PSymbolConst(name, type), Float(val) {}
+	PSymbolConstNumeric(FName name, PType *type, float val) : PSymbolConst(name, type), Float(val) {}
 	PSymbolConstNumeric() {}
 };
 

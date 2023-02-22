@@ -80,7 +80,7 @@ struct THINGINFO
 	uint8_t yrepeat;
 	int dmgControl[kDamageMax]; // damage
 	
-	double fClipdist() const { return clipdist * 0.25; }
+	float fClipdist() const { return clipdist * 0.25; }
 };
 
 struct AMMOITEMDATA
@@ -130,11 +130,11 @@ struct MissileType
 	int8_t shade;
 	uint8_t clipDist;
 
-	double fClipDist() const
+	float fClipDist() const
 	{
 		return clipDist * 0.25;
 	}
-	double fVelocity() const
+	float fVelocity() const
 	{
 		return FixedToFloat(velocity);
 	}
@@ -171,7 +171,7 @@ struct VECTORDATA {
 	int splatChance; // blood splat chance
 	SURFHIT surfHit[15];
 
-	double fMaxDist() const { return maxDist * maptoworld; }
+	float fMaxDist() const { return maxDist * maptoworld; }
 };
 
 extern const AMMOITEMDATA gAmmoItemData[];
@@ -228,8 +228,8 @@ void TreeToGibCallback(int, int);
 
 bool IsUnderwaterSector(sectortype* pSector);
 void actInit(TArray<DBloodActor*>& actors);
-void actWallBounceVector(DBloodActor* actor, walltype* pWall, double factor);
-DVector4 actFloorBounceVector(DBloodActor* actor, double oldz, sectortype* pSector, double factor);
+void actWallBounceVector(DBloodActor* actor, walltype* pWall, float factor);
+DVector4 actFloorBounceVector(DBloodActor* actor, float oldz, sectortype* pSector, float factor);
 void actRadiusDamage(DBloodActor* source, const DVector3& pos, sectortype* pSector, int nDist, int a7, int a8, DAMAGE_TYPE a9, int a10, int a11);
 DBloodActor *actDropObject(DBloodActor *pSprite, int nType);
 bool actHealDude(DBloodActor* pXDude, int a2, int a3);
@@ -241,19 +241,19 @@ void actExplodeSprite(DBloodActor *pSprite);
 void actActivateGibObject(DBloodActor *actor);
 void actProcessSprites(void);
 DBloodActor* actSpawnSprite(sectortype* pSector, const DVector3& pos, int nStat, bool a6);
-DBloodActor* actSpawnDude(DBloodActor* pSource, int nType, double dist);
+DBloodActor* actSpawnDude(DBloodActor* pSource, int nType, float dist);
 DBloodActor * actSpawnSprite(DBloodActor *pSource, int nStat);
 DBloodActor* actSpawnThing(sectortype* pSector, const DVector3& pos, int nThingType);
 
-DBloodActor* actFireThing(DBloodActor* actor, double xyoff, double zoff, double zvel, int thingType, double nSpeed);
-DBloodActor* actFireMissile(DBloodActor* actor, double xyoff, double zoff, DVector3 dc, int nType);
+DBloodActor* actFireThing(DBloodActor* actor, float xyoff, float zoff, float zvel, int thingType, float nSpeed);
+DBloodActor* actFireMissile(DBloodActor* actor, float xyoff, float zoff, DVector3 dc, int nType);
 
 void actBurnSprite(DBloodActor* pSource, DBloodActor* pTarget, int nTime);
 
 int actGetRespawnTime(DBloodActor *pSprite);
 bool actCheckRespawn(DBloodActor *pSprite);
 
-void actFireVector(DBloodActor* shooter, double offset, double zoffset, DVector3 dv, VECTOR_TYPE vectorType, double nRange = -1);
+void actFireVector(DBloodActor* shooter, float offset, float zoffset, DVector3 dv, VECTOR_TYPE vectorType, float nRange = -1);
 void actPostSprite(DBloodActor* actor, int status);
 void actPostProcess(void);
 void MakeSplash(DBloodActor *actor);

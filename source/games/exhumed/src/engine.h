@@ -32,9 +32,9 @@ enum
 	kAngleMask	= 0x7FF
 };
 
-Collision movesprite(DExhumedActor* spritenum, DVector2 vect, double dz, double flordist, unsigned int clipmask);
+Collision movesprite(DExhumedActor* spritenum, DVector2 vect, float dz, float flordist, unsigned int clipmask);
 
-inline Collision movespritevel(DExhumedActor* spritenum, const DVector3& pos, double xyfactor, int flordist, unsigned int clipmask)
+inline Collision movespritevel(DExhumedActor* spritenum, const DVector3& pos, float xyfactor, int flordist, unsigned int clipmask)
 {
 	return movesprite(spritenum, pos.XY() * xyfactor / 64, pos.Z, flordist, clipmask);
 }
@@ -105,7 +105,7 @@ extern bool bShowTowers;
 
 void GrabMap();
 void UpdateMap();
-void DrawMap(const DVector2& pos, const DAngle yaw, const double interpfrac);
+void DrawMap(const DVector2& pos, const DAngle yaw, const float interpfrac);
 
 // random
 
@@ -117,7 +117,7 @@ int RandomLong();
 int RandomSize(int nSize);
 DAngle RandomAngle9();
 DAngle RandomAngle();
-double RandomFloat(double range);
+float RandomFloat(float range);
 
 END_PS_NS
 

@@ -50,7 +50,7 @@ public:
 	bool mapSpawned;
 	DVector2 ovel;
 	DAngle hitang;
-	double floorz, ceilingz;
+	float floorz, ceilingz;
 	union
 	{
 		int saved_ammo;
@@ -75,7 +75,7 @@ public:
 
 	// these two variables are only valid while RunState is executed. They are explicitly nulled right afterward and only accessible throgh the CON emulation interface.
 	struct player_struct* state_player;
-	double state_dist;
+	float state_dist;
 
 	DDukeActor() = default;
 	size_t PropagateMark() override;
@@ -128,7 +128,7 @@ public:
 	void setClipDistFromTile()
 	{
 		auto tex = TexMan.GetGameTexture(spr.spritetexture());
-		clipdist = spr.scale.X * tex->GetDisplayWidth() * 0.125;
+		clipdist = spr.scale.X * tex->GetDisplayWidth() * 0.125f;
 	}
 
 };
@@ -229,8 +229,8 @@ struct player_struct
 
 	int aim_mode, ftt;
 
-	double pyoff, opyoff;
-	double truefz, truecz;
+	float pyoff, opyoff;
+	float truefz, truecz;
 	sectortype* cursector;
 	sectortype* one_parallax_sectnum; // wall + sector references.
 	walltype* access_wall;
@@ -283,7 +283,7 @@ struct player_struct
 	int stairs;
 	int detonate_count; // at57e
 	DVector2 noise;
-	double noise_radius; // at286, at28a, at290
+	float noise_radius; // at286, at28a, at290
 	int drink_timer; // at58e
 	int eat_timer; // at592
 	int SlotWin;
@@ -302,7 +302,7 @@ struct player_struct
 	short MamaEnd; // raat609
 	short moto_drink;
 	float TiltStatus, oTiltStatus;
-	double VBumpNow, VBumpTarget;
+	float VBumpNow, VBumpTarget;
 	short TurbCount;
 	short drug_stat[3]; // raat5f1..5
 	uint8_t DrugMode, lotag800kill;
@@ -310,7 +310,7 @@ struct player_struct
 	uint8_t hurt_delay2, nocheat;
 	uint8_t OnMotorcycle, OnBoat, moto_underwater, NotOnWater, MotoOnGround;
 	uint8_t moto_do_bump, moto_bump_fast, moto_on_oil, moto_on_mud;
-	double vehForwardScale, vehReverseScale, MotoSpeed;
+	float vehForwardScale, vehReverseScale, MotoSpeed;
 	bool vehTurnLeft, vehTurnRight, vehBraking;
 
 	TArray<GameVarValue> uservars;
@@ -326,7 +326,7 @@ struct player_struct
 	void backuppos(bool noclipping = false);
 	void backupweapon();
 	void checkhardlanding();
-	void playerweaponsway(double xvel);
+	void playerweaponsway(float xvel);
 
 	DAngle adjustavel(float avel)
 	{

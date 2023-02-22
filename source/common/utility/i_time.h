@@ -3,7 +3,7 @@
 #include <stdint.h>
 
 extern int GameTicRate;
-extern double TimeScale;
+extern float TimeScale;
 
 void I_InitTime();
 
@@ -11,14 +11,14 @@ void I_InitTime();
 void I_SetFrameTime();
 
 // Called by D_DoomLoop, returns current time in tics.
-int I_GetTime(double const ticrate = GameTicRate);
+int I_GetTime(float const ticrate = GameTicRate);
 // same, but using nanoseconds
 uint64_t I_GetTimeNS();
 
-double I_GetTimeFrac(double const ticrate = GameTicRate);
+float I_GetTimeFrac(float const ticrate = GameTicRate);
 
 // like I_GetTime, except it waits for a new tic before returning
-int I_WaitForTic(int prevtic, double const ticrate = GameTicRate);
+int I_WaitForTic(int prevtic, float const ticrate = GameTicRate);
 
 // Freezes tic counting temporarily. While frozen, calls to I_GetTime()
 // will always return the same value.
@@ -30,7 +30,7 @@ void I_FreezeTime(bool frozen);
 uint64_t I_msTime();
 
 // [RH] Returns nanosecond-accurate time in milliseconds
-double I_msTimeF(void);
+float I_msTimeF(void);
 
 // [SP] Returns millisecond-accurate time from start
 uint64_t I_msTimeFS();
@@ -42,7 +42,7 @@ uint64_t I_nsTime();
 void I_ResetFrameTime();
 
 // Return a decimal fraction to scale input operations at framerate
-double I_GetInputFrac();
+float I_GetInputFrac();
 
 // Reset the last input check to after a lengthy operation
 void I_ResetInputTime();

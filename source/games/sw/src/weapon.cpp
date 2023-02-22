@@ -53,7 +53,7 @@ struct MISSILE_PLACEMENT
 
 
 void SpawnZombie2(DSWActor*);
-Collision move_ground_missile(DSWActor* actor, const DVector2& change, double ceildist, double flordist, uint32_t cliptype, int numtics);
+Collision move_ground_missile(DSWActor* actor, const DVector2& change, float ceildist, float flordist, uint32_t cliptype, int numtics);
 void DoPlayerBeginDie(PLAYER*);
 void VehicleSetSmoke(SECTOR_OBJECT* sop, ANIMATOR* animator);
 
@@ -127,7 +127,7 @@ int DoBlurExtend(DSWActor* actor, int16_t interval, int16_t blur_num);
 int SpawnDemonFist(DSWActor*);
 void SpawnTankShellExp(DSWActor*);
 void SpawnMicroExp(DSWActor*);
-void SpawnExpZadjust(DSWActor* actor, DSWActor* expActor, double upper_zsize, double lower_zsize);
+void SpawnExpZadjust(DSWActor* actor, DSWActor* expActor, float upper_zsize, float lower_zsize);
 int BulletHitSprite(DSWActor* actor, DSWActor* hitActor, const DVector3& pos, short ID);
 int SpawnSplashXY(const DVector3& pos, sectortype*);
 DSWActor* SpawnBoatSparks(PLAYER* pp, sectortype* hit_sect, walltype* hit_wall, const DVector3& hitpos, DAngle hit_ang);
@@ -414,8 +414,8 @@ STATE s_WaterSmoke[] =
     {PUFF + 5, 100, DoSuicide, &s_WaterSmoke[6]}
 };
 
-constexpr double UZI_SPARK_REPEAT = 0.375;
-constexpr double UZI_SMOKE_REPEAT = 0.375;
+constexpr float UZI_SPARK_REPEAT = 0.375;
+constexpr float UZI_SMOKE_REPEAT = 0.375;
 #define UZI_SMOKE_RATE 16 // Was 9
 STATE s_UziSmoke[] =
 {
@@ -3163,7 +3163,7 @@ int SpawnShrap(DSWActor* parentActor, DSWActor* secondaryActor, int means, BREAK
     };
 #endif
 
-    double hZ[3];
+    float hZ[3];
     DAngle dangl = nullAngle;
 
     SHRAP* p = SmallGore;
@@ -3418,7 +3418,7 @@ AutoShrap:
             case SHRAP_EXPLOSION:
             {
                 auto spnum = SpawnLargeExp(parentActor);
-                double size = spnum->spr.scale.X + shrap_delta_size * REPEAT_SCALE;
+                float size = spnum->spr.scale.X + shrap_delta_size * REPEAT_SCALE;
                 spnum->spr.scale = DVector2(size, size);
 
                 return false;
@@ -3427,7 +3427,7 @@ AutoShrap:
             case SHRAP_LARGE_EXPLOSION:
             {
                 auto spnum = SpawnLargeExp(parentActor);
-                double size = spnum->spr.scale.X + shrap_delta_size * REPEAT_SCALE;
+                float size = spnum->spr.scale.X + shrap_delta_size * REPEAT_SCALE;
                 spnum->spr.scale = DVector2(size, size);
 
                 InitPhosphorus(spnum);
@@ -7174,7 +7174,7 @@ int DoDamageTest(DSWActor* actor)
         SWStatIterator it(StatDamageList[stat]);
         while (auto itActor = it.Next())
         {
-            double dist = (itActor->spr.pos.XY() - actor->spr.pos.XY()).Length();
+            float dist = (itActor->spr.pos.XY() - actor->spr.pos.XY()).Length();
 
             if (dist > actor->user.fRadius() * 2)
                 continue;
@@ -7256,7 +7256,7 @@ int DoFlamesDamageTest(DSWActor* actor)
                 continue;
             }
 
-            double dist = (itActor->spr.pos.XY() - actor->spr.pos.XY()).Length();
+            float dist = (itActor->spr.pos.XY() - actor->spr.pos.XY()).Length();
 
             if (dist > actor->user.fRadius() * 2)
                 continue;
@@ -7318,7 +7318,7 @@ short StatBreakList[] =
     STAT_DEAD_ACTOR,
 };
 
-void TraverseBreakableWalls(sectortype* start_sect, const DVector3& pos, DAngle angle, double radius)
+void TraverseBreakableWalls(sectortype* start_sect, const DVector3& pos, DAngle angle, float radius)
 {
     int k;
     DVector2 mid;
@@ -7343,7 +7343,7 @@ void TraverseBreakableWalls(sectortype* start_sect, const DVector3& pos, DAngle 
 
                 // don't need to go further if wall is too far out
 
-                double dist = (mid - pos.XY()).Length();
+                float dist = (mid - pos.XY()).Length();
                 if (dist > radius)
                     continue;
 
@@ -7386,7 +7386,7 @@ int DoExpDamageTest(DSWActor* actor)
     short break_count;
 
     DSWActor* found_act = nullptr;
-    double found_dist = 999999;
+    float found_dist = 999999;
     int DoWallMoveMatch(short match);
 
     // crack sprites
@@ -7405,7 +7405,7 @@ int DoExpDamageTest(DSWActor* actor)
         SWStatIterator it(StatDamageList[stat]);
         while (auto itActor = it.Next())
         {
-            double dist = (itActor->spr.pos.XY() - actor->spr.pos.XY()).Length();
+            float dist = (itActor->spr.pos.XY() - actor->spr.pos.XY()).Length();
 
             if (dist > actor->user.fRadius() * 2)
                 continue;
@@ -7420,7 +7420,7 @@ int DoExpDamageTest(DSWActor* actor)
             else
             {
 
-                double d = (itActor->spr.pos - actor->spr.pos).Length();
+                float d = (itActor->spr.pos - actor->spr.pos).Length();
                 if (d > actor->user.fRadius() + itActor->user.fRadius())
                     continue;
 
@@ -7452,7 +7452,7 @@ int DoExpDamageTest(DSWActor* actor)
         SWStatIterator it(StatBreakList[stat]);
         while (auto itActor = it.Next())
         {
-            double dist = (itActor->spr.pos.XY() - actor->spr.pos.XY()).Length();
+            float dist = (itActor->spr.pos.XY() - actor->spr.pos.XY()).Length();
 
             if (dist > actor->user.fRadius())
                 continue;
@@ -7481,7 +7481,7 @@ int DoExpDamageTest(DSWActor* actor)
     SWStatIterator it(STAT_WALL_MOVE);
     while (auto itActor = it.Next())
     {
-        double dist = (itActor->spr.pos.XY() - actor->spr.pos.XY()).Length();
+        float dist = (itActor->spr.pos.XY() - actor->spr.pos.XY()).Length();
 
         if (dist > actor->user.fRadius() * 0.25)
             continue;
@@ -7531,7 +7531,7 @@ int DoMineExpMine(DSWActor* actor)
     SWStatIterator it(STAT_MINE_STUCK);
     while (auto itActor = it.Next())
     {
-        double dist = (itActor->spr.pos.XY() - actor->spr.pos.XY()).Length();
+        float dist = (itActor->spr.pos.XY() - actor->spr.pos.XY()).Length();
 
         if (dist > actor->user.fRadius() * 2)
             continue;
@@ -7543,7 +7543,7 @@ int DoMineExpMine(DSWActor* actor)
             continue;
 
         // Explosions are spherical, not planes, so let's check that way, well cylindrical at least.
-        double zdist = abs(itActor->spr.pos.Z - actor->spr.pos.Z);
+        float zdist = abs(itActor->spr.pos.Z - actor->spr.pos.Z);
         if (SpriteOverlap(actor, itActor) || zdist < actor->user.fRadius() * 2)
         {
             DoDamage(itActor, actor);
@@ -7886,7 +7886,7 @@ int MissileSeek(DSWActor* actor, int16_t delay_tics, DAngle aware_range/*, int16
         auto delta_ang = clamp(deltaangle(ang2tgt, actor->spr.Angles.Yaw), -DAngle45 / 8, DAngle45 / 8);
         actor->spr.Angles.Yaw -= delta_ang;
 
-        double zh = ActorZOfTop(actor) + (ActorSizeZ(actor) * 0.25);
+        float zh = ActorZOfTop(actor) + (ActorSizeZ(actor) * 0.25);
         auto vel = clamp((zh - actor->spr.pos.Z)* 0.5, -16., 16.);
 
         actor->vel.Z = vel;
@@ -7961,8 +7961,8 @@ int VectorMissileSeek(DSWActor* actor, int16_t delay_tics, int16_t turn_speed, D
     if (goal != nullptr)
     {
         auto delta = (goal->spr.pos.XY() - actor->spr.pos.XY());
-        double zdiff = ActorZOfTop(goal) + (ActorSizeZ(goal) * 0.25) - actor->spr.pos.Z;
-        double dist = g_sqrt(delta.LengthSquared() + zdiff * zdiff);
+        float zdiff = ActorZOfTop(goal) + (ActorSizeZ(goal) * 0.25) - actor->spr.pos.Z;
+        float dist = g_sqrt(delta.LengthSquared() + zdiff * zdiff);
 
 		auto oc = actor->user.change;
 
@@ -8014,8 +8014,8 @@ int VectorWormSeek(DSWActor* actor, int16_t delay_tics, DAngle aware_range1, DAn
     if (goal != nullptr)
     {
         auto delta = (goal->spr.pos.XY() - actor->spr.pos.XY());
-        double zdiff = ActorZOfTop(goal) + (ActorSizeZ(goal) * 0.25) - actor->spr.pos.Z;
-        double dist = g_sqrt(delta.LengthSquared() + zdiff * zdiff);
+        float zdiff = ActorZOfTop(goal) + (ActorSizeZ(goal) * 0.25) - actor->spr.pos.Z;
+        float dist = g_sqrt(delta.LengthSquared() + zdiff * zdiff);
 
         auto oc = actor->user.change;
 
@@ -8136,7 +8136,7 @@ int DoPlasma(DSWActor* actor)
     DoBlurExtend(actor, 0, 4);
 
     auto vec = actor->spr.Angles.Yaw.ToVector() * actor->vel.X;
-    double daz = actor->vel.Z;
+    float daz = actor->vel.Z;
 
     actor->user.coll = move_missile(actor, DVector3(vec, daz), 16, 16, CLIPMASK_MISSILE, MISSILEMOVETICS);
 
@@ -8258,8 +8258,8 @@ void WallBounce(DSWActor* actor, DAngle ang)
 {
     actor->user.bounce++;
 
-	double k = ang.Cos() * ang.Sin() * 2;
-	double l = (ang * 2).Cos();
+	float k = ang.Cos() * ang.Sin() * 2;
+	float l = (ang * 2).Cos();
 
 	auto davec = -actor->user.change.XY();
 
@@ -8286,8 +8286,8 @@ void WallBounce(DSWActor* actor, DAngle ang)
 
 bool SlopeBounce(DSWActor* actor, bool* hit_wall)
 {
-    double hiz, loz;
-    double slope;
+    float hiz, loz;
+    float slope;
 
     auto hit_sector = actor->user.coll.hitSector;
 
@@ -8325,7 +8325,7 @@ bool SlopeBounce(DSWActor* actor, bool* hit_wall)
     DVector3 normal(slope * angle.Sin(), slope * -angle.Cos(), 1);
 
     // reflection code
-    double k = actor->user.change.dot(normal) / normal.LengthSquared();
+    float k = actor->user.change.dot(normal) / normal.LengthSquared();
     actor->user.change -= k * normal;
     SetAngleFromChange(actor);
     return true;
@@ -8710,7 +8710,7 @@ bool OwnerIsPlayer(DSWActor* actor)
 //
 //---------------------------------------------------------------------------
 
-int DoMineRangeTest(DSWActor* actor, double range)
+int DoMineRangeTest(DSWActor* actor, float range)
 {
     unsigned stat;
     bool ownerisplayer = false;
@@ -8722,7 +8722,7 @@ int DoMineRangeTest(DSWActor* actor, double range)
         SWStatIterator it(StatDamageList[stat]);
         while (auto itActor = it.Next())
         {
-            double dist = (itActor->spr.pos - actor->spr.pos).Length();
+            float dist = (itActor->spr.pos - actor->spr.pos).Length();
 
             if (dist > range)
                 continue;
@@ -9111,7 +9111,7 @@ int DoBoltThinMan(DSWActor* actor)
     DoBlurExtend(actor, 0, 4);
 
 	auto vec = actor->spr.Angles.Yaw.ToVector() * actor->vel.X;
-	double daz = actor->vel.Z;
+	float daz = actor->vel.Z;
 
     actor->user.coll = move_missile(actor, DVector3(vec, daz), CEILING_DIST, FLOOR_DIST, CLIPMASK_MISSILE, MISSILEMOVETICS);
 
@@ -9496,7 +9496,7 @@ int DoRocket(DSWActor* actor)
 {
     if ((actor->user.FlagOwner -= ACTORMOVETICS)<=0 && actor->user.spal == 20)
     {
-        double dist = (actor->spr.pos.XY() - actor->user.targetActor->spr.pos.XY()).Length();
+        float dist = (actor->spr.pos.XY() - actor->user.targetActor->spr.pos.XY()).Length();
         actor->user.FlagOwner = int(dist * 0.25);
         // Special warn sound attached to each seeker spawned
         PlaySound(DIGI_MINEBEEP, actor, v3df_follow);
@@ -9694,7 +9694,7 @@ int DoUziBullet(DSWActor* actor)
     for (int i = 0; i < 2; i++)
     {
 		auto vec = actor->spr.Angles.Yaw.ToVector() * actor->vel.X * 0.5;
-		double daz = actor->vel.Z * 0.5;
+		float daz = actor->vel.Z * 0.5;
 
         auto spos = actor->spr.pos.XY();
         actor->user.coll = move_missile(actor, DVector3(vec, daz), actor->user.ceiling_dist, actor->user.floor_dist, CLIPMASK_MISSILE, MISSILEMOVETICS);
@@ -9752,7 +9752,7 @@ int DoBoltSeeker(DSWActor* actor)
     DoBlurExtend(actor, 0, 4);
 
 	auto vec = actor->spr.Angles.Yaw.ToVector() * actor->vel.X;
-	double daz = actor->vel.Z;
+	float daz = actor->vel.Z;
 
     actor->user.coll = move_missile(actor, DVector3(vec, daz), CEILING_DIST, FLOOR_DIST, CLIPMASK_MISSILE, MISSILEMOVETICS);
 
@@ -9797,7 +9797,7 @@ int DoElectro(DSWActor* actor)
         MissileSeek(actor, 30, DAngle90/*, 3, 52, 2*/);
 
 	auto vec = actor->spr.Angles.Yaw.ToVector() * actor->vel.X;
-	double daz = actor->vel.Z;
+	float daz = actor->vel.Z;
 
     actor->user.coll = move_missile(actor, DVector3(vec, daz), CEILING_DIST, FLOOR_DIST, CLIPMASK_MISSILE, MISSILEMOVETICS);
 
@@ -9952,7 +9952,7 @@ void SpawnFireballFlames(DSWActor* actor, DSWActor* enemyActor)
         auto flameActor = enemyActor->user.flameActor;
         if (flameActor != nullptr)
         {
-            double sizez = ActorSizeZ(enemyActor) + (ActorSizeZ(enemyActor) * 0.25);
+            float sizez = ActorSizeZ(enemyActor) + (ActorSizeZ(enemyActor) * 0.25);
 
             if ((enemyActor->spr.extra & SPRX_BURNABLE))
                 return;
@@ -9995,7 +9995,7 @@ void SpawnFireballFlames(DSWActor* actor, DSWActor* enemyActor)
         // large flame for trees and such
         if ((enemyActor->spr.extra & SPRX_BURNABLE))
         {
-            double sizez = ActorSizeZ(enemyActor) + (ActorSizeZ(enemyActor) * 0.25);
+            float sizez = ActorSizeZ(enemyActor) + (ActorSizeZ(enemyActor) * 0.25);
             actorNew->user.Counter = GetRepeatFromHeight(actorNew, sizez);
         }
         else
@@ -10284,7 +10284,7 @@ void SpawnNuclearSecondaryExp(DSWActor* actor, DAngle ang)
     expActor->spr.cstat &= ~(CSTAT_SPRITE_BLOCK | CSTAT_SPRITE_BLOCK_HITSCAN);
 
     //ang = RANDOM_P2(2048);
-    double const vel = (128+8) + RandomRangeF(128);
+    float const vel = (128+8) + RandomRangeF(128);
     expActor->user.change.XY() = ang.ToVector() * vel;
     expActor->user.Radius = 200; // was NUKE_RADIUS
     expActor->user.coll = move_missile(expActor, DVector3(expActor->user.change.XY(), 0),
@@ -10571,7 +10571,7 @@ void SpawnGrenadeSecondaryExp(DSWActor* actor, DAngle ang)
     expActor->spr.cstat &= ~(CSTAT_SPRITE_BLOCK | CSTAT_SPRITE_BLOCK_HITSCAN);
 
     //ang = RANDOM_P2(2048);
-    double vel = (96) + RandomRangeF(64);
+    float vel = (96) + RandomRangeF(64);
     expActor->user.change.XY() = ang.ToVector() * vel;
 
     expActor->user.coll = move_missile(expActor, DVector3(expActor->user.change.XY(), 0),
@@ -10662,9 +10662,9 @@ void SpawnGrenadeExp(DSWActor* actor)
 //
 //---------------------------------------------------------------------------
 
-void SpawnExpZadjust(DSWActor* actor, DSWActor* expActor, double upper_zsize, double lower_zsize)
+void SpawnExpZadjust(DSWActor* actor, DSWActor* expActor, float upper_zsize, float lower_zsize)
 {
-    double tos_z, bos_z;
+    float tos_z, bos_z;
 
     ASSERT(expActor->hasU());
 
@@ -10685,7 +10685,7 @@ void SpawnExpZadjust(DSWActor* actor, DSWActor* expActor, double upper_zsize, do
     }
     else
     {
-        double cz,fz;
+        float cz,fz;
 
         calcSlope(expActor->sector(), expActor->spr.pos, &cz, &fz);
 
@@ -11208,7 +11208,7 @@ int DoBloodWorm(DSWActor* actor)
     }
 
     DAngle ang = actor->spr.Angles.Yaw + DAngle90;
-    double amt = (RandomRangeF(128) - 64) * 0.5;
+    float amt = (RandomRangeF(128) - 64) * 0.5;
 
 	auto bpos = actor->spr.pos.XY();
 
@@ -11389,8 +11389,8 @@ bool MissileSetPos(DSWActor* actor, ANIMATOR* DoWeapon, int dist)
 
     // backup values
 	auto oldc = actor->user.change;
-    double oldvel = actor->vel.X;
-    double oldzvel = actor->vel.Z;
+    float oldvel = actor->vel.X;
+    float oldzvel = actor->vel.Z;
 
     // make missile move in smaller increments
     actor->vel.X = dist * (6. / MISSILEMOVETICS) * inttoworld; // not going to change 36 calls for this...
@@ -11421,14 +11421,14 @@ bool MissileSetPos(DSWActor* actor, ANIMATOR* DoWeapon, int dist)
 //
 //---------------------------------------------------------------------------
 
-bool TestMissileSetPos(DSWActor* actor, ANIMATOR* DoWeapon, int dist, double zvel)
+bool TestMissileSetPos(DSWActor* actor, ANIMATOR* DoWeapon, int dist, float zvel)
 {
     bool retval = false;
 
     // backup values
 	auto oldc = actor->user.change;
-    double oldvel = actor->vel.X;
-    double oldzvel = actor->vel.Z;
+    float oldvel = actor->vel.X;
+    float oldzvel = actor->vel.Z;
 
     // make missile move in smaller increments
     actor->vel.X = dist * ( 3. / 8. / MISSILEMOVETICS);
@@ -11461,15 +11461,15 @@ bool TestMissileSetPos(DSWActor* actor, ANIMATOR* DoWeapon, int dist, double zve
 //---------------------------------------------------------------------------
 
 constexpr int RINGMOVETICS = (MISSILEMOVETICS * 2);
-constexpr double RING_OUTER_DIST = 200;
-constexpr double RING_INNER_DIST = 50;
+constexpr float RING_OUTER_DIST = 200;
+constexpr float RING_INNER_DIST = 50;
 
 int DoRing(DSWActor* actor)
 {
     auto own = GetOwner(actor);
     if (!own) return 0; // this would crash.
     PLAYER* pp = own->user.PlayerP;
-    double cz,fz;
+    float cz,fz;
 
     if (actor->user.Flags & (SPR_UNDERWATER))
     {
@@ -11484,7 +11484,7 @@ int DoRing(DSWActor* actor)
         }
     }
 
-    double z;
+    float z;
     // move the center with the player
     if (pp)
         z = pp->actor->getOffsetZ() + 20;
@@ -11618,7 +11618,7 @@ void InitSpellRing(PLAYER* pp)
 
 int DoSerpRing(DSWActor* actor)
 {
-    double cz,fz;
+    float cz,fz;
 
     auto own = GetOwner(actor);
     // if Owner does not exist or he's dead on the floor
@@ -11632,7 +11632,7 @@ int DoSerpRing(DSWActor* actor)
         return 0;
     }
 
-    double zz = actor->spr.pos.Z + actor->vel.Z;
+    float zz = actor->spr.pos.Z + actor->vel.Z;
     if (zz > own->spr.pos.Z - actor->user.pos.Z)
         zz = own->spr.pos.Z - actor->user.pos.Z;
 
@@ -11686,7 +11686,7 @@ int DoSerpRing(DSWActor* actor)
             !(tActor->user.PlayerP->Flags & PF_DEAD))
         {
             actor->user.targetActor = own->user.targetActor;
-            double dist = (actor->spr.pos.XY() - actor->user.targetActor->spr.pos.XY()).Length();
+            float dist = (actor->spr.pos.XY() - actor->user.targetActor->spr.pos.XY()).Length();
 
             // if ((dist ok and random ok) OR very few skulls left)
             if ((dist < 1125 && (RANDOM_P2(2048<<5)>>5) < 16) || own->user.Counter < 4)
@@ -11725,15 +11725,15 @@ int InitLavaFlame(DSWActor* actor)
 //
 //---------------------------------------------------------------------------
 
-void SetZVelFromTarget(DSWActor* actorNew, DSWActor* actor, bool setchange = false, double offset = 0)
+void SetZVelFromTarget(DSWActor* actorNew, DSWActor* actor, bool setchange = false, float offset = 0)
 {
     // find the distance to the target (player)
-    double dist = (actorNew->spr.pos.XY() - actor->user.targetActor->spr.pos.XY()).Length();
+    float dist = (actorNew->spr.pos.XY() - actor->user.targetActor->spr.pos.XY()).Length();
 
     if (dist != 0)
     {
-        double zdist = (ActorUpperZ(actor->user.targetActor) - actorNew->spr.pos.Z - offset) / dist;
-        double change = zdist * actorNew->vel.X;
+        float zdist = (ActorUpperZ(actor->user.targetActor) - actorNew->spr.pos.Z - offset) / dist;
+        float change = zdist * actorNew->vel.X;
         actorNew->vel.Z = change;
         if (setchange) actorNew->user.change.Z = change;
     }
@@ -11752,7 +11752,7 @@ int InitLavaThrow(DSWActor* actor)
     // get angle to player and also face player when attacking
     actor->spr.Angles.Yaw = (actor->user.targetActor->spr.pos.XY() - actor->spr.pos.XY()).Angle();
 
-    double nz = ActorZOfTop(actor) + (ActorSizeZ(actor) * 0.25);
+    float nz = ActorZOfTop(actor) + (ActorSizeZ(actor) * 0.25);
 
     // Spawn a shot
     auto actorNew = SpawnActor(STAT_MISSILE, LAVA_BOULDER, s_LavaBoulder, actor->sector(),
@@ -11794,7 +11794,7 @@ int InitLavaThrow(DSWActor* actor)
 void InitVulcanBoulder(DSWActor* actor)
 {
     DAngle nang;
-    double zsize;
+    float zsize;
     int zvel, zvel_rand;
     int delta;
     int vel;
@@ -11818,7 +11818,7 @@ void InitVulcanBoulder(DSWActor* actor)
     auto actorNew = SpawnActor(STAT_MISSILE, LAVA_BOULDER, s_VulcanBoulder, actor->sector(), actor->spr.pos.plusZ(-40), nang, ((vel/2 + vel/4) + RandomRange(vel/4)) / 16.);
 
     SetOwner(actor, actorNew);
-    double scale = 0.125 + RandomRange(72) * REPEAT_SCALE;
+    float scale = 0.125 + RandomRange(72) * REPEAT_SCALE;
     actorNew->spr.scale = DVector2(scale, scale);
     actorNew->spr.shade = -40;
     actorNew->spr.Angles.Yaw = nang;
@@ -12215,7 +12215,7 @@ int InitSwordAttack(PLAYER* pp)
             if (!(itActor->spr.extra & SPRX_PLAYER_OR_ENEMY))
                 continue;
 
-            double dist = (pp->actor->spr.pos.XY() - itActor->spr.pos.XY()).Length();
+            float dist = (pp->actor->spr.pos.XY() - itActor->spr.pos.XY()).Length();
 
             face = mapangle(200);
 
@@ -12234,7 +12234,7 @@ int InitSwordAttack(PLAYER* pp)
     {
         HitInfo hit{};
 
-        double dax = 1024., daz = 0;
+        float dax = 1024., daz = 0;
         DAngle daang = pp->actor->spr.Angles.Yaw;
         setFreeAimVelocity(dax, daz, pp->Angles.getPitchWithView(), 1000. - (RandomRangeF(24000 / 256.) - 12000 / 256.));
         FAFhitscan(pp->actor->getPosWithOffsetZ(), pp->cursector, DVector3(pp->actor->spr.Angles.Yaw.ToVector() * dax, daz), hit, CLIPMASK_MISSILE);
@@ -12337,7 +12337,7 @@ int InitFistAttack(PLAYER* pp)
 {
     DSWActor* plActor = pp->actor;
     unsigned stat;
-    double reach;
+    float reach;
     DAngle face;
 
     PlaySound(DIGI_STAR, pp, v3df_dontpan|v3df_doppler);
@@ -12380,7 +12380,7 @@ int InitFistAttack(PLAYER* pp)
             if (!(itActor->spr.extra & SPRX_PLAYER_OR_ENEMY))
                 continue;
 
-			double dist = (pp->actor->spr.pos.XY() - itActor->spr.pos.XY()).Length();
+			float dist = (pp->actor->spr.pos.XY() - itActor->spr.pos.XY()).Length();
 			bool iactive = pp->InventoryActive[2];
             if (iactive) // Shadow Bombs give you demon fist
             {
@@ -12412,7 +12412,7 @@ int InitFistAttack(PLAYER* pp)
     // all this is to break glass
     {
         HitInfo hit{};
-        double dax = 1024., daz = 0;
+        float dax = 1024., daz = 0;
         auto daang = pp->actor->spr.Angles.Yaw;
         setFreeAimVelocity(dax, daz, pp->Angles.getPitchWithView(), 1000. - (RandomRangeF(24000 / 256.) - 12000 / 256.));
         FAFhitscan(pp->actor->getPosWithOffsetZ(), pp->cursector, DVector3(pp->actor->spr.Angles.Yaw.ToVector() * dax, daz), hit, CLIPMASK_MISSILE);
@@ -12670,7 +12670,7 @@ int InitSumoStompAttack(DSWActor* actor)
             if (!(itActor->spr.extra & SPRX_PLAYER_OR_ENEMY))
                 continue;
 
-			double dist = (actor->spr.pos.XY() - itActor->spr.pos.XY()).Length();
+			float dist = (actor->spr.pos.XY() - itActor->spr.pos.XY()).Length();
 
             if (dist < CloseRangeDist(itActor, actor, 1024))
             {
@@ -12695,7 +12695,7 @@ int InitMiniSumoClap(DSWActor* actor)
     auto targetActor = actor->user.targetActor;
     if (!targetActor) return 0;
 
-	double dist = (actor->spr.pos.XY() - targetActor->spr.pos.XY()).Length();
+	float dist = (actor->spr.pos.XY() - targetActor->spr.pos.XY()).Length();
 
     if (dist < CloseRangeDist(targetActor, actor, 62.5))
     {
@@ -12745,14 +12745,14 @@ int WeaponAutoAim(DSWActor* actor, DSWActor* mislActor, DAngle ang, bool test)
 
         auto delta = hitActor->spr.pos.XY() - mislActor->spr.pos.XY();
         mislActor->spr.Angles.Yaw = delta.Angle();
-        double dist = delta.Length();
+        float dist = delta.Length();
 
         if (dist != 0)
         {
-            double zh;
-            double tos = ActorZOfTop(hitActor);
-            double diff = mislActor->spr.pos.Z - tos;
-            double siz = ActorSizeZ(hitActor);
+            float zh;
+            float tos = ActorZOfTop(hitActor);
+            float diff = mislActor->spr.pos.Z - tos;
+            float siz = ActorSizeZ(hitActor);
 
             // hit_sprite is below
             if (diff < -50)
@@ -12778,7 +12778,7 @@ int WeaponAutoAim(DSWActor* actor, DSWActor* mislActor, DAngle ang, bool test)
 //
 //---------------------------------------------------------------------------
 
-int WeaponAutoAimZvel(DSWActor* actor, DSWActor* missileActor, double *zvel, DAngle ang, bool test)
+int WeaponAutoAimZvel(DSWActor* actor, DSWActor* missileActor, float *zvel, DAngle ang, bool test)
 {
     if (actor->hasU() && actor->user.PlayerP)
     {
@@ -12796,14 +12796,14 @@ int WeaponAutoAimZvel(DSWActor* actor, DSWActor* missileActor, double *zvel, DAn
         hitActor->user.Flags |= (SPR_ATTACKED);
 
         missileActor->spr.Angles.Yaw = (hitActor->spr.pos.XY() - missileActor->spr.pos.XY()).Angle();
-        double dist = (missileActor->spr.pos.XY() - hitActor->spr.pos.XY()).Length();
+        float dist = (missileActor->spr.pos.XY() - hitActor->spr.pos.XY()).Length();
 
         if (dist != 0)
         {
-            double zh;
-            double tos = ActorZOfTop(hitActor);
-            double diff = missileActor->spr.pos.Z - tos;
-            double siz = ActorSizeZ(hitActor);
+            float zh;
+            float tos = ActorZOfTop(hitActor);
+            float diff = missileActor->spr.pos.Z - tos;
+            float siz = ActorSizeZ(hitActor);
 
             // hit_sprite is below
             if (diff < -50)
@@ -12830,7 +12830,7 @@ int WeaponAutoAimZvel(DSWActor* actor, DSWActor* missileActor, double *zvel, DAn
 //
 //---------------------------------------------------------------------------
 
-DSWActor* AimHitscanToTarget(DSWActor* actor, double *z, DAngle *ang, double z_ratio)
+DSWActor* AimHitscanToTarget(DSWActor* actor, float *z, DAngle *ang, float z_ratio)
 {
     DSWActor* hitActor = actor->user.targetActor;
     if (hitActor == nullptr)
@@ -12843,11 +12843,11 @@ DSWActor* AimHitscanToTarget(DSWActor* actor, double *z, DAngle *ang, double z_r
     *ang = delta.Angle();
 
     // find the distance to the target
-    double dist = delta.Length();
+    float dist = delta.Length();
 
     if (dist != 0)
     {
-        double zh = ActorUpperZ(hitActor);
+        float zh = ActorUpperZ(hitActor);
 
         // This doesn't look like it makes much sense...
         auto vect = ang->ToVector() * 1024;
@@ -12878,7 +12878,7 @@ DSWActor* AimHitscanToTarget(DSWActor* actor, double *z, DAngle *ang, double z_r
 //
 //---------------------------------------------------------------------------
 
-DSWActor* WeaponAutoAimHitscan(DSWActor* actor, double *z, DAngle *ang, bool test)
+DSWActor* WeaponAutoAimHitscan(DSWActor* actor, float *z, DAngle *ang, bool test)
 {
     if (actor->hasU() && actor->user.PlayerP)
     {
@@ -12898,11 +12898,11 @@ DSWActor* WeaponAutoAimHitscan(DSWActor* actor, double *z, DAngle *ang, bool tes
         *ang = (picked->spr.pos.XY() - actor->spr.pos.XY()).Angle();
 
         // find the distance to the target
-        double dist = (actor->spr.pos.XY() - picked->spr.pos.XY()).Length();
+        float dist = (actor->spr.pos.XY() - picked->spr.pos.XY()).Length();
 
         if (dist != 0)
         {
-            double zh = (ActorZOfTop(picked) + (ActorSizeZ(picked) * 0.5));
+            float zh = (ActorZOfTop(picked) + (ActorSizeZ(picked) * 0.5));
 
             auto vect = ang->ToVector() * 1024;
 
@@ -12924,18 +12924,18 @@ DSWActor* WeaponAutoAimHitscan(DSWActor* actor, double *z, DAngle *ang, bool tes
 //
 //---------------------------------------------------------------------------
 
-void WeaponHitscanShootFeet(DSWActor* actor, DSWActor* hitActor, double *zvect)
+void WeaponHitscanShootFeet(DSWActor* actor, DSWActor* hitActor, float *zvect)
 {
     auto delta = hitActor->spr.pos.XY() - actor->spr.pos.XY();
     DAngle ang = delta.Angle();
 
     // find the distance to the target
-    double dist = delta.Length();
+    float dist = delta.Length();
 
     if (dist != 0)
     {
-        double zh = ActorZOfBottom(hitActor) + 20;
-        double z = actor->spr.pos.Z;
+        float zh = ActorZOfBottom(hitActor) + 20;
+        float z = actor->spr.pos.Z;
         auto vect = ang.ToVector() * 1024;
 
         if (delta.X != 0)
@@ -12952,7 +12952,7 @@ int InitStar(PLAYER* pp)
     DSWActor* plActor = pp->actor;
 
     static DAngle dang[] = { mapangle(-12), mapangle(12) };
-    const double STAR_REPEAT = 0.40625;
+    const float STAR_REPEAT = 0.40625;
     const int STAR_HORIZ_ADJ = 100;
 
     PlayerUpdateAmmo(pp, plActor->user.WeaponNum, -3);
@@ -12974,7 +12974,7 @@ int InitStar(PLAYER* pp)
     actorNew->spr.shade = -25;
     actorNew->clipdist = 2;
     // zvel was overflowing with this calculation - had to move to a local long var
-    double zvel = 0;
+    float zvel = 0;
     setFreeAimVelocity(actorNew->vel.X, zvel, pp->Angles.getPitchWithView(), (HORIZ_MULT + STAR_HORIZ_ADJ) * 0.5);
 
     actorNew->user.ceiling_dist = (1);
@@ -12988,7 +12988,7 @@ int InitStar(PLAYER* pp)
     // MissileSetPos seemed to be pushing the sprite too far up or down when
     // the horizon was tilted.  Never figured out why.
     actorNew->vel.Z = zvel * 0.5;
-    double act2zvel = actorNew->vel.Z;
+    float act2zvel = actorNew->vel.Z;
     if (MissileSetPos(actorNew, DoStar, 1000))
     {
         KillActor(actorNew);
@@ -13211,8 +13211,8 @@ int InitShotgun(PLAYER* pp)
     }
 
     auto pos = pp->actor->getPosWithOffsetZ().plusZ(pp->bob_z);
-    double dax = 1024.;
-    double daz = pos.Z;
+    float dax = 1024.;
+    float daz = pos.Z;
 
     DAngle daang = DAngle22_5 * 0.5;
     if (WeaponAutoAimHitscan(pp->actor, &daz, &daang, false) == nullptr)
@@ -13221,7 +13221,7 @@ int InitShotgun(PLAYER* pp)
         daang = pp->actor->spr.Angles.Yaw;
     }
 
-    double ndaz;
+    float ndaz;
     DAngle ndaang;
     for (int i = 0; i < 12; i++)
     {
@@ -13447,7 +13447,7 @@ int InitLaser(PLAYER* pp)
 int InitRail(PLAYER* pp)
 {
     DSWActor* actor = pp->actor;
-    double zvel;
+    float zvel;
 
     if (SW_SHAREWARE) return false; // JBF: verify
 
@@ -13547,7 +13547,7 @@ int InitZillaRail(DSWActor* actor)
     SetOwner(actor, actorNew);
     actorNew->spr.scale = DVector2(0.8125, 0.8125);
     actorNew->spr.shade = -15;
-    double zvel = (100 * (HORIZ_MULT+17)) / 256.;
+    float zvel = (100 * (HORIZ_MULT+17)) / 256.;
 
     actorNew->user.RotNum = 5;
     NewStateGroup(actorNew, &sg_Rail[0]);
@@ -13604,7 +13604,7 @@ int InitZillaRail(DSWActor* actor)
 int InitRocket(PLAYER* pp)
 {
     DSWActor* actor = pp->actor;
-    double zvel;
+    float zvel;
 
     DoPlayerBeginRecoil(pp, ROCKET_RECOIL_AMT);
 
@@ -13714,7 +13714,7 @@ int InitRocket(PLAYER* pp)
 int InitBunnyRocket(PLAYER* pp)
 {
     DSWActor* actor = pp->actor;
-    double zvel;
+    float zvel;
 
     DoPlayerBeginRecoil(pp, ROCKET_RECOIL_AMT);
 
@@ -13819,7 +13819,7 @@ int InitBunnyRocket(PLAYER* pp)
 int InitNuke(PLAYER* pp)
 {
     DSWActor* actor = pp->actor;
-    double zvel;
+    float zvel;
 
     if (pp->WpnRocketNuke > 0)
         pp->WpnRocketNuke = 0;  // Bye Bye little nukie.
@@ -13929,7 +13929,7 @@ int InitEnemyNuke(DSWActor* actor)
 
     actorNew->spr.scale = DVector2(2, 2);
     actorNew->spr.shade = -15;
-    double zvel = (100 * (HORIZ_MULT-36)) / 256.; // Ugh...
+    float zvel = (100 * (HORIZ_MULT-36)) / 256.; // Ugh...
     actorNew->clipdist = 4;
 
     // Set to red palette
@@ -14002,7 +14002,7 @@ int InitMicro(PLAYER* pp)
     if (!pp->insector())
         return 0;
 
-    double vel = 75., zvel = 0;
+    float vel = 75., zvel = 0;
     setFreeAimVelocity(vel, zvel, pp->Angles.getPitchWithView(), HORIZ_MULTF);
 
     for (i = 0; i < MAX_MICRO; i++)
@@ -14080,10 +14080,10 @@ int InitMicro(PLAYER* pp)
 
         if (picked)
         {
-			double dist = (actorNew->spr.pos.XY() - picked->spr.pos.XY()).Length();
+			float dist = (actorNew->spr.pos.XY() - picked->spr.pos.XY()).Length();
             if (dist != 0)
             {
-                double zh = ActorZOfTop(picked) + (ActorSizeZ(picked) * 0.25);
+                float zh = ActorZOfTop(picked) + (ActorSizeZ(picked) * 0.25);
                 actorNew->vel.Z = (actorNew->vel.X * (zh - actorNew->spr.pos.Z)) / dist;
             }
 
@@ -14123,11 +14123,11 @@ int InitRipperSlash(DSWActor* actor)
             if (itActor == actor)
                 break;
 
-            double d = (actor->spr.pos - itActor->spr.pos).Length();
+            float d = (actor->spr.pos - itActor->spr.pos).Length();
             if (d > itActor->user.fRadius() * 2)
                 continue;
 
-            double dist = (actor->spr.pos.XY() - itActor->spr.pos.XY()).Length();
+            float dist = (actor->spr.pos.XY() - itActor->spr.pos.XY()).Length();
 
             if (dist < CloseRangeDist(actor, itActor, 37.5) && FacingRange(itActor, actor,FacingAngle))
             {
@@ -14160,7 +14160,7 @@ int InitBunnySlash(DSWActor* actor)
             if (itActor == actor)
                 break;
 
-            double dist = (actor->spr.pos.XY() - itActor->spr.pos.XY()).Length();
+            float dist = (actor->spr.pos.XY() - itActor->spr.pos.XY()).Length();
 
             if (dist < CloseRangeDist(actor, itActor, 37.5) && FacingRange(itActor, actor,FacingAngle))
             {
@@ -14194,7 +14194,7 @@ int InitSerpSlash(DSWActor* actor)
             if (itActor == actor)
                 break;
 
-            double dist = (actor->spr.pos.XY() - itActor->spr.pos.XY()).Length();
+            float dist = (actor->spr.pos.XY() - itActor->spr.pos.XY()).Length();
 
             if (dist < CloseRangeDist(actor, itActor, 50) && FacingRange(itActor, actor,FacingAngle))
             {
@@ -14242,7 +14242,7 @@ int DoBladeDamage(DSWActor* actor)
             if (!(itActor->spr.extra & SPRX_PLAYER_OR_ENEMY))
                 continue;
 
-            double d = (actor->spr.pos - itActor->spr.pos).Length();
+            float d = (actor->spr.pos - itActor->spr.pos).Length();
 
             if (d > 125)
                 continue;
@@ -14279,7 +14279,7 @@ int DoStaticFlamesDamage(DSWActor* actor)
             if (!(itActor->spr.extra & SPRX_PLAYER_OR_ENEMY))
                 continue;
 
-            double d = (actor->spr.pos - itActor->spr.pos).Length();
+            float d = (actor->spr.pos - itActor->spr.pos).Length();
 
             if (d > 125)
                 continue;
@@ -14322,7 +14322,7 @@ int InitCoolgBash(DSWActor* actor)
             if (!(itActor->spr.extra & SPRX_PLAYER_OR_ENEMY))
                 continue;
 
-            double dist = (actor->spr.pos.XY() - itActor->spr.pos.XY()).Length();
+            float dist = (actor->spr.pos.XY() - itActor->spr.pos.XY()).Length();
 
             if (dist < CloseRangeDist(actor, itActor, 37.5) && FacingRange(itActor, actor,FacingAngle))
             {
@@ -14355,7 +14355,7 @@ int InitSkelSlash(DSWActor* actor)
             if (itActor == actor)
                 break;
 
-            double dist = (actor->spr.pos.XY() - itActor->spr.pos.XY()).Length();
+            float dist = (actor->spr.pos.XY() - itActor->spr.pos.XY()).Length();
 
             if (dist < CloseRangeDist(actor, itActor, 37.5) && FacingRange(itActor, actor,FacingAngle))
             {
@@ -14388,7 +14388,7 @@ int InitGoroChop(DSWActor* actor)
             if (itActor == actor)
                 break;
 
-            double dist = (actor->spr.pos.XY() - itActor->spr.pos.XY()).Length();
+            float dist = (actor->spr.pos.XY() - itActor->spr.pos.XY()).Length();
 
             if (dist < CloseRangeDist(actor, itActor, 48.75) && FacingRange(itActor, actor,FacingAngle))
             {
@@ -15076,7 +15076,7 @@ int InitEelFire(DSWActor* actor)
             if ((actor->spr.pos - itActor->spr.pos).Length() > itActor->user.fRadius() * 2)
                 continue;
 
-            double dist = (actor->spr.pos.XY() - itActor->spr.pos.XY()).Length();
+            float dist = (actor->spr.pos.XY() - itActor->spr.pos.XY()).Length();
 
             if (dist < CloseRangeDist(actor, itActor, 37.5) && FacingRange(itActor, actor,FacingAngle))
             {
@@ -15208,7 +15208,7 @@ int InitTracerUzi(PLAYER* pp)
 
     static const short lat_dist[] = {800,-800};
 
-    double nz = 8 + (pp->Angles.getPitchWithView().Tan() * 36.);
+    float nz = 8 + (pp->Angles.getPitchWithView().Tan() * 36.);
 
     // Spawn a shot
     // Inserting and setting up variables
@@ -15500,9 +15500,9 @@ int InitUzi(PLAYER* pp)
     if (RANDOM_P2(1024) < 400)
         InitTracerUzi(pp);
 
-    double nz = (pp->actor->getOffsetZ() + pp->bob_z);
-    double dax = 1024.;
-    double daz = nz;
+    float nz = (pp->actor->getOffsetZ() + pp->bob_z);
+    float dax = 1024.;
+    float daz = nz;
     DAngle daang = DAngle22_5 / 4;
     if (WeaponAutoAimHitscan(pp->actor, &daz, &daang, false) != nullptr)
     {
@@ -15773,10 +15773,10 @@ int InitTurretMicro(DSWActor* actor, PLAYER* pp)
 
         if (picked)
         {
-            double dist = (actorNew->spr.pos.XY() - picked->spr.pos.XY()).Length();
+            float dist = (actorNew->spr.pos.XY() - picked->spr.pos.XY()).Length();
             if (dist != 0)
             {
-                double zh = ActorZOfTop(picked) + (ActorSizeZ(picked) * 0.25);
+                float zh = ActorZOfTop(picked) + (ActorSizeZ(picked) * 0.25);
                 actorNew->vel.Z = (actorNew->vel.X * (zh - actorNew->spr.pos.Z)) / dist;
             }
 
@@ -15979,8 +15979,8 @@ int InitSobjMachineGun(DSWActor* actor, PLAYER* pp)
     PlaySound(DIGI_BOATFIRE, pp, v3df_dontpan|v3df_doppler);
 
     auto npos = actor->spr.pos;
-    double dax = 1024.;
-    double daz = npos.Z;
+    float dax = 1024.;
+    float daz = npos.Z;
 
     if (RANDOM_P2(1024) < 200)
         InitTracerTurret(actor, pp->actor, pp->Angles.getPitchWithView());
@@ -15992,7 +15992,7 @@ int InitSobjMachineGun(DSWActor* actor, PLAYER* pp)
     }
     else
     {
-        setFreeAimVelocity(dax, daz, DAngle::fromDeg(min(pp->Angles.getPitchWithView().Degrees(), 11.0515)), 1000 - RandomRangeF(80) + 40);
+        setFreeAimVelocity(dax, daz, DAngle::fromDeg(min(pp->Angles.getPitchWithView().Degrees(), 11.0515f)), 1000 - RandomRangeF(80) + 40);
         daang = actor->spr.Angles.Yaw;
     }
 
@@ -16292,7 +16292,7 @@ DSWActor* SpawnTurretSparks(sectortype* hit_sect, walltype* hit_wall, const DVec
 
 DSWActor* SpawnShotgunSparks(PLAYER* pp, sectortype* hit_sect, walltype* hit_wall, const DVector3& hitpos, DAngle hit_ang)
 {
-    const double SHOTGUN_SMOKE_REPEAT = 0.28125;
+    const float SHOTGUN_SMOKE_REPEAT = 0.28125;
 
     auto actorNew = SpawnActor(STAT_MISSILE, UZI_SPARK, s_UziSpark, hit_sect, hitpos, hit_ang, 0);
 
@@ -16343,7 +16343,7 @@ int InitTurretMgun(SECTOR_OBJECT* sop)
         if (actor->spr.statnum == STAT_SO_SHOOT_POINT)
         {
             auto npos = actor->spr.pos;
-            double daz = npos.Z;
+            float daz = npos.Z;
 
             // if its not operated by a player
             if (sop->Animator)
@@ -16487,7 +16487,7 @@ int InitEnemyUzi(DSWActor* actor)
 {
     DAngle daang;
     HitInfo hit{};
-    double zh;
+    float zh;
     void InitUziShell(PLAYER*);
     static short alternate;
 
@@ -16505,7 +16505,7 @@ int InitEnemyUzi(DSWActor* actor)
     {
         zh = ActorSizeZ(actor) * 0.5;
     }
-    double daz = actor->spr.pos.Z - zh;
+    float daz = actor->spr.pos.Z - zh;
 
     if (AimHitscanToTarget(actor, &daz, &daang, 200) != nullptr)
     {
@@ -16634,7 +16634,7 @@ int InitEnemyUzi(DSWActor* actor)
 int InitGrenade(PLAYER* pp)
 {
     DSWActor* actor = pp->actor;
-    double zvel;
+    float zvel;
     bool auto_aim = false;
 
     DoPlayerBeginRecoil(pp, GRENADE_RECOIL_AMT);
@@ -16815,7 +16815,7 @@ int InitMine(PLAYER* pp)
 
 	UpdateChange(actorNew, 0.5);
 
-	double dot = pp->vect.dot(pp->actor->spr.Angles.Yaw.ToVector());
+	float dot = pp->vect.dot(pp->actor->spr.Angles.Yaw.ToVector());
 
     // don't adjust for strafing
 	// not really sure what to do here as the original formula was very likely to overflow, creating a Q0.32 value.
@@ -16932,7 +16932,7 @@ int InitFireball(PLAYER* pp)
 
     actorNew->user.ceiling_dist = (6);
     actorNew->user.floor_dist = (6);
-    double zvel = 0.;
+    float zvel = 0.;
     setFreeAimVelocity(actorNew->vel.X, zvel, pp->Angles.getPitchWithView(), 120.);
 
     // at certain angles the clipping box was big enough to block the
@@ -16989,12 +16989,12 @@ int InitEnemyFireball(DSWActor* actor)
     // get angle to player and also face player when attacking
     actor->spr.Angles.Yaw = (targetActor->spr.pos.XY() - actor->spr.pos.XY()).Angle();
 
-    double size_z = ActorSizeZ(actor) * 0.625;
-    double nz = actor->spr.pos.Z - size_z + 4;
+    float size_z = ActorSizeZ(actor) * 0.625;
+    float nz = actor->spr.pos.Z - size_z + 4;
 
     auto change = actor->spr.Angles.Yaw.ToVector() * GORO_FIREBALL_VELOCITY;
 
-    double lastvel = 0;
+    float lastvel = 0;
     for (int i = 0; i < 2; i++)
     {
         auto actorNew = SpawnActor(STAT_MISSILE, GORO_FIREBALL, s_Fireball, actor->sector(),
@@ -17019,10 +17019,10 @@ int InitEnemyFireball(DSWActor* actor)
         if (i == 0)
         {
             // find the distance to the target (player)
-            double dist = (actorNew->spr.pos.XY() - targetActor->spr.pos.XY()).Length();
+            float dist = (actorNew->spr.pos.XY() - targetActor->spr.pos.XY()).Length();
 
             // Determine target Z value
-            double targ_z = targetActor->spr.pos.Z - ActorSizeZ(actor) * 0.5;
+            float targ_z = targetActor->spr.pos.Z - ActorSizeZ(actor) * 0.5;
 
             // (velocity * difference between the target and the throwing star) /
             // distance
@@ -17470,7 +17470,7 @@ DSWActor* SpawnBubble(DSWActor* actor)
 
     auto actorNew = SpawnActor(STAT_MISSILE, BUBBLE, s_Bubble, actor->sector(), actor->spr.pos, actor->spr.Angles.Yaw, 0);
 
-    double scale = (8 + (RANDOM_P2(8 << 8) >> 8)) * REPEAT_SCALE;
+    float scale = (8 + (RANDOM_P2(8 << 8) >> 8)) * REPEAT_SCALE;
     actorNew->spr.scale = DVector2(scale, scale);
     // notreallypos
     actorNew->user.pos.XY() = actorNew->spr.scale;
@@ -18096,7 +18096,7 @@ DSWActor* QueueWallBlood(DSWActor* actor, DAngle bang)
     if (actor->user.Flags & (SPR_UNDERWATER) || SpriteInUnderwaterArea(actor) || SpriteInDiveArea(actor))
         return nullptr;   // No blood underwater!
 
-    double daz = RandomRange(128) * 8 - 512;
+    float daz = RandomRange(128) * 8 - 512;
     DAngle dang = bang + RandomAngle(22.5) - DAngle22_5 / 2;
 
     DVector3 vect(dang.ToVector() * 1024, daz);
@@ -18106,7 +18106,7 @@ DSWActor* QueueWallBlood(DSWActor* actor, DAngle bang)
     if (hit.hitSector == nullptr)
         return nullptr;
 
-    const double WALLBLOOD_DIST_MAX = 156.25;
+    const float WALLBLOOD_DIST_MAX = 156.25;
     if ((hit.hitpos.XY() - actor->spr.pos.XY()).Length() > WALLBLOOD_DIST_MAX)
         return nullptr;
 
@@ -18191,11 +18191,11 @@ DSWActor* QueueWallBlood(DSWActor* actor, DAngle bang)
 
 int DoFloorBlood(DSWActor* actor)
 {
-    constexpr double FEET_IN_BLOOD_DIST = 18.75;
+    constexpr float FEET_IN_BLOOD_DIST = 18.75;
 
     short pnum;
     PLAYER* pp;
-    double scale;
+    float scale;
 
 
     if (actor->spr.hitag == 9995)
@@ -18221,7 +18221,7 @@ int DoFloorBlood(DSWActor* actor)
         {
             pp = &Player[pnum];
 
-            double dist = (actor->spr.pos.XY() - pp->actor->spr.pos.XY()).Length();
+            float dist = (actor->spr.pos.XY() - pp->actor->spr.pos.XY()).Length();
 
             if (dist < FEET_IN_BLOOD_DIST)
             {

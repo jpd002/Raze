@@ -72,7 +72,7 @@ void DestroyAnim(DExhumedActor* pActor)
 //
 //---------------------------------------------------------------------------
 
-DExhumedActor* BuildAnim(DExhumedActor* pActor, int val, int val2, const DVector3& pos, sectortype* pSector, double nScale, int nFlag)
+DExhumedActor* BuildAnim(DExhumedActor* pActor, int val, int val2, const DVector3& pos, sectortype* pSector, float nScale, int nFlag)
 {
     if (pActor == nullptr) {
         pActor = insertActor(pSector, 500);
@@ -280,11 +280,11 @@ void BuildExplosion(DExhumedActor* pActor)
 void BuildSplash(DExhumedActor* pActor, sectortype* pSector)
 {
     int nSound;
-	double nScale;
+	float nScale;
 
     if (pActor->spr.statnum != 200)
     {
-		double rep = pActor->spr.scale.X;
+		float rep = pActor->spr.scale.X;
         nScale = rep + RandomFloat(rep);
         nSound = kSound0;
     }

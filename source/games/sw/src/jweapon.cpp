@@ -354,7 +354,7 @@ void SpawnFloorSplash(DSWActor* actor)
 
 int DoBloodSpray(DSWActor* actor)
 {
-    double cz,fz;
+    float cz,fz;
 
     if (actor->user.Flags & (SPR_UNDERWATER))
     {
@@ -457,7 +457,7 @@ int DoBloodSpray(DSWActor* actor)
 
                 actor->vel.X = 0;
                 actor->user.change.X = actor->user.change.Y = 0;
-                double scale = (70 - RandomRange(25)) * REPEAT_SCALE;
+                float scale = (70 - RandomRange(25)) * REPEAT_SCALE;
                 actor->spr.scale = DVector2(scale, scale);
                 actor->spr.pos.XY() = bldActor->spr.pos.XY();
 
@@ -1287,7 +1287,7 @@ int PlayerInitChemBomb(PLAYER* pp)
 
     setFreeAimVelocity(actorNew->vel.X, actorNew->vel.Z, pp->Angles.getPitchWithView(), HORIZ_MULTF);
 
-    double oclipdist = plActor->clipdist;
+    float oclipdist = plActor->clipdist;
     plActor->clipdist = 0;
     actorNew->clipdist = 0;
 
@@ -1313,7 +1313,7 @@ int PlayerInitChemBomb(PLAYER* pp)
 //
 //---------------------------------------------------------------------------
 
-static inline double RandomZVel()
+static inline float RandomZVel()
 {
     return (-100 - RandomRange(100)) * 0.5;
 }
@@ -1434,7 +1434,7 @@ int PlayerInitFlashBomb(PLAYER* pp)
             if (itActor == pp->actor)
                 break;
 
-			double dist = (itActor->spr.pos.XY() - actor->spr.pos.XY()).Length();
+			float dist = (itActor->spr.pos.XY() - actor->spr.pos.XY()).Length();
             if (dist > 1024)           // Flash radius
                 continue;
 
@@ -1498,7 +1498,7 @@ int InitFlashBomb(DSWActor* actor)
         SWStatIterator it(StatDamageList[stat]);
         while (auto itActor = it.Next())
         {
-            double dist = (itActor->spr.pos.XY() - actor->spr.pos.XY()).Length();
+            float dist = (itActor->spr.pos.XY() - actor->spr.pos.XY()).Length();
             if (dist > 1024)           // Flash radius
                 continue;
 
@@ -1559,7 +1559,7 @@ void SpawnFlashBombOnActor(DSWActor* actor)
         DSWActor* flameActor = actor->user.flameActor;
         if (flameActor != nullptr)
         {
-            double sizez = ActorSizeZ(actor) * 1.25;
+            float sizez = ActorSizeZ(actor) * 1.25;
 
             if (flameActor->user.Counter >= GetRepeatFromHeight(flameActor, sizez))
             {
@@ -1657,7 +1657,7 @@ int PlayerInitCaltrops(PLAYER* pp)
 
     setFreeAimVelocity(actorNew->vel.X, actorNew->vel.Z, pp->Angles.getPitchWithView(), HORIZ_MULTF);
 
-    double oclipdist = plActor->clipdist;
+    float oclipdist = plActor->clipdist;
     plActor->clipdist = 0;
     actorNew->clipdist = 0;
 
@@ -1865,7 +1865,7 @@ void DoFlagScore(int16_t pal)
 //
 //---------------------------------------------------------------------------
 
-DSWActor* DoFlagRangeTest(DSWActor* actor, double range)
+DSWActor* DoFlagRangeTest(DSWActor* actor, float range)
 {
     unsigned int stat;
 
@@ -1874,7 +1874,7 @@ DSWActor* DoFlagRangeTest(DSWActor* actor, double range)
         SWStatIterator it(StatDamageList[stat]);
         while (auto itActor = it.Next())
         {
-            double dist = (itActor->spr.pos - actor->spr.pos).LengthSquared();
+            float dist = (itActor->spr.pos - actor->spr.pos).LengthSquared();
             if (dist > range * range)
                 continue;
 
@@ -2172,7 +2172,7 @@ int DoFlag(DSWActor* actor)
 int SpawnShell(DSWActor* actor, int ShellNum)
 {
     short id = 0;
-    double velocity = 0;
+    float velocity = 0;
     STATE* p=nullptr;
     extern STATE s_UziShellShrap[];
     extern STATE s_ShotgunShellShrap[];

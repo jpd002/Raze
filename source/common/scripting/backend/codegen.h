@@ -117,7 +117,7 @@ struct ExpVal
 	union
 	{
 		int Int;
-		double Float;
+		float Float;
 		void *pointer;
 	};
 
@@ -184,10 +184,10 @@ struct ExpVal
 		return regtype == REGT_INT ? unsigned(Int) : regtype == REGT_FLOAT ? unsigned(Float) : 0;
 	}
 
-	double GetFloat() const
+	float GetFloat() const
 	{
 		int regtype = Type->GetRegType();
-		return regtype == REGT_INT ? (Type == TypeUInt32? double(unsigned(Int)) : double(Int)) : regtype == REGT_FLOAT ? Float : 0;
+		return regtype == REGT_INT ? (Type == TypeUInt32? float(unsigned(Int)) : float(Int)) : regtype == REGT_FLOAT ? Float : 0;
 	}
 
 	void *GetPointer() const
@@ -443,7 +443,7 @@ public:
 		isresolved = true;
 	}
 
-	FxConstant(double val, const FScriptPosition &pos) : FxExpression(EFX_Constant, pos)
+	FxConstant(float val, const FScriptPosition &pos) : FxExpression(EFX_Constant, pos)
 	{
 		ValueType = value.Type = TypeFloat64;
 		value.Float = val;

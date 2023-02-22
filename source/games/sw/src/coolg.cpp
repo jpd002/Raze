@@ -645,10 +645,10 @@ int DoCoolgMatchPlayerZ(DSWActor* actor)
 
     // actor does a sine wave about sz - this is the z mid point
 
-    double zdiff = (ActorZOfMiddle(actor->user.targetActor)) - actor->user.pos.Z;
+    float zdiff = (ActorZOfMiddle(actor->user.targetActor)) - actor->user.pos.Z;
 
     // check z diff of the player and the sprite
-    double zdist = 20 + RandomRange(100); // put a random amount
+    float zdist = 20 + RandomRange(100); // put a random amount
     //zdist = Z(20);
     if (abs(zdiff) > zdist)
     {
@@ -659,14 +659,14 @@ int DoCoolgMatchPlayerZ(DSWActor* actor)
     }
 
     // save off lo and hi z
-    double loz = actor->user.loz;
-    double hiz = actor->user.hiz;
+    float loz = actor->user.loz;
+    float hiz = actor->user.hiz;
 
     // adjust loz/hiz for water depth
     if (actor->user.lo_sectp && actor->user.lo_sectp->hasU() && FixedToInt(actor->user.lo_sectp->depth_fixed))
         loz -= FixedToInt(actor->user.lo_sectp->depth_fixed) - 8;
 
-    double bound;
+    float bound;
     // lower bound
     if (actor->user.lowActor)
         bound = loz - actor->user.floor_dist;
@@ -748,7 +748,7 @@ int InitCoolgCircle(DSWActor* actor)
 
 int DoCoolgCircle(DSWActor* actor)
 {
-    double bound;
+    float bound;
 
     actor->spr.Angles.Yaw += mapangle(actor->user.Counter2);
 

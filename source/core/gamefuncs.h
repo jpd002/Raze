@@ -203,32 +203,32 @@ inline void dragpoint(walltype* startwall, const DVector2& pos)
 //
 //---------------------------------------------------------------------------
 
-extern double cameradist, cameraclock;
+extern float cameradist, cameraclock;
 
-bool calcChaseCamPos(DVector3& ppos, DCoreActor* pspr, sectortype** psectnum, const DRotator& angles, double const interpfrac, double const backamp);
-int getslopeval(sectortype* sect, const DVector3& pos, double bazez);
+bool calcChaseCamPos(DVector3& ppos, DCoreActor* pspr, sectortype** psectnum, const DRotator& angles, float const interpfrac, float const backamp);
+int getslopeval(sectortype* sect, const DVector3& pos, float bazez);
 bool cansee(const DVector3& start, sectortype* sect1, const DVector3& end, sectortype* sect2);
-double intersectSprite(DCoreActor* actor, const DVector3& start, const DVector3& direction, DVector3& result, double maxfactor);
-double intersectWallSprite(DCoreActor* actor, const DVector3& start, const DVector3& direction, DVector3& result, double maxfactor, bool checktex = false);
-double intersectFloorSprite(DCoreActor* actor, const DVector3& start, const DVector3& direction, DVector3& result, double maxfactor);
-double intersectSlopeSprite(DCoreActor* actor, const DVector3& start, const DVector3& direction, DVector3& result, double maxfactor);
-double checkWallHit(walltype* wal, EWallFlags flagmask, const DVector3& start, const DVector3& direction, DVector3& result, double maxfactor);
-double checkSectorPlaneHit(sectortype* sec, const DVector3& start, const DVector3& direction, DVector3& result, double maxfactor);
-void neartag(const DVector3& start, sectortype* sect, DAngle angle, HitInfoBase& result, double neartagrange, int tagsearch);
+float intersectSprite(DCoreActor* actor, const DVector3& start, const DVector3& direction, DVector3& result, float maxfactor);
+float intersectWallSprite(DCoreActor* actor, const DVector3& start, const DVector3& direction, DVector3& result, float maxfactor, bool checktex = false);
+float intersectFloorSprite(DCoreActor* actor, const DVector3& start, const DVector3& direction, DVector3& result, float maxfactor);
+float intersectSlopeSprite(DCoreActor* actor, const DVector3& start, const DVector3& direction, DVector3& result, float maxfactor);
+float checkWallHit(walltype* wal, EWallFlags flagmask, const DVector3& start, const DVector3& direction, DVector3& result, float maxfactor);
+float checkSectorPlaneHit(sectortype* sec, const DVector3& start, const DVector3& direction, DVector3& result, float maxfactor);
+void neartag(const DVector3& start, sectortype* sect, DAngle angle, HitInfoBase& result, float neartagrange, int tagsearch);
 int testpointinquad(const DVector2& pt, const DVector2* quad);
-int hitscan(const DVector3& start, const sectortype* startsect, const DVector3& vect, HitInfoBase& hitinfo, unsigned cliptype, double maxrange = -1);
+int hitscan(const DVector3& start, const sectortype* startsect, const DVector3& vect, HitInfoBase& hitinfo, unsigned cliptype, float maxrange = -1);
 
-bool checkRangeOfWall(walltype* wal, EWallFlags flagmask, const DVector3& pos, double maxdist, double* theZs);
-bool checkRangeOfFaceSprite(DCoreActor* itActor, const DVector3& pos, double maxdist, double* theZs);
-bool checkRangeOfWallSprite(DCoreActor* itActor, const DVector3& pos, double maxdist, double* theZs);
-bool checkRangeOfFloorSprite(DCoreActor* itActor, const DVector3& pos, double maxdist, double& theZ);
-void getzrange(const DVector3& pos, sectortype* sect, double* ceilz, CollisionBase& ceilhit, double* florz, CollisionBase& florhit, double walldist, uint32_t cliptype);
+bool checkRangeOfWall(walltype* wal, EWallFlags flagmask, const DVector3& pos, float maxdist, float* theZs);
+bool checkRangeOfFaceSprite(DCoreActor* itActor, const DVector3& pos, float maxdist, float* theZs);
+bool checkRangeOfWallSprite(DCoreActor* itActor, const DVector3& pos, float maxdist, float* theZs);
+bool checkRangeOfFloorSprite(DCoreActor* itActor, const DVector3& pos, float maxdist, float& theZ);
+void getzrange(const DVector3& pos, sectortype* sect, float* ceilz, CollisionBase& ceilhit, float* florz, CollisionBase& florhit, float walldist, uint32_t cliptype);
 
-bool checkOpening(const DVector2& inpos, double z, const sectortype* sec, const sectortype* nextsec, double ceilingdist, double floordist, bool precise = false);
-int pushmove(DVector3& pos, sectortype** pSect, double walldist, double ceildist, double flordist, unsigned cliptype);
+bool checkOpening(const DVector2& inpos, float z, const sectortype* sec, const sectortype* nextsec, float ceilingdist, float floordist, bool precise = false);
+int pushmove(DVector3& pos, sectortype** pSect, float walldist, float ceildist, float flordist, unsigned cliptype);
 tspritetype* renderAddTsprite(tspriteArray& tsprites, DCoreActor* actor);
 
-inline int pushmove(DVector2& pos, double z, sectortype** pSect, double walldist, double ceildist, double flordist, unsigned cliptype)
+inline int pushmove(DVector2& pos, float z, sectortype** pSect, float walldist, float ceildist, float flordist, unsigned cliptype)
 {
 	auto vect = DVector3(pos, z);
 	auto result = pushmove(vect, pSect, walldist, ceildist, flordist, cliptype);
@@ -246,8 +246,8 @@ tspritetype* renderAddTsprite(tspriteArray& tsprites, DCoreActor* actor);
 
 void setWallSectors();
 void GetWallSpritePosition(const spritetypebase* spr, const DVector2& pos, DVector2* out, bool render = false);
-void GetFlatSpritePosition(DCoreActor* spr, const DVector2& pos, DVector2* out, double* outz = nullptr, bool render = false);
-void GetFlatSpritePosition(const tspritetype* spr, const DVector2& pos, DVector2* out, double* outz, bool render = false);
+void GetFlatSpritePosition(DCoreActor* spr, const DVector2& pos, DVector2* out, float* outz = nullptr, bool render = false);
+void GetFlatSpritePosition(const tspritetype* spr, const DVector2& pos, DVector2* out, float* outz, bool render = false);
 
 enum class EClose
 {
@@ -255,12 +255,12 @@ enum class EClose
 	InFront,
 	Behind
 };
-EClose IsCloseToLine(const DVector2& vect, const DVector2& start, const DVector2& end, double walldist);
-EClose IsCloseToWall(const DVector2& vect, walltype* wal, double walldist);
+EClose IsCloseToLine(const DVector2& vect, const DVector2& start, const DVector2& end, float walldist);
+EClose IsCloseToWall(const DVector2& vect, walltype* wal, float walldist);
 
 bool sectorsConnected(int sect1, int sect2);
-int inside(double x, double y, const sectortype* sect);
-int insidePoly(double x, double y, const DVector2* points, int count);
+int inside(float x, float y, const sectortype* sect);
+int insidePoly(float x, float y, const DVector2* points, int count);
 
 enum {
 	NT_Lotag = 1,
@@ -275,7 +275,7 @@ enum {
 //
 //==========================================================================
 
-void calcSlope(const sectortype* sec, double xpos, double ypos, double* pceilz, double* pflorz);
+void calcSlope(const sectortype* sec, float xpos, float ypos, float* pceilz, float* pflorz);
 
 //==========================================================================
 //
@@ -285,7 +285,7 @@ void calcSlope(const sectortype* sec, double xpos, double ypos, double* pceilz, 
 
 inline void PlanesAtPoint(const sectortype* sec, float dax, float day, float* pceilz, float* pflorz)
 {
-	double f, c;
+	float f, c;
 	calcSlope(sec, dax, day, &c, &f);
 	if (pceilz) *pceilz = -float(c);
 	if (pflorz) *pflorz = -float(f);
@@ -299,30 +299,30 @@ inline void PlanesAtPoint(const sectortype* sec, float dax, float day, float* pc
 //==========================================================================
 
 template<class Vector>
-inline void calcSlope(const sectortype* sec, const Vector& pos, double* ceilz, double* florz)
+inline void calcSlope(const sectortype* sec, const Vector& pos, float* ceilz, float* florz)
 {
 	calcSlope(sec, pos.X, pos.Y, ceilz, florz);
 }
 
-inline double getceilzofslopeptr(const sectortype* sec, double dax, double day)
+inline float getceilzofslopeptr(const sectortype* sec, float dax, float day)
 {
-	double c;
+	float c;
 	calcSlope(sec, dax, day, &c, nullptr);
 	return c;
 }
-inline double getflorzofslopeptr(const sectortype* sec, double dax, double day)
+inline float getflorzofslopeptr(const sectortype* sec, float dax, float day)
 {
-	double f;
+	float f;
 	calcSlope(sec, dax, day, nullptr, &f);
 	return f;
 }
 template<class Vector>
-inline double getceilzofslopeptr(const sectortype* sec, const Vector& pos)
+inline float getceilzofslopeptr(const sectortype* sec, const Vector& pos)
 {
 	return getceilzofslopeptr(sec, pos.X, pos.Y);
 }
 template<class Vector>
-inline double getflorzofslopeptr(const sectortype* sec, const Vector& pos)
+inline float getflorzofslopeptr(const sectortype* sec, const Vector& pos)
 {
 	return getflorzofslopeptr(sec, pos.X, pos.Y);
 }
@@ -370,10 +370,10 @@ inline int tspriteGetSlope(const tspritetype* spr)
 	return !(spr->clipdist & TSPR_SLOPESPRITE) ? 0 : uint8_t(spr->xoffset) + (int8_t(spr->yoffset) << 8);
 }
 
-inline double spriteGetZOfSlopef(const spritetypebase* tspr, const DVector2& pos, int heinum)
+inline float spriteGetZOfSlopef(const spritetypebase* tspr, const DVector2& pos, int heinum)
 {
 	if (heinum == 0) return tspr->pos.Z;
-	return tspr->pos.Z + heinum * -tspr->Angles.Yaw.ToVector().dot(pos - tspr->pos.XY()) * (1. / SLOPEVAL_FACTOR);
+	return tspr->pos.Z + heinum * -tspr->Angles.Yaw.ToVector().dot(pos - tspr->pos.XY()) * (1.f / SLOPEVAL_FACTOR);
 }
 
 //==========================================================================
@@ -398,13 +398,13 @@ enum EFindNextSector
 	Find_FloorUp = Find_Floor | Find_Up,
 	Find_FloorDown = Find_Floor | Find_Down,
 };
-sectortype* nextsectorneighborzptr(sectortype* sectp, double startz, int flags);
-int isAwayFromWall(DCoreActor* ac, double delta);
+sectortype* nextsectorneighborzptr(sectortype* sectp, float startz, int flags);
+int isAwayFromWall(DCoreActor* ac, float delta);
 
 
 // important note: This returns positive for 'in front' with renderer coordinates.
 // Due to Build's inverted coordinate system it will return negative for 'in front' there.
-inline double PointOnLineSide(const DVector2 &pos, const walltype *line)
+inline float PointOnLineSide(const DVector2 &pos, const walltype *line)
 {
 	return (pos.X - line->pos.X) * line->delta().Y - (pos.Y - line->pos.Y) * line->delta().X;
 }
@@ -441,26 +441,26 @@ inline int sectindex(const sectortype* sect)
 	return sector.IndexOf(sect);
 }
 
-inline DVector2 NearestPointOnWall(double px, double py, const walltype* wal, bool clamp = true)
+inline DVector2 NearestPointOnWall(float px, float py, const walltype* wal, bool clamp = true)
 {
 	return NearestPointOnLine(px, py, wal->pos.X, wal->pos.Y, wal->point2Wall()->pos.X, wal->point2Wall()->pos.Y, clamp);
 }
 
-inline double SquareDistToWall(double px, double py, const walltype* wal, DVector2* point = nullptr) 
+inline float SquareDistToWall(float px, float py, const walltype* wal, DVector2* point = nullptr) 
 {
 	auto pt = NearestPointOnWall(px, py, wal);
 	if (point) *point = pt;
 	return SquareDist(px, py, pt.X, pt.Y);
 }
 
-double SquareDistToSector(double px, double py, const sectortype* sect, DVector2* point = nullptr);
+float SquareDistToSector(float px, float py, const sectortype* sect, DVector2* point = nullptr);
 
-inline double BobVal(int val)
+inline float BobVal(int val)
 {
 	return g_sinbam((unsigned)val << 21);
 }
 
-inline double BobVal(double val)
+inline float BobVal(float val)
 {
 	return g_sinbam(xs_CRoundToUInt(val * (1 << 21)));
 }
@@ -480,7 +480,7 @@ inline DAngle ClampViewPitch(const DAngle pitch)
 	return clamp(pitch, GetMaxPitch(), GetMinPitch());
 }
 
-inline void setFreeAimVelocity(double& vel, double& zvel, const DAngle pitch, const double zvspeed)
+inline void setFreeAimVelocity(float& vel, float& zvel, const DAngle pitch, const float zvspeed)
 {
 	vel *= pitch.Cos();
 	zvel = pitch.Sin() * zvspeed;

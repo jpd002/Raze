@@ -118,7 +118,7 @@ static int ccmd_spawn(CCmdFuncPtr parm)
 	return CCMD_OK;
 }
 
-void GameInterface::WarpToCoords(double x, double y, double z, DAngle ang)
+void GameInterface::WarpToCoords(float x, float y, float z, DAngle ang)
 {
 	player_struct* p = &ps[myconnectindex];
 	auto pActor = p->GetActor();

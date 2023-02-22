@@ -262,7 +262,7 @@ bool ScreenJobTick()
 
 void ScreenJobDraw()
 {
-	double smoothratio = I_GetTimeFrac();
+	float smoothratio = I_GetTimeFrac();
 
 	if (cutscene.runner)
 	{

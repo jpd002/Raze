@@ -63,7 +63,7 @@ void BounceGrenade(DExhumedActor* pActor, DAngle nAngle)
 //
 //---------------------------------------------------------------------------
 
-void ThrowGrenade(int nPlayer, double dz, double push1)
+void ThrowGrenade(int nPlayer, float dz, float push1)
 {
     if (PlayerList[nPlayer].pPlayerGrenade == nullptr)
         return;
@@ -167,7 +167,7 @@ void BuildGrenade(int nPlayer)
 void ExplodeGrenade(DExhumedActor* pActor)
 {
     int var_28;
-	double scale;
+	float scale;
 
     int nPlayer = pActor->spr.intowner;
     auto pGrenadeSect = pActor->sector();
@@ -318,7 +318,7 @@ void AIGrenade::Tick(RunListEvent* ev)
             return;
         }
 
-        double zVel = pActor->vel.Z;
+        float zVel = pActor->vel.Z;
 
         Gravity(pActor);
         auto nMov = movesprite(pActor, pActor->vec, pActor->vel.Z, pActor->clipdist / 128., CLIPMASK1);

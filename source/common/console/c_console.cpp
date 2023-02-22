@@ -78,11 +78,11 @@ CUSTOM_CVAR(Int, con_buffersize, -1, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
 	if (self >= 0 && self < 128) self = 128;
 }
 
-double NotifyFontScale = 1;
+float NotifyFontScale = 1;
 
 DEFINE_GLOBAL(NotifyFontScale)
 
-void C_SetNotifyFontScale(double scale)
+void C_SetNotifyFontScale(float scale)
 {
 	NotifyFontScale = scale;
 }
@@ -214,7 +214,7 @@ CUSTOM_CVAR (Int, msgmidcolor2, CR_BROWN, CVAR_ARCHIVE)
 	setmsgcolor (PRINTLEVELS+1, self);
 }
 
-void C_InitConback(FTextureID fallback, bool tile, double brightness)
+void C_InitConback(FTextureID fallback, bool tile, float brightness)
 {
 	conback = TexMan.CheckForTexture ("CONBACK", ETextureType::MiscPatch);
 	conflat = fallback;
@@ -593,7 +593,7 @@ void C_DrawConsole ()
 				DTA_DestWidth, twod->GetWidth(),
 				DTA_DestHeight, twod->GetHeight(),
 				DTA_ColorOverlay, conshade,
-				DTA_Alpha, (gamestate != GS_FULLCONSOLE) ? (double)con_alpha : 1.,
+				DTA_Alpha, (gamestate != GS_FULLCONSOLE) ? (float)con_alpha : 1.,
 				DTA_Masked, false,
 				TAG_DONE);
 		}

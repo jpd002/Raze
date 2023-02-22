@@ -120,7 +120,7 @@ private:
 			auto tmp = newTempXmmSd();
 
 			const int64_t absMaskInt = 0x7FFFFFFFFFFFFFFF;
-			auto absMask = cc.newDoubleConst(asmjit::kConstScopeLocal, reinterpret_cast<const double&>(absMaskInt));
+			auto absMask = cc.newDoubleConst(asmjit::kConstScopeLocal, reinterpret_cast<const float&>(absMaskInt));
 			auto absMaskXmm = newTempXmmPd();
 
 			auto epsilon = cc.newDoubleConst(asmjit::kConstScopeLocal, VM_EPSILON);
@@ -282,7 +282,7 @@ private:
 	asmjit::X86Gp callReturns;
 
 	const int *konstd;
-	const double *konstf;
+	const float *konstf;
 	const FString *konsts;
 	const FVoidObj *konsta;
 

@@ -61,12 +61,12 @@ public:
 
 	// Returns the constant register holding the value.
 	unsigned GetConstantInt(int val);
-	unsigned GetConstantFloat(double val);
+	unsigned GetConstantFloat(float val);
 	unsigned GetConstantAddress(void *ptr);
 	unsigned GetConstantString(FString str);
 
 	unsigned AllocConstantsInt(unsigned int count, int *values);
-	unsigned AllocConstantsFloat(unsigned int count, double *values);
+	unsigned AllocConstantsFloat(unsigned int count, float *values);
 	unsigned AllocConstantsAddress(unsigned int count, void **ptrs);
 	unsigned AllocConstantsString(unsigned int count, FString *ptrs);
 
@@ -88,7 +88,7 @@ public:
 
 	// Write out complete constant tables.
 	void FillIntConstants(int *konst);
-	void FillFloatConstants(double *konst);
+	void FillFloatConstants(float *konst);
 	void FillAddressConstants(FVoidObj *konst);
 	void FillStringConstants(FString *strings);
 
@@ -110,12 +110,12 @@ private:
 	TArray<FxExpression *> StatementStack;
 
 	TArray<int> IntConstantList;
-	TArray<double> FloatConstantList;
+	TArray<float> FloatConstantList;
 	TArray<void *> AddressConstantList;
 	TArray<FString> StringConstantList;
 	// These map from the constant value to its position in the constant table.
 	TMap<int, unsigned> IntConstantMap;
-	TMap<double, unsigned> FloatConstantMap;
+	TMap<float, unsigned> FloatConstantMap;
 	TMap<void *, unsigned> AddressConstantMap;
 	TMap<FString, unsigned> StringConstantMap;
 
@@ -197,7 +197,7 @@ public:
 	void AddParameter(ExpEmit &emit, bool reference);
 	void AddParameterPointerConst(void *konst);
 	void AddParameterPointer(int index, bool konst);
-	void AddParameterFloatConst(double konst);
+	void AddParameterFloatConst(float konst);
 	void AddParameterIntConst(int konst);
 	void AddParameterStringConst(const FString &konst);
 	ExpEmit EmitCall(VMFunctionBuilder *build, TArray<ExpEmit> *ReturnRegs = nullptr);

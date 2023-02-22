@@ -55,8 +55,8 @@
 // make this a local inline function to avoid any dependencies on other headers and not pollute the global namespace
 namespace pi
 {
-	inline constexpr double pi() { return 3.14159265358979323846; }
-	inline constexpr double pif() { return 3.14159265358979323846f; }
+	inline constexpr float pi() { return 3.14159265358979323846f; }
+	inline constexpr float pif() { return 3.14159265358979323846f; }
 }
 
 
@@ -144,7 +144,7 @@ struct TVector2
 
 	// Scalar addition
 #if 0
-	TVector2 &operator+= (double scalar)
+	TVector2 &operator+= (float scalar)
 	{
 		X += scalar, Y += scalar;
 		return *this;
@@ -238,7 +238,7 @@ struct TVector2
 		return X*X + Y*Y;
 	}
 	
-	double Sum() const
+	float Sum() const
 	{
 		return abs(X) + abs(Y);
 	}
@@ -263,20 +263,20 @@ struct TVector2
 	}
 
 	// Resizes this vector to be the specified length (if it is not 0)
-	TVector2 &MakeResize(double len)
+	TVector2 &MakeResize(float len)
 	{
-		double scale = len / Length();
+		float scale = len / Length();
 		X = vec_t(X * scale);
 		Y = vec_t(Y * scale);
 		return *this;
 	}
 
-	TVector2 Resized(double len) const
+	TVector2 Resized(float len) const
 	{
-		double vlen = Length();
+		float vlen = Length();
 		if (vlen != 0.)
 		{
-			double scale = len / vlen;
+			float scale = len / vlen;
 			return{ vec_t(X * scale), vec_t(Y * scale) };
 		}
 		else
@@ -300,10 +300,10 @@ struct TVector2
 	TAngle<vec_t> Angle() const;
 
 	// Returns a rotated vector. angle is in degrees.
-	TVector2 Rotated (double angle) const
+	TVector2 Rotated (float angle) const
 	{
-		double cosval = g_cosdeg (angle);
-		double sinval = g_sindeg (angle);
+		float cosval = g_cosdeg (angle);
+		float sinval = g_sindeg (angle);
 		return TVector2(X*cosval - Y*sinval, Y*cosval + X*sinval);
 	}
 
@@ -311,13 +311,13 @@ struct TVector2
 	template<class T>
 	TVector2 Rotated(TAngle<T> angle) const
 	{
-		double cosval = angle.Cos();
-		double sinval = angle.Sin();
+		float cosval = angle.Cos();
+		float sinval = angle.Sin();
 		return TVector2(X*cosval - Y*sinval, Y*cosval + X*sinval);
 	}
 
 	// Returns a rotated vector. angle is in degrees.
-	TVector2 Rotated(const double cosval, const double sinval) const
+	TVector2 Rotated(const float cosval, const float sinval) const
 	{
 		return TVector2(X*cosval - Y*sinval, Y*cosval + X*sinval);
 	}
@@ -377,7 +377,7 @@ struct TVector3
 		return X == 0 && Y == 0 && Z == 0;
 	}
 
-	TVector3 plusZ(double z) const
+	TVector3 plusZ(float z) const
 	{
 		return { X, Y, Z + z };
 	}
@@ -611,17 +611,17 @@ struct TVector3
 	TAngle<vec_t> Pitch() const;
 
 	// Vector length
-	double Length() const
+	float Length() const
 	{
 		return g_sqrt (LengthSquared());
 	}
 
-	double LengthSquared() const
+	float LengthSquared() const
 	{
 		return X*X + Y*Y + Z*Z;
 	}
 	
-	double Sum() const
+	float Sum() const
 	{
 		return abs(X) + abs(Y) + abs(Z);
 	}
@@ -630,7 +630,7 @@ struct TVector3
 	// Return a unit vector facing the same direction as this one
 	TVector3 Unit() const
 	{
-		double len = Length();
+		float len = Length();
 		if (len != 0) len = 1 / len;
 		return *this * (vec_t)len;
 	}
@@ -638,18 +638,18 @@ struct TVector3
 	// Scales this vector into a unit vector
 	void MakeUnit()
 	{
-		double len = Length();
+		float len = Length();
 		if (len != 0) len = 1 / len;
 		*this *= (vec_t)len;
 	}
 
 	// Resizes this vector to be the specified length (if it is not 0)
-	TVector3 &MakeResize(double len)
+	TVector3 &MakeResize(float len)
 	{
-		double vlen = Length();
+		float vlen = Length();
 		if (vlen != 0.)
 		{
-			double scale = len / vlen;
+			float scale = len / vlen;
 			X = vec_t(X * scale);
 			Y = vec_t(Y * scale);
 			Z = vec_t(Z * scale);
@@ -657,12 +657,12 @@ struct TVector3
 		return *this;
 	}
 
-	TVector3 Resized(double len) const
+	TVector3 Resized(float len) const
 	{
-		double vlen = Length();
+		float vlen = Length();
 		if (vlen != 0.)
 		{
-			double scale = len / vlen;
+			float scale = len / vlen;
 			return{ vec_t(X * scale), vec_t(Y * scale), vec_t(Z * scale) };
 		}
 		else
@@ -926,17 +926,17 @@ struct TVector4
 	}
 
 	// Vector length
-	double Length() const
+	float Length() const
 	{
 		return g_sqrt(LengthSquared());
 	}
 
-	double LengthSquared() const
+	float LengthSquared() const
 	{
 		return X*X + Y*Y + Z*Z + W*W;
 	}
 	
-	double Sum() const
+	float Sum() const
 	{
 		return abs(X) + abs(Y) + abs(Z) + abs(W);
 	}
@@ -945,7 +945,7 @@ struct TVector4
 	// Return a unit vector facing the same direction as this one
 	TVector4 Unit() const
 	{
-		double len = Length();
+		float len = Length();
 		if (len != 0) len = 1 / len;
 		return *this * (vec_t)len;
 	}
@@ -953,18 +953,18 @@ struct TVector4
 	// Scales this vector into a unit vector
 	void MakeUnit()
 	{
-		double len = Length();
+		float len = Length();
 		if (len != 0) len = 1 / len;
 		*this *= (vec_t)len;
 	}
 
 	// Resizes this vector to be the specified length (if it is not 0)
-	TVector4 &MakeResize(double len)
+	TVector4 &MakeResize(float len)
 	{
-		double vlen = Length();
+		float vlen = Length();
 		if (vlen != 0.)
 		{
-			double scale = len / vlen;
+			float scale = len / vlen;
 			X = vec_t(X * scale);
 			Y = vec_t(Y * scale);
 			Z = vec_t(Z * scale);
@@ -973,12 +973,12 @@ struct TVector4
 		return *this;
 	}
 
-	TVector4 Resized(double len) const 
+	TVector4 Resized(float len) const 
 	{
-		double vlen = Length();
+		float vlen = Length();
 		if (vlen != 0.)
 		{
-			double scale = len / vlen;
+			float scale = len / vlen;
 			return{ vec_t(X * scale), vec_t(Y * scale), vec_t(Z * scale), vec_t(W * scale) };
 		}
 		else
@@ -1019,9 +1019,9 @@ struct TMatrix3x3
 
 	// Construct a rotation matrix about an arbitrary axis.
 	// (The axis vector must be normalized.)
-	TMatrix3x3(const Vector3 &axis, double radians)
+	TMatrix3x3(const Vector3 &axis, float radians)
 	{
-		double c = g_cos(radians), s = g_sin(radians), t = 1 - c;
+		float c = g_cos(radians), s = g_sin(radians), t = 1 - c;
 /* In comments: A more readable version of the matrix setup.
 This was found in Diana Gruber's article "The Mathematics of the
 3D Rotation Matrix" at <http://www.makegames.com/3drotation/> and is
@@ -1041,8 +1041,8 @@ attributed to Graphics Gems (Glassner, Academic Press, 1990).
 
 Outside comments: A faster version with only 10 (not 24) multiplies.
 */
-		double sx = s*axis.X, sy = s*axis.Y, sz = s*axis.Z;
-		double tx, ty, txx, tyy, u, v;
+		float sx = s*axis.X, sy = s*axis.Y, sz = s*axis.Z;
+		float tx, ty, txx, tyy, u, v;
 
 		tx = t*axis.X;
 		Cells[0][0] = vec_t( (txx=tx*axis.X) + c );
@@ -1059,11 +1059,11 @@ Outside comments: A faster version with only 10 (not 24) multiplies.
 		Cells[2][2] = vec_t(     (t-txx-tyy) + c );
 	}
 
-	TMatrix3x3(const Vector3 &axis, double c/*cosine*/, double s/*sine*/)
+	TMatrix3x3(const Vector3 &axis, float c/*cosine*/, float s/*sine*/)
 	{
-		double t = 1 - c;
-		double sx = s*axis.X, sy = s*axis.Y, sz = s*axis.Z;
-		double tx, ty, txx, tyy, u, v;
+		float t = 1 - c;
+		float sx = s*axis.X, sy = s*axis.Y, sz = s*axis.Z;
+		float tx, ty, txx, tyy, u, v;
 
 		tx = t*axis.X;
 		Cells[0][0] = vec_t( (txx=tx*axis.X) + c );
@@ -1082,10 +1082,10 @@ Outside comments: A faster version with only 10 (not 24) multiplies.
 
 	TMatrix3x3(const Vector3 &axis, TAngle<vec_t> degrees);
 
-	static TMatrix3x3 Rotate2D(double radians)
+	static TMatrix3x3 Rotate2D(float radians)
 	{
-		double c = g_cos(radians);
-		double s = g_sin(radians);
+		float c = g_cos(radians);
+		float s = g_sin(radians);
 		TMatrix3x3 ret;
 		ret.Cells[0][0] = c; ret.Cells[0][1] = -s; ret.Cells[0][2] = 0;
 		ret.Cells[1][0] = s; ret.Cells[1][1] =  c; ret.Cells[1][2] = 0;
@@ -1134,7 +1134,7 @@ Outside comments: A faster version with only 10 (not 24) multiplies.
 	}
 
 	// Multiply a scalar
-	TMatrix3x3 &operator*= (double scalar)
+	TMatrix3x3 &operator*= (float scalar)
 	{
 		(*this)[0] *= scalar;
 		(*this)[1] *= scalar;
@@ -1142,23 +1142,23 @@ Outside comments: A faster version with only 10 (not 24) multiplies.
 		return *this;
 	}
 
-	friend TMatrix3x3 operator* (double s, const TMatrix3x3 &m)
+	friend TMatrix3x3 operator* (float s, const TMatrix3x3 &m)
 	{
 		return TMatrix3x3(m[0]*s, m[1]*s, m[2]*s);
 	}
 
-	TMatrix3x3 operator* (double s) const
+	TMatrix3x3 operator* (float s) const
 	{
 		return TMatrix3x3((*this)[0]*s, (*this)[1]*s, (*this)[2]*s);
 	}
 
 	// Divide a scalar
-	TMatrix3x3 &operator/= (double scalar)
+	TMatrix3x3 &operator/= (float scalar)
 	{
 		return *this *= 1 / scalar;
 	}
 
-	TMatrix3x3 operator/ (double s) const
+	TMatrix3x3 operator/ (float s) const
 	{
 		return *this * (1 / s);
 	}
@@ -1248,10 +1248,12 @@ private:
 		: Degrees_((vec_t)amt)
 	{
 	}
-	constexpr TAngle (double amt)
+#if 0
+	constexpr TAngle (float amt)
 		: Degrees_((vec_t)amt)
 	{
 	}
+#endif
 public:
 
 	vec_t& Degrees__() { return Degrees_; }
@@ -1260,10 +1262,12 @@ public:
 	{
 		return TAngle(deg);
 	}
-	static constexpr TAngle fromDeg(double deg)
+#if 0
+	static constexpr TAngle fromDeg(float deg)
 	{
 		return TAngle(deg);
 	}
+#endif
 	static constexpr TAngle fromDeg(int deg)
 	{
 		return TAngle((vec_t)deg);
@@ -1277,18 +1281,20 @@ public:
 	{
 		return TAngle(float(rad * (180.0f / pi::pif())));
 	}
-	static constexpr TAngle fromRad(double rad)
+#if 0
+	static constexpr TAngle fromRad(float rad)
 	{
-		return TAngle(double(rad * (180.0 / pi::pi())));
+		return TAngle(float(rad * (180.0 / pi::pi())));
 	}
+#endif
 
 	static constexpr TAngle fromBam(int f)
 	{
-		return TAngle(f * (90. / 0x40000000));
+		return TAngle(f * (90.f / 0x40000000));
 	}
 	static constexpr TAngle fromBam(unsigned f)
 	{
-		return TAngle(f * (90. / 0x40000000));
+		return TAngle(f * (90.f / 0x40000000));
 	}
 #ifdef __PS2__
 	static constexpr TAngle fromBam(angle_t f)
@@ -1297,14 +1303,14 @@ public:
 	}
 #endif
 
-	static constexpr TAngle fromBuild(double bang)
+	static constexpr TAngle fromBuild(float bang)
 	{
-		return TAngle(bang * (90. / 512));
+		return TAngle(bang * (90.f / 512));
 	}
 
 	static constexpr TAngle fromQ16(int bang)
 	{
-		return TAngle(bang * (90. / 16384));
+		return TAngle(bang * (90.f / 16384));
 	}
 
 	TAngle(const TAngle &other) = default;
@@ -1364,7 +1370,7 @@ public:
 		return Degrees_ / other;
 	}
 
-	constexpr double operator/ (TAngle other) const
+	constexpr float operator/ (TAngle other) const
 	{
 		return Degrees_ / other.Degrees_;
 	}
@@ -1454,14 +1460,14 @@ public:
 		return vec_t(g_sindeg(Degrees_));
 	}
 
-	double Tan() const
+	float Tan() const
 	{
 		const auto bam = BAMs();
 		return g_sinbam(bam) / g_cosbam(bam);
 	}
 
 	// This is for calculating vertical velocity. For high pitches the tangent will become too large to be useful.
-	double TanClamped(double max = 5.) const
+	float TanClamped(float max = 5.) const
 	{
 		return clamp(Tan(), -max, max);
 	}
@@ -1502,9 +1508,9 @@ inline TAngle<T> clamp(const TAngle<T> &angle, const TAngle<T> &min, const TAngl
 	return TAngle<T>::fromDeg(clamp(angle.Degrees(), min.Degrees(), max.Degrees()));
 }
 
-inline TAngle<double> VecToAngle(double x, double y)
+inline TAngle<float> VecToAngle(float x, float y)
 {
-	return TAngle<double>::fromRad(g_atan2(y, x));
+	return TAngle<float>::fromRad(g_atan2(y, x));
 }
 
 template<class T>
@@ -1544,13 +1550,13 @@ inline TVector2<T> clamp(const TVector2<T> &vec, const TVector2<T> &min, const T
 }
 
 template<class T>
-inline TAngle<T> interpolatedvalue(const TAngle<T> &oang, const TAngle<T> &ang, const double interpfrac)
+inline TAngle<T> interpolatedvalue(const TAngle<T> &oang, const TAngle<T> &ang, const float interpfrac)
 {
 	return oang + (deltaangle(oang, ang) * interpfrac);
 }
 
 template<class T>
-inline TRotator<T> interpolatedvalue(const TRotator<T> &oang, const TRotator<T> &ang, const double interpfrac)
+inline TRotator<T> interpolatedvalue(const TRotator<T> &oang, const TRotator<T> &ang, const float interpfrac)
 {
 	return TRotator<T>(
 		interpolatedvalue(oang.Pitch, ang.Pitch, interpfrac),
@@ -1560,7 +1566,7 @@ inline TRotator<T> interpolatedvalue(const TRotator<T> &oang, const TRotator<T> 
 }
 
 template <class T>
-inline T interpolatedvalue(const T& oval, const T& val, const double interpfrac)
+inline T interpolatedvalue(const T& oval, const T& val, const float interpfrac)
 {
 	return T(oval + (val - oval) * interpfrac);
 }
@@ -1710,9 +1716,9 @@ inline TVector3<T>::TVector3 (const TRotator<T> &rot)
 template<class T>
 inline TMatrix3x3<T>::TMatrix3x3(const TVector3<T> &axis, TAngle<T> degrees)
 {
-	double c = degrees.Cos(), s = degrees.Sin(), t = 1 - c;
-	double sx = s*axis.X, sy = s*axis.Y, sz = s*axis.Z;
-	double tx, ty, txx, tyy, u, v;
+	float c = degrees.Cos(), s = degrees.Sin(), t = 1 - c;
+	float sx = s*axis.X, sy = s*axis.Y, sz = s*axis.Z;
+	float tx, ty, txx, tyy, u, v;
 
 	tx = t*axis.X;
 	Cells[0][0] = T( (txx=tx*axis.X) + c  );
@@ -1736,20 +1742,20 @@ typedef TRotator<float>		FRotator;
 typedef TMatrix3x3<float>	FMatrix3x3;
 typedef TAngle<float>		FAngle;
 
-typedef TVector2<double>		DVector2;
-typedef TVector3<double>		DVector3;
-typedef TVector4<double>		DVector4;
-typedef TRotator<double>		DRotator;
-typedef TMatrix3x3<double>		DMatrix3x3;
-typedef TAngle<double>			DAngle;
+typedef TVector2<float>			DVector2;
+typedef TVector3<float>			DVector3;
+typedef TVector4<float>			DVector4;
+typedef TRotator<float>			DRotator;
+typedef TMatrix3x3<float>		DMatrix3x3;
+typedef TAngle<float>			DAngle;
 
-constexpr DAngle nullAngle = DAngle::fromDeg(0.);
-constexpr DAngle minAngle = DAngle::fromDeg(1. / 65536.);
-constexpr FAngle nullFAngle = FAngle::fromDeg(0.);
+constexpr DAngle nullAngle = DAngle::fromDeg(0.f);
+constexpr DAngle minAngle = DAngle::fromDeg(1.f / 65536.f);
+constexpr FAngle nullFAngle = FAngle::fromDeg(0.f);
 
 constexpr DAngle DAngle1 = DAngle::fromDeg(1);
 constexpr DAngle DAngle15 = DAngle::fromDeg(15);
-constexpr DAngle DAngle22_5 = DAngle::fromDeg(22.5);
+constexpr DAngle DAngle22_5 = DAngle::fromDeg(22.5f);
 constexpr DAngle DAngle45 = DAngle::fromDeg(45);
 constexpr DAngle DAngle60 = DAngle::fromDeg(60);
 constexpr DAngle DAngle90 = DAngle::fromDeg(90);
@@ -1773,11 +1779,13 @@ public:
 	}
 
 	// same for a play-vector. Note that y and z are inversed.
-	void Set(DVector3 normal, double d)
+#if 0
+	void Set(DVector3 normal, float d)
 	{
 		m_normal = { (float)normal.X, (float)normal.Z, (float)normal.Y };
 		m_d = (float)d;
 	}
+#endif
 
 	float DistToPoint(float x, float y, float z)
 	{

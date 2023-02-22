@@ -43,14 +43,14 @@ BEGIN_SW_NS
 //
 //---------------------------------------------------------------------------
 
-Collision MultiClipMove(PLAYER* pp, double zz, double floordist)
+Collision MultiClipMove(PLAYER* pp, float zz, float floordist)
 {
     int i;
     DVector3 opos[MAX_CLIPBOX], pos[MAX_CLIPBOX];
     SECTOR_OBJECT* sop = pp->sop;
     short min_ndx = 0;
-    double min_dist = 999999;
-    double dist;
+    float min_dist = 999999;
+    float dist;
 
     int ret;
     Collision min_ret{};
@@ -122,7 +122,7 @@ Collision MultiClipMove(PLAYER* pp, double zz, double floordist)
 //
 //---------------------------------------------------------------------------
 
-int MultiClipTurn(PLAYER* pp, DAngle new_ang, double zz, double floordist)
+int MultiClipTurn(PLAYER* pp, DAngle new_ang, float zz, float floordist)
 {
     int i;
     SECTOR_OBJECT* sop = pp->sop;
@@ -223,7 +223,7 @@ int RectClipMove(PLAYER* pp, DVector2* qpos)
         }
         if (testquadinsect(&point_num, xy, pp->cursector))
         {
-            pp->actor->spr.pos.XY() += { -pvect.X * 0.5, pvect.X * 0.5 };
+            pp->actor->spr.pos.XY() += { -pvect.X * 0.5f, pvect.X * 0.5f };
         }
 
         return false;
@@ -238,7 +238,7 @@ int RectClipMove(PLAYER* pp, DVector2* qpos)
         }
         if (testquadinsect(&point_num, xy, pp->cursector))
         {
-            pp->actor->spr.pos.XY() += { pvect.X * 0.5, -pvect.X * 0.5 };
+            pp->actor->spr.pos.XY() += { pvect.X * 0.5f, -pvect.X * 0.5f };
         }
 
         return false;

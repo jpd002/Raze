@@ -43,14 +43,14 @@ DEFINE_ACTION_FUNCTION_NATIVE(_PPShader, SetEnabled, ShaderSetEnabled)
 	return 0;
 }
 
-static void ShaderSetUniform1f(const FString &shaderName, const FString &uniformName, double value)
+static void ShaderSetUniform1f(const FString &shaderName, const FString &uniformName, float value)
 {
 	for (unsigned int i = 0; i < PostProcessShaders.Size(); i++)
 	{
 		PostProcessShader &shader = PostProcessShaders[i];
 		if (shader.Name == shaderName)
 		{
-			double *vec4 = shader.Uniforms[uniformName].Values;
+			float *vec4 = shader.Uniforms[uniformName].Values;
 			vec4[0] = value;
 			vec4[1] = 0.0;
 			vec4[2] = 0.0;
@@ -82,7 +82,7 @@ DEFINE_ACTION_FUNCTION(_PPShader, SetUniform2f)
 		PostProcessShader &shader = PostProcessShaders[i];
 		if (shader.Name == shaderName)
 		{
-			double *vec4 = shader.Uniforms[uniformName].Values;
+			float *vec4 = shader.Uniforms[uniformName].Values;
 			vec4[0] = x;
 			vec4[1] = y;
 			vec4[2] = 0.0;
@@ -106,7 +106,7 @@ DEFINE_ACTION_FUNCTION(_PPShader, SetUniform3f)
 		PostProcessShader &shader = PostProcessShaders[i];
 		if (shader.Name == shaderName)
 		{
-			double *vec4 = shader.Uniforms[uniformName].Values;
+			float *vec4 = shader.Uniforms[uniformName].Values;
 			vec4[0] = x;
 			vec4[1] = y;
 			vec4[2] = z;
@@ -128,8 +128,8 @@ DEFINE_ACTION_FUNCTION(_PPShader, SetUniform1i)
 		PostProcessShader &shader = PostProcessShaders[i];
 		if (shader.Name == shaderName)
 		{
-			double *vec4 = shader.Uniforms[uniformName].Values;
-			vec4[0] = (double)value;
+			float *vec4 = shader.Uniforms[uniformName].Values;
+			vec4[0] = (float)value;
 			vec4[1] = 0.0;
 			vec4[2] = 0.0;
 			vec4[3] = 1.0;

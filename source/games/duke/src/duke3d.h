@@ -34,12 +34,12 @@ struct GameInterface : public ::GameInterface
 	bool CanSave() override;
 	bool StartGame(FNewGameStartup& gs) override;
 	FSavegameInfo GetSaveSig() override;
-	double SmallFontScale() override { return isRR() ? 0.5 : 1.; }
+	float SmallFontScale() override { return isRR() ? 0.5 : 1.; }
 	void SerializeGameState(FSerializer& arc) override;
 	std::pair<DVector3, DAngle> GetCoordinates() override;
 	void ExitFromMenu() override;
 	void DrawPlayerSprite(const DVector2& origin, bool onteam) override;
-	void GetInput(ControlInfo* const hidInput, double const scaleAdjust, InputPacket* packet = nullptr) override;
+	void GetInput(ControlInfo* const hidInput, float const scaleAdjust, InputPacket* packet = nullptr) override;
 	void UpdateSounds() override;
 	void Startup() override;
 	void DrawBackground() override;
@@ -50,13 +50,13 @@ struct GameInterface : public ::GameInterface
 	void NextLevel(MapRecord* map, int skill) override;
 	void NewGame(MapRecord* map, int skill, bool) override;
 	void LevelCompleted(MapRecord* map, int skill) override;
-	bool DrawAutomapPlayer(const DVector2& mxy, const DVector2& cpos, const DAngle cang, const DVector2& xydim, const double czoom, double const interpfrac) override;
-	void WarpToCoords(double x, double y, double z, DAngle ang) override;
+	bool DrawAutomapPlayer(const DVector2& mxy, const DVector2& cpos, const DAngle cang, const DVector2& xydim, const float czoom, float const interpfrac) override;
+	void WarpToCoords(float x, float y, float z, DAngle ang) override;
 	void ToggleThirdPerson() override;
 	void SwitchCoopView() override;
 	void ToggleShowWeapon() override;
-	void processSprites(tspriteArray& tsprites, const DVector3& view, DAngle viewang, double interpfrac) override;
-	void UpdateCameras(double smoothratio) override;
+	void processSprites(tspriteArray& tsprites, const DVector3& view, DAngle viewang, float interpfrac) override;
+	void UpdateCameras(float smoothratio) override;
 	void EnterPortal(DCoreActor* viewer, int type) override;
 	void LeavePortal(DCoreActor* viewer, int type) override;
 	bool GetGeoEffect(GeoEffect* eff, sectortype* viewsector) override;
@@ -97,10 +97,10 @@ struct Dispatcher
 	int (*doincrements)(player_struct* p);
 	void (*checkweapons)(player_struct* p);
 	void (*processinput)(int snum);
-	void (*displayweapon)(int snum, double interpfrac);
-	void (*displaymasks)(int snum, int p, double interpfrac);
+	void (*displayweapon)(int snum, float interpfrac);
+	void (*displaymasks)(int snum, int p, float interpfrac);
 
-	void (*animatesprites)(tspriteArray& tsprites, const DVector2& viewVec, DAngle viewang, double interpfrac);
+	void (*animatesprites)(tspriteArray& tsprites, const DVector2& viewVec, DAngle viewang, float interpfrac);
 
 
 };

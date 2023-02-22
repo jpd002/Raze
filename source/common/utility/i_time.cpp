@@ -48,10 +48,10 @@ static uint64_t StartupTimeNS;
 static uint64_t FirstFrameStartTime;
 static uint64_t CurrentFrameStartTime;
 static uint64_t FreezeTime;
-static double lastinputtime;
+static float lastinputtime;
 int GameTicRate = 35;	// make sure it is not 0, even if the client doesn't set it.
 
-double TimeScale = 1.0;
+float TimeScale = 1.0f;
 
 static uint64_t GetTimePoint()
 {
@@ -81,12 +81,12 @@ static uint64_t NSToMS(uint64_t ns)
 	return static_cast<uint64_t>(ns / 1'000'000);
 }
 
-static int NSToTic(uint64_t ns, double const ticrate)
+static int NSToTic(uint64_t ns, float const ticrate)
 {
 	return static_cast<int>(ns * ticrate / 1'000'000'000);
 }
 
-static uint64_t TicToNS(double tic, double const ticrate)
+static uint64_t TicToNS(float tic, float const ticrate)
 {
 	return static_cast<uint64_t>(tic * 1'000'000'000 / ticrate);
 }
@@ -117,7 +117,7 @@ void I_WaitVBL(int count)
 	I_SetFrameTime();
 }
 
-int I_WaitForTic(int prevtic, double const ticrate)
+int I_WaitForTic(int prevtic, float const ticrate)
 {
 	// Waits until the current tic is greater than prevtic. Time must not be frozen.
 
@@ -157,7 +157,7 @@ uint64_t I_msTime()
 	return NSToMS(I_nsTime());
 }
 
-double I_msTimeF(void)
+float I_msTimeF(void)
 {
 	return I_nsTime() / 1'000'000.;
 }
@@ -172,18 +172,18 @@ uint64_t I_GetTimeNS()
 	return CurrentFrameStartTime - FirstFrameStartTime;
 }
 
-int I_GetTime(double const ticrate)
+int I_GetTime(float const ticrate)
 {
 	return NSToTic(CurrentFrameStartTime - FirstFrameStartTime, ticrate);
 }
 
-double I_GetTimeFrac(double const ticrate)
+float I_GetTimeFrac(float const ticrate)
 {
 	int currentTic = NSToTic(CurrentFrameStartTime - FirstFrameStartTime, ticrate);
 	uint64_t ticStartTime = FirstFrameStartTime + TicToNS(currentTic, ticrate);
 	uint64_t ticNextTime = FirstFrameStartTime + TicToNS(currentTic + 1, ticrate);
 
-	return (CurrentFrameStartTime - ticStartTime) / (double)(ticNextTime - ticStartTime);
+	return (CurrentFrameStartTime - ticStartTime) / (float)(ticNextTime - ticStartTime);
 }
 
 void I_FreezeTime(bool frozen)
@@ -210,10 +210,10 @@ void I_ResetFrameTime()
 	FirstFrameStartTime += (CurrentFrameStartTime - ft);
 }
 
-double I_GetInputFrac()
+float I_GetInputFrac()
 {
-	const double now = I_msTimeF();
-	const double result = (now - lastinputtime) * GameTicRate * (1. / 1000.);
+	const float now = I_msTimeF();
+	const float result = (now - lastinputtime) * GameTicRate * (1. / 1000.);
 	lastinputtime = now;
 	return result;
 }

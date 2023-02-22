@@ -402,7 +402,7 @@ void DCoreActor::initFromSprite(spritetype* mspr)
 
 #undef setter
 
-	clipdist = spr.clipdist * 0.25;
+	clipdist = spr.clipdist * 0.25f;
 	if (mspr->statnum != 0 && !(actorinfo->DefaultFlags & DEFF_STATNUM))
 		ChangeActorStat(this, mspr->statnum);
 }
@@ -529,12 +529,12 @@ size_t DCoreActor::PropagateMark()
 }
 
 
-double DCoreActor::GetOffsetAndHeight(double& height)
+float DCoreActor::GetOffsetAndHeight(float& height)
 {
 	auto tex = TexMan.GetGameTexture(spr.spritetexture());
-	double yscale = spr.scale.Y;
+	float yscale = spr.scale.Y;
 	height = tex->GetDisplayHeight() * yscale;
-	double zofs = (spr.cstat & CSTAT_SPRITE_YCENTER) ? height * 0.5 : 0;
+	float zofs = (spr.cstat & CSTAT_SPRITE_YCENTER) ? height * 0.5f : 0;
 	return zofs - tex->GetDisplayTopOffset() * yscale;
 }
 

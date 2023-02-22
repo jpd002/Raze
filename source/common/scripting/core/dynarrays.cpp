@@ -46,7 +46,7 @@ typedef TArray<uint8_t> FDynArray_I8;
 typedef TArray<uint16_t> FDynArray_I16;
 typedef TArray<uint32_t> FDynArray_I32;
 typedef TArray<float> FDynArray_F32;
-typedef TArray<double> FDynArray_F64;
+typedef TArray<float> FDynArray_F64;
 typedef TArray<void*> FDynArray_Ptr;
 typedef TArray<DObject*> FDynArray_Obj;
 typedef TArray<FString> FDynArray_String;
@@ -532,14 +532,14 @@ DEFINE_ACTION_FUNCTION_NATIVE(FDynArray_F32, Append, ArrayAppend<FDynArray_F32>)
 	return 0;
 }
 
-DEFINE_ACTION_FUNCTION_NATIVE(FDynArray_F32, Find, ArrayFind<FDynArray_F32 COMMA double>)
+DEFINE_ACTION_FUNCTION_NATIVE(FDynArray_F32, Find, ArrayFind<FDynArray_F32 COMMA float>)
 {
 	PARAM_SELF_STRUCT_PROLOGUE(FDynArray_F32);
 	PARAM_FLOAT(val);
 	ACTION_RETURN_INT(self->Find((float)val));
 }
 
-DEFINE_ACTION_FUNCTION_NATIVE(FDynArray_F32, Push, ArrayPush<FDynArray_F32 COMMA double>)
+DEFINE_ACTION_FUNCTION_NATIVE(FDynArray_F32, Push, ArrayPush<FDynArray_F32 COMMA float>)
 {
 	PARAM_SELF_STRUCT_PROLOGUE(FDynArray_F32);
 	PARAM_FLOAT(val);
@@ -561,7 +561,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(FDynArray_F32, Delete, ArrayDelete<FDynArray_F32>)
 	return 0;
 }
 
-DEFINE_ACTION_FUNCTION_NATIVE(FDynArray_F32, Insert, ArrayInsert<FDynArray_F32 COMMA double>)
+DEFINE_ACTION_FUNCTION_NATIVE(FDynArray_F32, Insert, ArrayInsert<FDynArray_F32 COMMA float>)
 {
 	PARAM_SELF_STRUCT_PROLOGUE(FDynArray_F32);
 	PARAM_INT(index);
@@ -643,14 +643,14 @@ DEFINE_ACTION_FUNCTION_NATIVE(FDynArray_F64, Append, ArrayAppend<FDynArray_F64>)
 	return 0;
 }
 
-DEFINE_ACTION_FUNCTION_NATIVE(FDynArray_F64, Find, ArrayFind<FDynArray_F64 COMMA double>)
+DEFINE_ACTION_FUNCTION_NATIVE(FDynArray_F64, Find, ArrayFind<FDynArray_F64 COMMA float>)
 {
 	PARAM_SELF_STRUCT_PROLOGUE(FDynArray_F64);
 	PARAM_FLOAT(val);
 	ACTION_RETURN_INT(self->Find(val));
 }
 
-DEFINE_ACTION_FUNCTION_NATIVE(FDynArray_F64, Push, ArrayPush<FDynArray_F64 COMMA double>)
+DEFINE_ACTION_FUNCTION_NATIVE(FDynArray_F64, Push, ArrayPush<FDynArray_F64 COMMA float>)
 {
 	PARAM_SELF_STRUCT_PROLOGUE(FDynArray_F64);
 	PARAM_FLOAT(val);
@@ -672,7 +672,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(FDynArray_F64, Delete, ArrayDelete<FDynArray_F64>)
 	return 0;
 }
 
-DEFINE_ACTION_FUNCTION_NATIVE(FDynArray_F64, Insert, ArrayInsert<FDynArray_F64 COMMA double>)
+DEFINE_ACTION_FUNCTION_NATIVE(FDynArray_F64, Insert, ArrayInsert<FDynArray_F64 COMMA float>)
 {
 	PARAM_SELF_STRUCT_PROLOGUE(FDynArray_F64);
 	PARAM_INT(index);

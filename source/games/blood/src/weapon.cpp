@@ -146,7 +146,7 @@ enum
 //
 //---------------------------------------------------------------------------
 
-double getThrowPower(PLAYER* pPlayer)
+float getThrowPower(PLAYER* pPlayer)
 {
 	return pPlayer->throwPower * 23.46666 + 6.4;
 }
@@ -261,20 +261,20 @@ static bool checkAmmo2(const PLAYER* pPlayer, int ammotype, int amount)
 //
 //---------------------------------------------------------------------------
 
-void SpawnBulletEject(PLAYER* pPlayer, double dist, int rdist)
+void SpawnBulletEject(PLAYER* pPlayer, float dist, int rdist)
 {
 	POSTURE* pPosture = &pPlayer->pPosture[pPlayer->lifeMode][pPlayer->posture];
 	pPlayer->zView = pPlayer->actor->spr.pos.Z - pPosture->eyeAboveZ;
-	double dz = pPlayer->zWeapon - (pPlayer->zWeapon - pPlayer->zView) * 0.5;
+	float dz = pPlayer->zWeapon - (pPlayer->zWeapon - pPlayer->zView) * 0.5;
 	fxSpawnEjectingBrass(pPlayer->actor, dz, dist, rdist);
 }
 
-void SpawnShellEject(PLAYER* pPlayer, double dist, int rdist)
+void SpawnShellEject(PLAYER* pPlayer, float dist, int rdist)
 {
 	POSTURE* pPosture = &pPlayer->pPosture[pPlayer->lifeMode][pPlayer->posture];
 	pPlayer->zView = pPlayer->actor->spr.pos.Z - pPosture->eyeAboveZ;
-	double t = pPlayer->zWeapon - pPlayer->zView;
-	double dz = pPlayer->zWeapon - t + (t * 0.25);
+	float t = pPlayer->zWeapon - pPlayer->zView;
+	float dz = pPlayer->zWeapon - t + (t * 0.25);
 	fxSpawnEjectingShell(pPlayer->actor, dz, dist, rdist);
 }
 
@@ -328,14 +328,14 @@ void WeaponPrecache()
 //
 //---------------------------------------------------------------------------
 
-void WeaponDraw(PLAYER* pPlayer, int shade, double xpos, double ypos, int palnum, DAngle angle)
+void WeaponDraw(PLAYER* pPlayer, int shade, float xpos, float ypos, int palnum, DAngle angle)
 {
 	assert(pPlayer != NULL);
 	if (pPlayer->weaponQav == kQAVNone)
 		return;
 	auto pQAV = getQAV(pPlayer->weaponQav);
 	int duration;
-	double interpfrac;
+	float interpfrac;
 
 	qavProcessTimer(pPlayer, pQAV, &duration, &interpfrac, pPlayer->weaponState == -1, pPlayer->curWeapon == kWeapShotgun && pPlayer->weaponState == 7);
 
@@ -449,7 +449,7 @@ void UpdateAimVector(PLAYER* pPlayer)
 	int autoaim = Autoaim(pPlayer->nPlayer);
 	if (autoaim == 1 || (autoaim == 2 && !pWeaponTrack->bIsProjectile) || pPlayer->curWeapon == kWeapVoodooDoll || pPlayer->curWeapon == kWeapLifeLeech)
 	{
-		double nClosest = 0x7fffffff;
+		float nClosest = 0x7fffffff;
 		BloodStatIterator it(kStatDude);
 		while (auto actor = it.Next())
 		{
@@ -463,19 +463,19 @@ void UpdateAimVector(PLAYER* pPlayer)
 				continue;
 
 			auto pos2 = actor->spr.pos;
-			double nDist = (pos2.XY() - pos.XY()).Length();
+			float nDist = (pos2.XY() - pos.XY()).Length();
 			if (nDist == 0 || nDist > 3200)
 				continue;
 
 			if (pWeaponTrack->seeker)
 			{
-				double t = nDist * 4096 / pWeaponTrack->seeker;
+				float t = nDist * 4096 / pWeaponTrack->seeker;
 				pos2 += actor->vel * t;
 			}
 			DVector3 lpos = pos + DVector3(plActor->spr.Angles.Yaw.ToVector(), pPlayer->slope) * nDist;
 
-			double zRange = nDist * (9460 / 16384.);
-			double top, bottom;
+			float zRange = nDist * (9460 / 16384.);
+			float top, bottom;
 			GetActorExtents(actor, &top, &bottom);
 			if (lpos.Z - zRange > bottom || lpos.Z + zRange < top)
 				continue;
@@ -487,15 +487,15 @@ void UpdateAimVector(PLAYER* pPlayer)
 			if (pPlayer->aimTargetsCount < 16 && cansee(pos, plActor->sector(), pos2, actor->sector()))
 				pPlayer->aimTargets[pPlayer->aimTargetsCount++] = actor;
 
-			double nDist2 = (lpos - pos2).Length();
+			float nDist2 = (lpos - pos2).Length();
 			if (nDist2 >= nClosest)
 				continue;
 
 			DUDEINFO* pDudeInfo = getDudeInfo(actor->spr.type);
 			if (cansee(pos, plActor->sector(), pos2, actor->sector()))
 			{
-				double center = (actor->spr.scale.Y * pDudeInfo->aimHeight);
-				double dzCenter = (pos2.Z - center) - pos.Z;
+				float center = (actor->spr.scale.Y * pDudeInfo->aimHeight);
+				float dzCenter = (pos2.Z - center) - pos.Z;
 
 				nClosest = nDist2;
 				Aim.XY() = angle.ToVector();
@@ -515,14 +515,14 @@ void UpdateAimVector(PLAYER* pPlayer)
 				auto pos2 = actor->spr.pos;
 				auto dv = pos2 - pos;
 
-				double nDist = dv.Length();
+				float nDist = dv.Length();
 				if (nDist == 0 || nDist > 3200)
 					continue;
 
 				DVector3 lpos = pos + DVector3(plActor->spr.Angles.Yaw.ToVector(), pPlayer->slope) * nDist;
-				double zRange = nDist * (9460 / 16384.);
+				float zRange = nDist * (9460 / 16384.);
 
-				double top, bottom;
+				float top, bottom;
 				GetActorExtents(actor, &top, &bottom);
 				if (lpos.Z - zRange > bottom || lpos.Z + zRange < top)
 					continue;
@@ -535,7 +535,7 @@ void UpdateAimVector(PLAYER* pPlayer)
 				if (pPlayer->aimTargetsCount < 16 && cansee(pos, plActor->sector(), pos2, actor->sector()))
 					pPlayer->aimTargets[pPlayer->aimTargetsCount++] = actor;
 
-				double nDist2 = (lpos - pos2).Length();
+				float nDist2 = (lpos - pos2).Length();
 				if (nDist2 >= nClosest)
 					continue;
 				if (cansee(pos, plActor->sector(), pos2, actor->sector()))
@@ -1164,9 +1164,9 @@ void WeaponUpdateState(PLAYER* pPlayer)
 void FirePitchfork(int, PLAYER* pPlayer)
 {
 	DBloodActor* actor = pPlayer->actor;
-	double r1 = Random2F(2000, 14);
-	double r2 = Random2F(2000, 14);
-	double r3 = Random2F(2000, 14);
+	float r1 = Random2F(2000, 14);
+	float r2 = Random2F(2000, 14);
+	float r3 = Random2F(2000, 14);
 	for (int i = 0; i < 4; i++)
 		actFireVector(actor, (2 * i - 3) * 2.5, pPlayer->zWeapon - pPlayer->actor->spr.pos.Z, pPlayer->flt_aim() + DVector3(r1, r2, r3), kVectorTine);
 }
@@ -1196,7 +1196,7 @@ void FireSpray(int, PLAYER* pPlayer)
 void ThrowCan(int, PLAYER* pPlayer)
 {
 	sfxKill3DSound(pPlayer->actor, -1, 441);
-	double nSpeed = getThrowPower(pPlayer);
+	float nSpeed = getThrowPower(pPlayer);
 	sfxPlay3DSound(pPlayer->actor, 455, 1, 0);
 	auto spawned = playerFireThing(pPlayer, 0, -9460 / 65536., kThingArmedSpray, nSpeed);
 	if (spawned)
@@ -1256,7 +1256,7 @@ void ExplodeCan(int, PLAYER* pPlayer)
 void ThrowBundle(int, PLAYER* pPlayer)
 {
 	sfxKill3DSound(pPlayer->actor, 16, -1);
-	double nSpeed = getThrowPower(pPlayer);
+	float nSpeed = getThrowPower(pPlayer);
 	sfxPlay3DSound(pPlayer->actor, 455, 1, 0);
 	auto spawned = playerFireThing(pPlayer, 0, -9460 / 65536., kThingArmedTNTBundle, nSpeed);
 	if (spawned)
@@ -1315,7 +1315,7 @@ void ExplodeBundle(int, PLAYER* pPlayer)
 
 void ThrowProx(int, PLAYER* pPlayer)
 {
-	double nSpeed = getThrowPower(pPlayer);
+	float nSpeed = getThrowPower(pPlayer);
 	sfxPlay3DSound(pPlayer->actor, 455, 1, 0);
 	auto spawned = playerFireThing(pPlayer, 0, -9460 / 65536., kThingArmedProxBomb, nSpeed);
 	if (spawned)
@@ -1350,7 +1350,7 @@ void DropProx(int, PLAYER* pPlayer)
 
 void ThrowRemote(int, PLAYER* pPlayer)
 {
-	double nSpeed = getThrowPower(pPlayer);
+	float nSpeed = getThrowPower(pPlayer);
 	sfxPlay3DSound(pPlayer->actor, 455, 1, 0);
 	auto spawned = playerFireThing(pPlayer, 0, -9460 / 65536., kThingArmedRemoteBomb, nSpeed);
 	if (spawned)
@@ -1409,7 +1409,7 @@ void FireShotgun(int nTrigger, PLAYER* pPlayer)
 	int n = nTrigger << 4;
 	for (int i = 0; i < n; i++)
 	{
-		double r1, r2, r3;
+		float r1, r2, r3;
 		VECTOR_TYPE nType;
 		if (nTrigger == 1)
 		{
@@ -1451,9 +1451,9 @@ void FireTommy(int nTrigger, PLAYER* pPlayer)
 	{
 	case 1:
 	{
-		double r1 = Random3F(400, 14);
-		double r2 = Random3F(1200, 14);
-		double r3 = Random3F(1200, 14);
+		float r1 = Random3F(400, 14);
+		float r2 = Random3F(1200, 14);
+		float r3 = Random3F(1200, 14);
 		actFireVector(actor, 0, pPlayer->zWeapon - pPlayer->actor->spr.pos.Z, pPlayer->flt_aim() + DVector3(r3, r2, r1), kVectorTommyRegular);
 		SpawnBulletEject(pPlayer, -15 / 16., -45);
 		pPlayer->visibility = 20;
@@ -1461,9 +1461,9 @@ void FireTommy(int nTrigger, PLAYER* pPlayer)
 	}
 	case 2:
 	{
-		double r1 = Random3F(400, 14);
-		double r2 = Random3F(1200, 14);
-		double r3 = Random3F(1200, 14);
+		float r1 = Random3F(400, 14);
+		float r2 = Random3F(1200, 14);
+		float r3 = Random3F(1200, 14);
 		actFireVector(actor, -7.5, pPlayer->zWeapon - pPlayer->actor->spr.pos.Z, pPlayer->flt_aim() + DVector3(r3, r2, r1), kVectorTommyRegular);
 		SpawnBulletEject(pPlayer, -140 / 16., -45);
 		r1 = Random3(400);
@@ -1498,7 +1498,7 @@ void FireSpread(int nTrigger, PLAYER* pPlayer)
 	DVector3 dv = DVector3(angle.ToVector(), aim.Z);
 
 	sfxPlay3DSound(pPlayer->actor, 431, -1, 0);
-	double r1, r2, r3;
+	float r1, r2, r3;
 	r1 = Random3F(300, 14);
 	r2 = Random3F(600, 14);
 	r3 = Random3F(600, 14);
@@ -1526,7 +1526,7 @@ void AltFireSpread(int nTrigger, PLAYER* pPlayer)
 	DVector3 dv = DVector3(angle.ToVector(), aim.Z);
 
 	sfxPlay3DSound(pPlayer->actor, 431, -1, 0);
-	double r1, r2, r3;
+	float r1, r2, r3;
 	r1 = Random3F(300, 14);
 	r2 = Random3F(600, 14);
 	r3 = Random3F(600, 14);
@@ -1564,7 +1564,7 @@ void AltFireSpread2(int nTrigger, PLAYER* pPlayer)
 	sfxPlay3DSound(pPlayer->actor, 431, -1, 0);
 	if (powerupCheck(pPlayer, kPwUpTwoGuns) && checkAmmo2(pPlayer, 3, 2))
 	{
-		double r1, r2, r3;
+		float r1, r2, r3;
 		r1 = Random3F(300, 14);
 		r2 = Random3F(600, 14);
 		r3 = Random3F(600, 14);
@@ -1585,7 +1585,7 @@ void AltFireSpread2(int nTrigger, PLAYER* pPlayer)
 	}
 	else
 	{
-		double r1, r2, r3;
+		float r1, r2, r3;
 		r1 = Random3F(300, 14);
 		r2 = Random3F(600, 14);
 		r3 = Random3F(600, 14);
@@ -1614,7 +1614,7 @@ void AltFireSpread2(int nTrigger, PLAYER* pPlayer)
 void FireFlare(int nTrigger, PLAYER* pPlayer)
 {
 	auto plActor = pPlayer->actor;
-	double offset = 0;
+	float offset = 0;
 	switch (nTrigger)
 	{
 	case 2:
@@ -1640,7 +1640,7 @@ void FireFlare(int nTrigger, PLAYER* pPlayer)
 void AltFireFlare(int nTrigger, PLAYER* pPlayer)
 {
 	auto plActor = pPlayer->actor;
-	double offset = 0;
+	float offset = 0;
 	switch (nTrigger)
 	{
 	case 2:
@@ -1744,7 +1744,7 @@ void AltFireVoodoo(int nTrigger, PLAYER* pPlayer)
 					if (!targetactor) continue;
 					if (!gGameOptions.bFriendlyFire && IsTargetTeammate(pPlayer, targetactor))
 						continue;
-					double nDist = (targetactor->spr.pos.XY() - pPlayer->actor->spr.pos.XY()).Length();
+					float nDist = (targetactor->spr.pos.XY() - pPlayer->actor->spr.pos.XY()).Length();
 					if (nDist > 0 && nDist < 3200)
 					{
 						int vc = pPlayer->ammoCount[9] >> 3;
@@ -1782,7 +1782,7 @@ void AltFireVoodoo(int nTrigger, PLAYER* pPlayer)
 					continue;
 				if (v4 > 0)
 					v4--;
-				double nDist = (targetactor->spr.pos.XY() - pPlayer->actor->spr.pos.XY()).Length();
+				float nDist = (targetactor->spr.pos.XY() - pPlayer->actor->spr.pos.XY()).Length();
 				if (nDist > 0 && nDist < 3200)
 				{
 					int vc = pPlayer->ammoCount[9] >> 3;
@@ -1909,7 +1909,7 @@ void AltFireTesla(int, PLAYER* pPlayer)
 void FireNapalm(int nTrigger, PLAYER* pPlayer)
 {
 	auto plActor = pPlayer->actor;
-	double offset = 0;
+	float offset = 0;
 	switch (nTrigger)
 	{
 	case 2:
@@ -1967,9 +1967,9 @@ void FireLifeLeech(int nTrigger, PLAYER* pPlayer)
 {
 	if (!CheckAmmo(pPlayer, 8, 1))
 		return;
-	double r1 = Random2F(2000, 14);
-	double r2 = Random2F(2000, 14);
-	double r3 = Random2F(1000, 14);
+	float r1 = Random2F(2000, 14);
+	float r2 = Random2F(2000, 14);
+	float r3 = Random2F(1000, 14);
 	DBloodActor* actor = pPlayer->actor;
 	auto missileActor = playerFireMissile(pPlayer, 0, pPlayer->flt_aim() + DVector3(r1, r2, r3), 315);
 	if (missileActor)
@@ -2032,9 +2032,9 @@ void AltFireLifeLeech(int, PLAYER* pPlayer)
 void FireBeast(int, PLAYER* pPlayer)
 {
 	DBloodActor* actor = pPlayer->actor;
-	double r1 = Random2F(2000, 14);
-	double r2 = Random2F(2000, 14);
-	double r3 = Random2F(2000, 14);
+	float r1 = Random2F(2000, 14);
+	float r2 = Random2F(2000, 14);
+	float r3 = Random2F(2000, 14);
 	actFireVector(actor, 0, pPlayer->zWeapon - pPlayer->actor->spr.pos.Z, pPlayer->flt_aim() + DVector3(r1, r2, r3), kVectorBeastSlash);
 }
 

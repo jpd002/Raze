@@ -801,19 +801,19 @@ bool WeaponOK(PLAYER* pp)
 //---------------------------------------------------------------------------
 
 
-inline double pspSinVel(PANEL_SPRITE* const psp, int const ang = INT_MAX)
+inline float pspSinVel(PANEL_SPRITE* const psp, int const ang = INT_MAX)
 {
     return psp->vel * synctics * BobVal(ang == INT_MAX ? psp->ang : ang) / 256.;
 }
 
-inline double pspCosVel(PANEL_SPRITE* const psp, int const ang = INT_MAX)
+inline float pspCosVel(PANEL_SPRITE* const psp, int const ang = INT_MAX)
 {
     return psp->vel * synctics * BobVal((ang == INT_MAX ? psp->ang : ang) + 512) / 256.;
 }
 
-inline double pspPresentRetractScale(PANEL_SPRITE* psp, double const defaultheight)
+inline float pspPresentRetractScale(PANEL_SPRITE* psp, float const defaultheight)
 {
-    double const picheight = pspheight(psp);
+    float const picheight = pspheight(psp);
     return picheight == defaultheight ? 1 : picheight / defaultheight;
 }
 
@@ -1015,7 +1015,7 @@ void RetractCurWpn(PLAYER* pp)
 
         if (pp->CurWpn->sibling)
         {
-            // primarily for double uzi to take down the second uzi
+            // primarily for float uzi to take down the second uzi
             pSetState(pp->CurWpn->sibling, pp->CurWpn->sibling->RetractState);
         }
         else
@@ -2073,8 +2073,8 @@ void pUziReloadRetract(PANEL_SPRITE* nclip)
 {
     PANEL_SPRITE* gun = nclip->sibling;
 
-    double xadj = pspCosVel(nclip);
-    double yadj = pspSinVel(nclip);
+    float xadj = pspCosVel(nclip);
+    float yadj = pspSinVel(nclip);
 
     nclip->vel += 18 * synctics;
 
@@ -2230,7 +2230,7 @@ void InitWeaponUzi(PLAYER* pp)
                 InitWeaponUzi2(pp->Wpn[WPN_UZI]);
         }
 
-        // if actually picked an uzi up and don't currently have double uzi
+        // if actually picked an uzi up and don't currently have float uzi
         if (pp->Flags & (PF_PICKED_UP_AN_UZI) && !(pp->Wpn[WPN_UZI]->flags & PANF_PRIMARY))
         {
             pp->Flags &= ~(PF_PICKED_UP_AN_UZI);
@@ -7229,7 +7229,7 @@ void InsertPanelSprite(PLAYER* pp, PANEL_SPRITE* psp)
 //
 //---------------------------------------------------------------------------
 
-PANEL_SPRITE* pSpawnSprite(PLAYER* pp, PANEL_STATE* state, uint8_t priority, double x, double y)
+PANEL_SPRITE* pSpawnSprite(PLAYER* pp, PANEL_STATE* state, uint8_t priority, float x, float y)
 {
     unsigned i;
     PANEL_SPRITE* psp;
@@ -7317,8 +7317,8 @@ void pClearSpriteList(PLAYER* pp)
 
 void pWeaponBob(PANEL_SPRITE* psp, short condition)
 {
-    double xdiff = 0, ydiff = 0;
-	double bobvel = min(psp->PlayerP->vect.Length() * 10, 128.);
+    float xdiff = 0, ydiff = 0;
+	float bobvel = min(psp->PlayerP->vect.Length() * 10, 128.f);
 
     if (condition)
     {
@@ -7351,10 +7351,10 @@ void pWeaponBob(PANEL_SPRITE* psp, short condition)
 
         // as the weapon moves left-right move the weapon up-down in the same
         // proportion
-        double bob_ndx = (psp->sin_ndx + 512) & 1023;
+        float bob_ndx = (psp->sin_ndx + 512) & 1023;
 
         // base bob amt on the players velocity - Max of 128
-        double bobamt = bobvel / psp->bob_height_divider;
+        float bobamt = bobvel / psp->bob_height_divider;
         ydiff = bobamt * BobVal(bob_ndx);
     }
 
@@ -7373,12 +7373,12 @@ void pWeaponBob(PANEL_SPRITE* psp, short condition)
 //////////////////////////////////////////////////////////////////////////////////////////
 
 bool DrawBeforeView = false;
-void pDisplaySprites(PLAYER* pp, double interpfrac)
+void pDisplaySprites(PLAYER* pp, float interpfrac)
 {
     DSWActor* plActor = pp->actor;
     PANEL_SPRITE* next=nullptr;
     short shade, picnum, overlay_shade = 0;
-    double x, y;
+    float x, y;
     unsigned i;
 
     uint8_t pal = 0;
@@ -7390,13 +7390,13 @@ void pDisplaySprites(PLAYER* pp, double interpfrac)
     auto list = pp->GetPanelSpriteList();
     for (auto psp = list->Next; next = psp->Next, psp != list; psp = next)
     {
-        double ang = (offpair.second - DAngle::fromBuild(psp->rotate_ang)).Degrees();
+        float ang = (offpair.second - DAngle::fromBuild(psp->rotate_ang)).Degrees();
         shade = 0;
         flags = 0;
         if (cl_hudinterpolation)
         {
-            x = interpolatedvalue<double>(psp->opos.X, psp->pos.X, interpfrac);
-            y = interpolatedvalue<double>(psp->opos.Y, psp->pos.Y, interpfrac);
+            x = interpolatedvalue<float>(psp->opos.X, psp->pos.X, interpfrac);
+            y = interpolatedvalue<float>(psp->opos.Y, psp->pos.Y, interpfrac);
 
         }
         else
@@ -7787,7 +7787,7 @@ void pStateControl(PANEL_SPRITE* psp)
 //
 //---------------------------------------------------------------------------
 
-void UpdatePanel(double interpfrac)
+void UpdatePanel(float interpfrac)
 {
     short pnum;
 
@@ -7804,7 +7804,7 @@ void UpdatePanel(double interpfrac)
 //
 //---------------------------------------------------------------------------
 
-void PreUpdatePanel(double interpfrac)
+void PreUpdatePanel(float interpfrac)
 {
     short pnum;
     DrawBeforeView = true;

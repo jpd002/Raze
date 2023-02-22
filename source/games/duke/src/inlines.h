@@ -244,15 +244,15 @@ inline void doslopetilting(player_struct* p)
 //
 //---------------------------------------------------------------------------
 
-inline void hud_draw(double x, double y, int tilenum, int shade, int orientation)
+inline void hud_draw(float x, float y, int tilenum, int shade, int orientation)
 {
 	int p = ps[screenpeek].cursector->floorpal;
 	hud_drawsprite(x, y, 65536, 0, tilenum, shade, p, 2 | orientation);
 }
 
-inline void animateshrunken(player_struct* p, double xoffset, double yoffset, int tilenum, int8_t shade, int o, double interpfrac)
+inline void animateshrunken(player_struct* p, float xoffset, float yoffset, int tilenum, int8_t shade, int o, float interpfrac)
 {
-	const double fistsign = BobVal(interpolatedvalue<double>(p->ofistsign, p->fistsign, interpfrac)) * 16;
+	const float fistsign = BobVal(interpolatedvalue<float>(p->ofistsign, p->fistsign, interpfrac)) * 16;
 	if (p->jetpack_on == 0)	yoffset += 32 - (p->GetActor()->vel.X * 8);
 	hud_draw(250 + fistsign + xoffset, 258 - fabs(fistsign * 4) + yoffset, tilenum, shade, o);
 	hud_draw(40 - fistsign + xoffset, 200 + fabs(fistsign * 4) + yoffset, tilenum, shade, o | 4);
@@ -274,7 +274,7 @@ inline ESpriteFlags randomXFlip()
 	return CSTAT_SPRITE_XFLIP;
 }
 
-inline DAngle randomAngle(double span = 360.)
+inline DAngle randomAngle(float span = 360.f)
 {
 	return DAngle::fromDeg(krandf(span));
 }

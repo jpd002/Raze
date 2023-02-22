@@ -72,7 +72,7 @@ void setFromSpawnRec(DDukeActor* act, SpawnRec* info)
 //
 //---------------------------------------------------------------------------
 
-DDukeActor* CreateActor(sectortype* whatsectp, const DVector3& pos, PClassActor* clstype, int s_pn, int8_t s_shd, const DVector2& scale, DAngle s_ang, double s_vel, double s_zvel, DDukeActor* s_ow, int8_t s_stat)
+DDukeActor* CreateActor(sectortype* whatsectp, const DVector3& pos, PClassActor* clstype, int s_pn, int8_t s_shd, const DVector2& scale, DAngle s_ang, float s_vel, float s_zvel, DDukeActor* s_ow, int8_t s_stat)
 {
 	// sector pointer must be strictly validated here or the engine will crash.
 	if (whatsectp == nullptr || !validSectorIndex(sectindex(whatsectp))) return nullptr;
@@ -145,17 +145,17 @@ DDukeActor* CreateActor(sectortype* whatsectp, const DVector3& pos, PClassActor*
 
 }
 
-DDukeActor* CreateActor(sectortype* whatsectp, const DVector3& pos, int s_pn, int8_t s_shd, const DVector2& scale, DAngle s_ang, double s_vel, double s_zvel, DDukeActor* s_ow, int8_t s_stat)
+DDukeActor* CreateActor(sectortype* whatsectp, const DVector3& pos, int s_pn, int8_t s_shd, const DVector2& scale, DAngle s_ang, float s_vel, float s_zvel, DDukeActor* s_ow, int8_t s_stat)
 {
 	return CreateActor(whatsectp, pos, nullptr, s_pn, s_shd, scale, s_ang, s_vel, s_zvel, s_ow, s_stat);
 }
 
-DDukeActor* CreateActor(sectortype* whatsectp, const DVector3& pos, PClassActor* cls, int8_t s_shd, const DVector2& scale, DAngle s_ang, double s_vel, double s_zvel, DDukeActor* s_ow, int8_t s_stat)
+DDukeActor* CreateActor(sectortype* whatsectp, const DVector3& pos, PClassActor* cls, int8_t s_shd, const DVector2& scale, DAngle s_ang, float s_vel, float s_zvel, DDukeActor* s_ow, int8_t s_stat)
 {
 	return CreateActor(whatsectp, pos, cls, -1, s_shd, scale, s_ang, s_vel, s_zvel, s_ow, s_stat);
 }
 
-DDukeActor* SpawnActor(sectortype* whatsectp, const DVector3& pos, PClassActor* cls, int8_t s_shd, const DVector2& scale, DAngle s_ang, double s_vel, double s_zvel, DDukeActor* s_ow, int8_t s_stat)
+DDukeActor* SpawnActor(sectortype* whatsectp, const DVector3& pos, PClassActor* cls, int8_t s_shd, const DVector2& scale, DAngle s_ang, float s_vel, float s_zvel, DDukeActor* s_ow, int8_t s_stat)
 {
 	auto actor = CreateActor(whatsectp, pos, cls, s_shd, scale, s_ang, s_vel, s_zvel, s_ow, s_stat);
 	if (actor) fi.spawninit(s_ow, actor, nullptr);
@@ -935,7 +935,7 @@ void lotsofglass(DDukeActor *actor, walltype* wal, int n)
 		updatesector(DVector3(pos, sect->floorz), &sect);
 		if (sect)
 		{
-			double z = sect->floorz - krandf(abs(sect->ceilingz - sect->floorz));
+			float z = sect->floorz - krandf(abs(sect->ceilingz - sect->floorz));
 			if (fabs(z) > 32)
 				z = actor->spr.pos.Z - 32 + krandf(64);
 			DAngle angl = actor->spr.Angles.Yaw - DAngle180;
@@ -985,7 +985,7 @@ void ceilingglass(DDukeActor* actor, sectortype* sectp, int n)
 			DAngle a = randomAngle();
 			auto vel = krandf(2);
 
-			double z = sectp->ceilingz + krandf(16);
+			float z = sectp->ceilingz + krandf(16);
 			CreateActor(sectp, DVector3(pos, z), GlassClass(j), -32, DVector2(0.5625, 0.5625), a, vel, 0, actor, 5);
 		}
 	}
@@ -1026,7 +1026,7 @@ void lotsofcolourglass(DDukeActor* actor, walltype* wal, int n)
 		sect = wal->sectorp();
 		updatesector(DVector3(pos, sect->floorz), &sect);
 		if (!sect) continue;
-		double z = sect->floorz - krandf(abs(sect->ceilingz - sect->floorz));
+		float z = sect->floorz - krandf(abs(sect->ceilingz - sect->floorz));
 		if (abs(z) > 32)
 			z = actor->spr.pos.Z - 32 + krandf(64);
 

@@ -89,7 +89,7 @@ DEFINE_ACTION_FUNCTION(FOptionValues, GetValue)
 	PARAM_PROLOGUE;
 	PARAM_NAME(grp);
 	PARAM_UINT(index);
-	double val = 0;
+	float val = 0;
 	FOptionValues **pGrp = OptionValues.CheckKey(grp);
 	if (pGrp != nullptr)
 	{
@@ -445,7 +445,7 @@ static void DoParseListMenuBody(FScanner &sc, DListMenuDescriptor *desc, bool &s
 			{
 				bool inserting = insertIndex >= 0;
 				bool isSelectable = cls->IsDescendantOf("ListMenuItemSelectable");
-				double oldYpos = desc->mYpos;
+				float oldYpos = desc->mYpos;
 
 				// [Player701] If this is a selectable item and we're inserting in the middle,
 				// set the Y position of the descriptor to the Y of the item we're inserting before.
@@ -525,7 +525,7 @@ static void DoParseListMenuBody(FScanner &sc, DListMenuDescriptor *desc, bool &s
 						else if (args[i]->isFloat())
 						{
 							char *endp;
-							double v = strtod(sc.String, &endp);
+							float v = strtod(sc.String, &endp);
 							if (*endp != 0)
 							{
 								sc.ScriptError("Float expected, got %s", sc.String);
@@ -1129,7 +1129,7 @@ static void ParseOptionMenuBody(FScanner &sc, DOptionMenuDescriptor *desc, int i
 						else if (args[i]->isFloat())
 						{
 							char *endp;
-							double v = strtod(sc.String, &endp);
+							float v = strtod(sc.String, &endp);
 							if (*endp != 0)
 							{
 								sc.ScriptError("Float expected, got %s", sc.String);
@@ -1416,7 +1416,7 @@ static void ParseImageScrollerBody(FScanner& sc, DImageScrollerDescriptor* desc)
 						else if (args[i]->isFloat())
 						{
 							char* endp;
-							double v = strtod(sc.String, &endp);
+							float v = strtod(sc.String, &endp);
 							if (*endp != 0)
 							{
 								sc.ScriptError("Float expected, got %s", sc.String);

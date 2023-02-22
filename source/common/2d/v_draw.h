@@ -157,22 +157,22 @@ typedef uint32_t angle_t;
 
 struct DrawParms
 {
-	double x, y;
-	double texwidth;
-	double texheight;
-	double destwidth;
-	double destheight;
-	double virtWidth;
-	double virtHeight;
-	double windowleft;
-	double windowright;
+	float x, y;
+	float texwidth;
+	float texheight;
+	float destwidth;
+	float destheight;
+	float virtWidth;
+	float virtHeight;
+	float windowleft;
+	float windowright;
 	int cleanmode;
 	int dclip;
 	int uclip;
 	int lclip;
 	int rclip;
-	double top;
-	double left;
+	float top;
+	float left;
 	float Alpha;
 	PalEntry fillcolor;
 	int TranslationId;
@@ -201,10 +201,10 @@ struct DrawParms
 	bool indexed;
 	bool nooffset;
 	int8_t fsscalemode;
-	double srcx, srcy;
-	double srcwidth, srcheight;
-	double patchscalex, patchscaley;
-	double rotateangle;
+	float srcx, srcy;
+	float srcwidth, srcheight;
+	float patchscalex, patchscaley;
+	float rotateangle;
 	IntRect viewport;
 
 	bool vertexColorChange(const DrawParms& other) {
@@ -233,11 +233,11 @@ struct VMVa_List
 };
 
 float ActiveRatio (int width, int height, float *trueratio = NULL);
-inline double ActiveRatio (double width, double height) { return ActiveRatio(int(width), int(height)); }
+inline float ActiveRatio (float width, float height) { return ActiveRatio(int(width), int(height)); }
 
 int AspectBaseWidth(float aspect);
 int AspectBaseHeight(float aspect);
-double AspectPspriteOffset(float aspect);
+float AspectPspriteOffset(float aspect);
 int AspectMultiplier(float aspect);
 bool AspectTallerThanWide(float aspect);
 
@@ -266,20 +266,20 @@ enum
 };
 
 template<class T>
-bool ParseDrawTextureTags(F2DDrawer *drawer, FGameTexture* img, double x, double y, uint32_t tag, T& tags, DrawParms* parms, int type, PalEntry fill = ~0u, double fillalpha = 0.0);
+bool ParseDrawTextureTags(F2DDrawer *drawer, FGameTexture* img, float x, float y, uint32_t tag, T& tags, DrawParms* parms, int type, PalEntry fill = ~0u, float fillalpha = 0.0);
 
 template<class T>
-void DrawTextCommon(F2DDrawer *drawer, FFont* font, int normalcolor, double x, double y, const T* string, DrawParms& parms);
-bool SetTextureParms(F2DDrawer *drawer, DrawParms* parms, FGameTexture* img, double x, double y);
+void DrawTextCommon(F2DDrawer *drawer, FFont* font, int normalcolor, float x, float y, const T* string, DrawParms& parms);
+bool SetTextureParms(F2DDrawer *drawer, DrawParms* parms, FGameTexture* img, float x, float y);
 
-void GetFullscreenRect(double width, double height, int fsmode, DoubleRect* rect);
+void GetFullscreenRect(float width, float height, int fsmode, DoubleRect* rect);
 
-void DrawText(F2DDrawer* drawer, FFont* font, int normalcolor, double x, double y, const char* string, int tag_first, ...);
-void DrawText(F2DDrawer* drawer, FFont* font, int normalcolor, double x, double y, const char32_t* string, int tag_first, ...);
-void DrawChar(F2DDrawer* drawer, FFont* font, int normalcolor, double x, double y, int character, int tag_first, ...);
+void DrawText(F2DDrawer* drawer, FFont* font, int normalcolor, float x, float y, const char* string, int tag_first, ...);
+void DrawText(F2DDrawer* drawer, FFont* font, int normalcolor, float x, float y, const char32_t* string, int tag_first, ...);
+void DrawChar(F2DDrawer* drawer, FFont* font, int normalcolor, float x, float y, int character, int tag_first, ...);
 
-void DrawTexture(F2DDrawer* drawer, FGameTexture* img, double x, double y, int tags_first, ...);
-void DrawTexture(F2DDrawer *drawer, FTextureID texid, bool animate, double x, double y, int tags_first, ...);
+void DrawTexture(F2DDrawer* drawer, FGameTexture* img, float x, float y, int tags_first, ...);
+void DrawTexture(F2DDrawer *drawer, FTextureID texid, bool animate, float x, float y, int tags_first, ...);
 
 void DoDim(F2DDrawer* drawer, PalEntry color, float amount, int x1, int y1, int w, int h, FRenderStyle* style = nullptr);
 void Dim(F2DDrawer* drawer, PalEntry color, float damount, int x1, int y1, int w, int h, FRenderStyle* style = nullptr);
@@ -290,7 +290,7 @@ void DrawFrame(F2DDrawer* twod, PalEntry color, int left, int top, int width, in
 // Set an area to a specified color
 void ClearRect(F2DDrawer* drawer, int left, int top, int right, int bottom, int palcolor, uint32_t color);
 
-void VirtualToRealCoords(F2DDrawer* drawer, double& x, double& y, double& w, double& h, double vwidth, double vheight, bool vbottom = false, bool handleaspect = true);
+void VirtualToRealCoords(F2DDrawer* drawer, float& x, float& y, float& w, float& h, float vwidth, float vheight, bool vbottom = false, bool handleaspect = true);
 
 // Code that uses these (i.e. SBARINFO) should probably be evaluated for using doubles all around instead.
 void VirtualToRealCoordsInt(F2DDrawer* drawer, int& x, int& y, int& w, int& h, int vwidth, int vheight, bool vbottom = false, bool handleaspect = true);

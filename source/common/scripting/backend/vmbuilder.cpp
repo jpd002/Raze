@@ -166,9 +166,9 @@ void VMFunctionBuilder::FillIntConstants(int *konst)
 //
 //==========================================================================
 
-void VMFunctionBuilder::FillFloatConstants(double *konst)
+void VMFunctionBuilder::FillFloatConstants(float *konst)
 {
-	memcpy(konst, &FloatConstantList[0], sizeof(double) * FloatConstantList.Size());
+	memcpy(konst, &FloatConstantList[0], sizeof(float) * FloatConstantList.Size());
 }
 
 //==========================================================================
@@ -227,7 +227,7 @@ unsigned VMFunctionBuilder::GetConstantInt(int val)
 //
 //==========================================================================
 
-unsigned VMFunctionBuilder::GetConstantFloat(double val)
+unsigned VMFunctionBuilder::GetConstantFloat(float val)
 {
 	unsigned *locp = FloatConstantMap.CheckKey(val);
 	if (locp != NULL)
@@ -308,10 +308,10 @@ unsigned VMFunctionBuilder::AllocConstantsInt(unsigned count, int *values)
 	return addr;
 }
 
-unsigned VMFunctionBuilder::AllocConstantsFloat(unsigned count, double *values)
+unsigned VMFunctionBuilder::AllocConstantsFloat(unsigned count, float *values)
 {
 	unsigned addr = FloatConstantList.Reserve(count);
-	memcpy(&FloatConstantList[addr], values, count * sizeof(double));
+	memcpy(&FloatConstantList[addr], values, count * sizeof(float));
 	for (unsigned i = 0; i < count; i++)
 	{
 		FloatConstantMap.Insert(values[i], addr + i);
@@ -1015,7 +1015,7 @@ void FunctionCallEmitter::AddParameterPointer(int index, bool konst)
 	});
 }
 
-void FunctionCallEmitter::AddParameterFloatConst(double konst)
+void FunctionCallEmitter::AddParameterFloatConst(float konst)
 {
 	numparams++;
 	if (target->VarFlags & VARF_VarArg)
@@ -1151,7 +1151,7 @@ void VMDisassemblyDumper::Write(VMScriptFunction *sfunc, const FString &fname)
 		DumpFunction(dump, sfunc, fname, (int)fname.Len());
 		codesize += sfunc->CodeSize;
 		datasize += sfunc->LineInfoCount * sizeof(FStatementInfo) + sfunc->ExtraSpace + sfunc->NumKonstD * sizeof(int) +
-			sfunc->NumKonstA * sizeof(void*) + sfunc->NumKonstF * sizeof(double) + sfunc->NumKonstS * sizeof(FString);
+			sfunc->NumKonstA * sizeof(void*) + sfunc->NumKonstF * sizeof(float) + sfunc->NumKonstS * sizeof(FString);
 	}
 }
 

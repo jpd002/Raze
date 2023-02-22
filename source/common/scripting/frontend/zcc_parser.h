@@ -29,7 +29,7 @@ struct ZCCToken
 	union
 	{
 		int Int;
-		double Float;
+		float Float;
 		FString *String;
 		TLargest<decltype(Int), decltype(Float), decltype(String)>::Type Largest;
 	};
@@ -404,7 +404,7 @@ struct ZCC_ExprConstant : ZCC_Expression
 		FString *StringVal;
 		int IntVal;
 		unsigned int UIntVal;
-		double DoubleVal;
+		float DoubleVal;
 	};
 };
 

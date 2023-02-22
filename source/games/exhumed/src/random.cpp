@@ -103,7 +103,7 @@ int RandomLong()
     return randLong;
 }
 
-double RandomFloat(double range)
+float RandomFloat(float range)
 {
     return RandomWord() * range / 0xffff;
 }

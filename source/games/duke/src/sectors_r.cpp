@@ -436,7 +436,7 @@ void checksectors_r(int snum)
 			if (p->cursector->lotag == 2)
 			{
 				DDukeActor* hit;
-				double dist = hitasprite(p->GetActor(), &hit);
+				float dist = hitasprite(p->GetActor(), &hit);
 				if (hit) near.hitActor = hit;
 				if (dist > 80) near.hitActor = nullptr;
 			}
@@ -530,14 +530,14 @@ void dofurniture(walltype* wlwal, sectortype* sectp, int snum)
 	assert(wlwal->twoSided());
 	auto nextsect = wlwal->nextSector();
 
-	double movestep = min(sectp->hitag * maptoworld, 1.);
+	float movestep = min(sectp->hitag * maptoworld, 1.f);
 	if (movestep == 0) movestep = 4 * maptoworld;
 
-	double max_x = INT32_MIN, max_y = INT32_MIN, min_x = INT32_MAX, min_y = INT32_MAX;
+	float max_x = INT32_MIN, max_y = INT32_MIN, min_x = INT32_MAX, min_y = INT32_MAX;
 	for (auto& wal : nextsect->walls)
 	{
-		double x = wal.pos.X;
-		double y = wal.pos.Y;
+		float x = wal.pos.X;
+		float y = wal.pos.Y;
 		if (x > max_x)
 			max_x = x;
 		if (y > max_y)
@@ -548,7 +548,7 @@ void dofurniture(walltype* wlwal, sectortype* sectp, int snum)
 			min_y = y;
 	}
 
-	double margin = movestep + maptoworld;
+	float margin = movestep + maptoworld;
 	max_x += margin;
 	max_y += margin;
 	min_x -= margin;

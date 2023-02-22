@@ -209,7 +209,7 @@ void V_AddBlend (float r, float g, float b, float a, float v_blend[4])
  //
  //---------------------------------------------------------------------------
 
- void drawweapon(double interpfrac)
+ void drawweapon(float interpfrac)
  {
 	 auto pp = &ps[screenpeek];
 	 if (!isRR() && pp->newOwner != nullptr)
@@ -229,7 +229,7 @@ void V_AddBlend (float r, float g, float b, float a, float v_blend[4])
 //
 //---------------------------------------------------------------------------
 
-void drawoverlays(double interpfrac)
+void drawoverlays(float interpfrac)
 {
 	player_struct* pp;
 	DVector2 cposxy;
@@ -298,8 +298,8 @@ void drawoverlays(double interpfrac)
 
 	if (paused == 2)
 	{
-		double x = 160, y = 100;
-		double scale = isRR() ? 0.4 : 1.;
+		float x = 160, y = 100;
+		float scale = isRR() ? 0.4 : 1.;
 		const char* text = GStrings("Game Paused");
 		auto myfont = PickBigFont(text);
 		x -= myfont->StringWidth(text) * 0.5 * scale;
@@ -318,7 +318,7 @@ void drawoverlays(double interpfrac)
 
 void cameratext(DDukeActor *cam)
 {
-	auto drawitem = [=](int tile, double x, double y, bool flipx, bool flipy)
+	auto drawitem = [=](int tile, float x, float y, bool flipx, bool flipy)
 	{
 		DrawTexture(twod, tileGetTexture(tile), x, y, DTA_ViewportX, viewport3d.Left(), DTA_ViewportY, viewport3d.Top(), DTA_ViewportWidth, viewport3d.Width(), 
 			DTA_ViewportHeight, viewport3d.Height(), DTA_FlipX, flipx, DTA_FlipY, flipy, DTA_CenterOffsetRel, 2, DTA_FullscreenScale, FSMode_Fit320x200, TAG_DONE);
@@ -375,7 +375,7 @@ int startrts(int lumpNum, int localPlayer)
 //
 //---------------------------------------------------------------------------
 
-bool GameInterface::DrawAutomapPlayer(const DVector2& mxy, const DVector2& cpos, const DAngle cang, const DVector2& xydim, const double czoom, double const interpfrac)
+bool GameInterface::DrawAutomapPlayer(const DVector2& mxy, const DVector2& cpos, const DAngle cang, const DVector2& xydim, const float czoom, float const interpfrac)
 {
 	// Pre-caculate incoming angle vector.
 	auto cangvect = cang.ToVector();
@@ -423,7 +423,7 @@ bool GameInterface::DrawAutomapPlayer(const DVector2& mxy, const DVector2& cpos,
 			auto& pp = ps[p];
 			auto act = pp.GetActor();
 			int i = TILE_APLAYERTOP + (act->vel.X > 1 && pp.on_ground ? (PlayClock >> 4) & 3 : 0);
-			double j = clamp(czoom * act->spr.scale.Y + abs(pp.truefz - act->getOffsetZ()) * REPEAT_SCALE, (1. / 3.), 2.);
+			float j = clamp(czoom * act->spr.scale.Y + abs(pp.truefz - act->getOffsetZ()) * REPEAT_SCALE, (1.f / 3.f), 2.f);
 
 			auto const vec = OutAutomapVector(mxy - cpos, cangvect, czoom, xydim);
 			auto const daang = -(pp.Angles.RenderAngles.Yaw - cang).Normalized360().Degrees();

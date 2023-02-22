@@ -102,7 +102,7 @@ public:
 			color0 = 0;
 		}
 
-		void Set(double xx, double yy, double zz, double uu, double vv, PalEntry col)
+		void Set(float xx, float yy, float zz, float uu, float vv, PalEntry col)
 		{
 			x = (float)xx;
 			z = (float)zz;
@@ -214,12 +214,12 @@ public:
 	void AddTexture(FGameTexture* img, DrawParms& parms);
 	void AddShape(FGameTexture *img, DShape2D *shape, DrawParms &parms);
 	void AddPoly(FGameTexture *texture, FVector2 *points, int npoints,
-		double originx, double originy, double scalex, double scaley,
-		DAngle rotation, const FColormap &colormap, PalEntry flatcolor, double lightlevel, uint32_t *indices, size_t indexcount);
+		float originx, float originy, float scalex, float scaley,
+		DAngle rotation, const FColormap &colormap, PalEntry flatcolor, float lightlevel, uint32_t *indices, size_t indexcount);
 	void AddPoly(FGameTexture* img, FVector4 *vt, size_t vtcount, const unsigned int *ind, size_t idxcount, int translation, PalEntry color, FRenderStyle style, const IntRect* clip);
 	void FillPolygon(int* rx1, int* ry1, int* xb1, int32_t npoints, int picnum, int palette, int shade, int props, const FVector2& xtex, const FVector2& ytex, const FVector2& otex,
 		int clipx1, int clipy1, int clipx2, int clipy2);
-	void AddFlatFill(int left, int top, int right, int bottom, FGameTexture *src, int local_origin = false, double flatscale = 1.0, PalEntry color = 0xffffffff, ERenderStyle rs = STYLE_Normal);
+	void AddFlatFill(int left, int top, int right, int bottom, FGameTexture *src, int local_origin = false, float flatscale = 1.0, PalEntry color = 0xffffffff, ERenderStyle rs = STYLE_Normal);
 
 	void AddColorOnlyQuad(int left, int top, int width, int height, PalEntry color, FRenderStyle *style = nullptr, bool prepend = false);
 	void ClearScreen(PalEntry color = 0xff000000);
@@ -228,7 +228,7 @@ public:
 
 
 	void AddLine(const DVector2& v1, const DVector2& v2, const IntRect* clip, uint32_t color, uint8_t alpha = 255);
-	void AddThickLine(const DVector2& v1, const DVector2& v2, double thickness, uint32_t color, uint8_t alpha = 255);
+	void AddThickLine(const DVector2& v1, const DVector2& v2, float thickness, uint32_t color, uint8_t alpha = 255);
 	void AddPixel(int x1, int y1, uint32_t color);
 
 	void AddEnableStencil(bool on);
@@ -308,10 +308,10 @@ public:
 	TArray<DVector2> mVertices;
 	TArray<DVector2> mCoords;
 
-	double minx = 0.0;
-	double maxx = 0.0;
-	double miny = 0.0;
-	double maxy = 0.0;
+	float minx = 0.0;
+	float maxx = 0.0;
+	float miny = 0.0;
+	float maxy = 0.0;
 
 	DMatrix3x3 transform;
 

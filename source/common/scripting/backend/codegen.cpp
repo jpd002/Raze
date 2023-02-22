@@ -53,32 +53,32 @@ struct FLOP
 {
 	ENamedName Name;
 	int Flop;
-	double (*Evaluate)(double);
+	float (*Evaluate)(float);
 };
 
 // Decorate operates on degrees, so the evaluate functions need to convert
 // degrees to radians for those that work with angles.
 static const FLOP FxFlops[] =
 {
-	{ NAME_Exp,		FLOP_EXP,		[](double v) { return g_exp(v); } },
-	{ NAME_Log,		FLOP_LOG,		[](double v) { return g_log(v); } },
-	{ NAME_Log10,	FLOP_LOG10,		[](double v) { return g_log10(v); } },
-	{ NAME_Sqrt,	FLOP_SQRT,		[](double v) { return g_sqrt(v); } },
-	{ NAME_Ceil,	FLOP_CEIL,		[](double v) { return ceil(v); } },
-	{ NAME_Floor,	FLOP_FLOOR,		[](double v) { return floor(v); } },
+	{ NAME_Exp,		FLOP_EXP,		[](float v) { return g_exp(v); } },
+	{ NAME_Log,		FLOP_LOG,		[](float v) { return g_log(v); } },
+	{ NAME_Log10,	FLOP_LOG10,		[](float v) { return g_log10(v); } },
+	{ NAME_Sqrt,	FLOP_SQRT,		[](float v) { return g_sqrt(v); } },
+	{ NAME_Ceil,	FLOP_CEIL,		[](float v) { return ceil(v); } },
+	{ NAME_Floor,	FLOP_FLOOR,		[](float v) { return floor(v); } },
 
-	{ NAME_ACos,	FLOP_ACOS_DEG,	[](double v) { return g_acos(v) * (180.0 / M_PI); } },
-	{ NAME_ASin,	FLOP_ASIN_DEG,	[](double v) { return g_asin(v) * (180.0 / M_PI); } },
-	{ NAME_ATan,	FLOP_ATAN_DEG,	[](double v) { return g_atan(v) * (180.0 / M_PI); } },
-	{ NAME_Cos,		FLOP_COS_DEG,	[](double v) { return g_cosdeg(v); } },
-	{ NAME_Sin,		FLOP_SIN_DEG,	[](double v) { return g_sindeg(v); } },
-	{ NAME_Tan,		FLOP_TAN_DEG,	[](double v) { return g_tan(v * (M_PI / 180.0)); } },
+	{ NAME_ACos,	FLOP_ACOS_DEG,	[](float v) { return g_acos(v) * (180.0f / M_PI); } },
+	{ NAME_ASin,	FLOP_ASIN_DEG,	[](float v) { return g_asin(v) * (180.0f / M_PI); } },
+	{ NAME_ATan,	FLOP_ATAN_DEG,	[](float v) { return g_atan(v) * (180.0f / M_PI); } },
+	{ NAME_Cos,		FLOP_COS_DEG,	[](float v) { return g_cosdeg(v); } },
+	{ NAME_Sin,		FLOP_SIN_DEG,	[](float v) { return g_sindeg(v); } },
+	{ NAME_Tan,		FLOP_TAN_DEG,	[](float v) { return g_tan(v * (M_PI / 180.0f)); } },
 
-	{ NAME_CosH,	FLOP_COSH,		[](double v) { return g_cosh(v); } },
-	{ NAME_SinH,	FLOP_SINH,		[](double v) { return g_sinh(v); } },
-	{ NAME_TanH,	FLOP_TANH,		[](double v) { return g_tanh(v); } },
+	{ NAME_CosH,	FLOP_COSH,		[](float v) { return g_cosh(v); } },
+	{ NAME_SinH,	FLOP_SINH,		[](float v) { return g_sinh(v); } },
+	{ NAME_TanH,	FLOP_TANH,		[](float v) { return g_tanh(v); } },
 
-	{ NAME_Round,	FLOP_ROUND,		[](double v) { return round(v);  } },
+	{ NAME_Round,	FLOP_ROUND,		[](float v) { return round(v);  } },
 };
 
 bool AreCompatiblePointerTypes(PType* dest, PType* source, bool forcompare = false);
@@ -1107,7 +1107,7 @@ FxExpression *FxFloatCast::Resolve(FCompileContext &ctx)
 			// At least in ZScript, MSG_OPTERROR always means to report an error, not a warning so the problem only exists in DECORATE.
 			if (!basex->isConstant()) ScriptPosition.Message(MSG_OPTERROR, "Numeric type expected, got a name");
 			else ScriptPosition.Message(MSG_OPTERROR, "Numeric type expected, got \"%s\"", static_cast<FxConstant*>(basex)->GetValue().GetName().GetChars());
-			FxExpression *x = new FxConstant(0.0, ScriptPosition);
+			FxExpression *x = new FxConstant(0.0f, ScriptPosition);
 			delete this;
 			return x;
 		}
@@ -2964,9 +2964,9 @@ goon:
 	{
 		if (IsFloat())
 		{
-			double v;
-			double v1 = static_cast<FxConstant *>(left)->GetValue().GetFloat();
-			double v2 = static_cast<FxConstant *>(right)->GetValue().GetFloat();
+			float v;
+			float v1 = static_cast<FxConstant *>(left)->GetValue().GetFloat();
+			float v2 = static_cast<FxConstant *>(right)->GetValue().GetFloat();
 
 			v =	Operator == '+'? v1 + v2 : 
 				Operator == '-'? v1 - v2 : 0;
@@ -3219,9 +3219,9 @@ FxExpression *FxMulDiv::Resolve(FCompileContext& ctx)
 	{
 		if (IsFloat())
 		{
-			double v;
-			double v1 = static_cast<FxConstant *>(left)->GetValue().GetFloat();
-			double v2 = static_cast<FxConstant *>(right)->GetValue().GetFloat();
+			float v;
+			float v1 = static_cast<FxConstant *>(left)->GetValue().GetFloat();
+			float v2 = static_cast<FxConstant *>(right)->GetValue().GetFloat();
 
 			if (Operator != '*' && v2 == 0)
 			{
@@ -3430,8 +3430,8 @@ FxExpression *FxPow::Resolve(FCompileContext& ctx)
 	ValueType = TypeFloat64;
 	if (left->isConstant() && right->isConstant())
 	{
-		double v1 = static_cast<FxConstant *>(left)->GetValue().GetFloat();
-		double v2 = static_cast<FxConstant *>(right)->GetValue().GetFloat();
+		float v1 = static_cast<FxConstant *>(left)->GetValue().GetFloat();
+		float v2 = static_cast<FxConstant *>(right)->GetValue().GetFloat();
 		return new FxConstant(g_pow(v1, v2), left->ScriptPosition);
 	}
 	return this;
@@ -3603,8 +3603,8 @@ FxExpression *FxCompareRel::Resolve(FCompileContext& ctx)
 		}
 		else if (IsFloat())
 		{
-			double v1 = static_cast<FxConstant *>(left)->GetValue().GetFloat();
-			double v2 = static_cast<FxConstant *>(right)->GetValue().GetFloat();
+			float v1 = static_cast<FxConstant *>(left)->GetValue().GetFloat();
+			float v2 = static_cast<FxConstant *>(right)->GetValue().GetFloat();
 			v =	Operator == '<'? v1 < v2 : 
 				Operator == '>'? v1 > v2 : 
 				Operator == TK_Geq? v1 >= v2 : 
@@ -3878,8 +3878,8 @@ FxExpression *FxCompareEq::Resolve(FCompileContext& ctx)
 		}
 		else if (ValueType->GetRegType() == REGT_FLOAT)
 		{
-			double v1 = static_cast<FxConstant *>(left)->GetValue().GetFloat();
-			double v2 = static_cast<FxConstant *>(right)->GetValue().GetFloat();
+			float v1 = static_cast<FxConstant *>(left)->GetValue().GetFloat();
+			float v2 = static_cast<FxConstant *>(right)->GetValue().GetFloat();
 			v = Operator == TK_Eq? v1 == v2 : Operator == TK_Neq? v1 != v2 : fabs(v1-v2) < VM_EPSILON;
 		}
 		else
@@ -5245,8 +5245,8 @@ FxExpression *FxATan2::Resolve(FCompileContext &ctx)
 	}
 	if (yval->isConstant() && xval->isConstant())
 	{
-		double y = static_cast<FxConstant *>(yval)->GetValue().GetFloat();
-		double x = static_cast<FxConstant *>(xval)->GetValue().GetFloat();
+		float y = static_cast<FxConstant *>(yval)->GetValue().GetFloat();
+		float x = static_cast<FxConstant *>(xval)->GetValue().GetFloat();
 		FxExpression *z = new FxConstant(g_atan2(y, x) * (180 / M_PI), ScriptPosition);
 		delete this;
 		return z;
@@ -5993,10 +5993,10 @@ FxFRandom::FxFRandom(FRandom *r, FxExpression *mi, FxExpression *ma, const FScri
 //
 //==========================================================================
 
-static double NativeFRandom(FRandom *rng, double min, double max)
+static float NativeFRandom(FRandom *rng, float min, float max)
 {
 	int random = (*rng)(0x40000000);
-	double frandom = random / double(0x40000000);
+	float frandom = random / float(0x40000000);
 
 	if (max < min)
 	{
@@ -9586,7 +9586,7 @@ FxExpression *FxFlopFunctionCall::Resolve(FCompileContext& ctx)
 	}
 	if (ArgList[0]->isConstant())
 	{
-		double v = static_cast<FxConstant *>(ArgList[0])->GetValue().GetFloat();
+		float v = static_cast<FxConstant *>(ArgList[0])->GetValue().GetFloat();
 		v = FxFlops[Index].Evaluate(v);
 		FxExpression *x = new FxConstant(v, ScriptPosition);
 		delete this;
@@ -11599,7 +11599,7 @@ FxExpression *FxLocalVariableDeclaration::Resolve(FCompileContext &ctx)
 		}
 		// check for undersized ints and floats. These are not allowed as local variables.
 		if (IsInteger() && ValueType->Align < sizeof(int)) ValueType = TypeSInt32;
-		else if (IsFloat() && ValueType->Align < sizeof(double)) ValueType = TypeFloat64;
+		else if (IsFloat() && ValueType->Align < sizeof(float)) ValueType = TypeFloat64;
 	}
 	if (Name != NAME_None)
 	{
@@ -11857,7 +11857,7 @@ ExpEmit FxStaticArray::Emit(VMFunctionBuilder *build)
 	}
 	case REGT_FLOAT:
 	{
-		TArray<double> cvalues;
+		TArray<float> cvalues;
 		for (auto v : values) cvalues.Push(static_cast<FxConstant *>(v)->GetValue().GetFloat());
 		StackOffset = build->AllocConstantsFloat(cvalues.Size(), &cvalues[0]);
 		break;

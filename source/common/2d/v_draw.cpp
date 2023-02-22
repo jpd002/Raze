@@ -55,8 +55,8 @@ CUSTOM_CVAR(Int, vid_allowtrueultrawide, 1, CVAR_ARCHIVE|CVAR_NOINITCALL)
 	setsizeneeded = true;
 }
 
-static void VirtualToRealCoords(F2DDrawer* drawer, double Width, double Height, double& x, double& y, double& w, double& h,
-	double vwidth, double vheight, bool vbottom, bool handleaspect);
+static void VirtualToRealCoords(F2DDrawer* drawer, float Width, float Height, float& x, float& y, float& w, float& h,
+	float vwidth, float vheight, bool vbottom, bool handleaspect);
 
 // Helper for ActiveRatio and CheckRatio. Returns the forced ratio type, or -1 if none.
 int ActiveFakeRatio(int width, int height)
@@ -119,7 +119,7 @@ int AspectBaseHeight(float aspect)
 		return (int)round((200.0f * (4.0f / 3.0f)) / aspect * 3.0f);
 }
 
-double AspectPspriteOffset(float aspect)
+float AspectPspriteOffset(float aspect)
 {
 	if (!AspectTallerThanWide(aspect))
 		return 0.0;
@@ -194,7 +194,7 @@ int CleanXfac_1, CleanYfac_1, CleanWidth_1, CleanHeight_1;
 //
 //==========================================================================
 
-void DoDrawTexture(F2DDrawer *drawer, FGameTexture* img, double x, double y, int tags_first, Va_List& tags)
+void DoDrawTexture(F2DDrawer *drawer, FGameTexture* img, float x, float y, int tags_first, Va_List& tags)
 {
 	DrawParms parms;
 
@@ -209,14 +209,14 @@ void DoDrawTexture(F2DDrawer *drawer, FGameTexture* img, double x, double y, int
 }
 
 
-void DrawTexture(F2DDrawer *drawer, FGameTexture* img, double x, double y, int tags_first, ...)
+void DrawTexture(F2DDrawer *drawer, FGameTexture* img, float x, float y, int tags_first, ...)
 {
 	Va_List tags;
 	va_start(tags.list, tags_first);
 	DoDrawTexture(drawer, img, x, y, tags_first, tags);
 }
 
-void DrawTexture(F2DDrawer *drawer, FTextureID texid, bool animate, double x, double y, int tags_first, ...)
+void DrawTexture(F2DDrawer *drawer, FTextureID texid, bool animate, float x, float y, int tags_first, ...)
 {
 	Va_List tags;
 	va_start(tags.list, tags_first);
@@ -233,7 +233,7 @@ void DrawTexture(F2DDrawer *drawer, FTextureID texid, bool animate, double x, do
 
 int ListGetInt(VMVa_List &tags);
 
-void DoDrawTexture(F2DDrawer *drawer, FGameTexture *img, double x, double y, VMVa_List &args)
+void DoDrawTexture(F2DDrawer *drawer, FGameTexture *img, float x, float y, VMVa_List &args)
 {
 	DrawParms parms;
 	uint32_t tag = ListGetInt(args);
@@ -306,7 +306,7 @@ void DrawShape(F2DDrawer *drawer, FGameTexture *img, DShape2D *shape, VMVa_List 
 	drawer->AddShape(img, shape, parms);
 }
 
-void DrawShapeFill(F2DDrawer *drawer, PalEntry color, double amount, DShape2D *shape, VMVa_List &args)
+void DrawShapeFill(F2DDrawer *drawer, PalEntry color, float amount, DShape2D *shape, VMVa_List &args)
 {
 	DrawParms parms;
 	uint32_t tag = ListGetInt(args);
@@ -507,7 +507,7 @@ DEFINE_ACTION_FUNCTION(FCanvas, GetClipRect)
 }
 
 
-void CalcFullscreenScale(DrawParms *parms, double srcwidth, double srcheight, int oautoaspect, DoubleRect &rect)
+void CalcFullscreenScale(DrawParms *parms, float srcwidth, float srcheight, int oautoaspect, DoubleRect &rect)
 {
 	auto GetWidth = [=]() { return parms->viewport.width; };
 	auto GetHeight = [=]() {return parms->viewport.height; };
@@ -521,7 +521,7 @@ void CalcFullscreenScale(DrawParms *parms, double srcwidth, double srcheight, in
 		return;
 	}
 
-	double aspect;
+	float aspect;
 	if (srcheight == 200) srcheight = 240.;
 	else if (srcheight == 400) srcheight = 480;
 	aspect = srcwidth / srcheight;
@@ -535,10 +535,10 @@ void CalcFullscreenScale(DrawParms *parms, double srcwidth, double srcheight, in
 		else
 		{
 			// special case: Crop image to 4:3 and then letterbox this. This avoids too much cropping on narrow windows.
-			double width4_3 = srcheight * (4. / 3.);
-			rect.width = (double)GetWidth() * srcwidth / width4_3;
+			float width4_3 = srcheight * (4. / 3.);
+			rect.width = (float)GetWidth() * srcwidth / width4_3;
 			rect.height = GetHeight() * screenratio * (3. / 4.);	// use 4:3 for the image
-			rect.left = (double)GetWidth() * (-(srcwidth - width4_3) / 2) / width4_3;
+			rect.left = (float)GetWidth() * (-(srcwidth - width4_3) / 2) / width4_3;
 			switch (oautoaspect)
 			{
 			default:
@@ -582,7 +582,7 @@ void CalcFullscreenScale(DrawParms *parms, double srcwidth, double srcheight, in
 	}
 }
 
-void GetFullscreenRect(double width, double height, int fsmode, DoubleRect* rect)
+void GetFullscreenRect(float width, float height, int fsmode, DoubleRect* rect)
 {
 	DrawParms parms;
 	parms.viewport.width = twod->GetWidth();
@@ -635,7 +635,7 @@ DEFINE_ACTION_FUNCTION(FCanvas, GetFullscreenRect)
 //
 //==========================================================================
 
-bool SetTextureParms(F2DDrawer * drawer, DrawParms *parms, FGameTexture *img, double xx, double yy)
+bool SetTextureParms(F2DDrawer * drawer, DrawParms *parms, FGameTexture *img, float xx, float yy)
 {
 	auto GetWidth = [=]() { return parms->viewport.width; };
 	auto GetHeight = [=]() {return parms->viewport.height; };
@@ -702,7 +702,7 @@ bool SetTextureParms(F2DDrawer * drawer, DrawParms *parms, FGameTexture *img, do
 				// First calculate the destination rect for an image of the given size and then reposition this object in it.
 				DoubleRect rect;
 				CalcFullscreenScale(parms, parms->virtWidth, parms->virtHeight, parms->fsscalemode, rect);
-				double adder = parms->keepratio < 0 ? 0 : parms->keepratio == 0 ? rect.left : 2 * rect.left;
+				float adder = parms->keepratio < 0 ? 0 : parms->keepratio == 0 ? rect.left : 2 * rect.left;
 				parms->x = parms->viewport.left + adder + parms->x * rect.width / parms->virtWidth;
 				parms->y = parms->viewport.top + rect.top + parms->y * rect.height / parms->virtHeight;
 				parms->destwidth = parms->destwidth * rect.width / parms->virtWidth;
@@ -774,9 +774,9 @@ static int ListGetInt(Va_List &tags)
 	return va_arg(tags.list, int);
 }
 
-static inline double ListGetDouble(Va_List &tags)
+static inline float ListGetDouble(Va_List &tags)
 {
-	return va_arg(tags.list, double);
+	return va_arg(tags.list, float);
 }
 
 static inline FSpecialColormap * ListGetSpecialColormap(Va_List &tags)
@@ -801,7 +801,7 @@ int ListGetInt(VMVa_List &tags)
 	return TAG_DONE;
 }
 
-static inline double ListGetDouble(VMVa_List &tags)
+static inline float ListGetDouble(VMVa_List &tags)
 {
 	if (tags.curindex < tags.numargs)
 	{
@@ -831,7 +831,7 @@ static inline FSpecialColormap * ListGetSpecialColormap(VMVa_List &tags)
 //==========================================================================
 
 template<class T>
-bool ParseDrawTextureTags(F2DDrawer *drawer, FGameTexture *img, double x, double y, uint32_t tag, T& tags, DrawParms *parms, int type, PalEntry fill, double fillalpha)
+bool ParseDrawTextureTags(F2DDrawer *drawer, FGameTexture *img, float x, float y, uint32_t tag, T& tags, DrawParms *parms, int type, PalEntry fill, float fillalpha)
 {
 	INTBOOL boolval;
 	int intval;
@@ -1068,7 +1068,7 @@ bool ParseDrawTextureTags(F2DDrawer *drawer, FGameTexture *img, double x, double
 			break;
 
 		case DTA_Alpha:
-			parms->Alpha = (float)(min<double>(1., ListGetDouble(tags)));
+			parms->Alpha = (float)(min<float>(1., ListGetDouble(tags)));
 			break;
 
 		case DTA_AlphaChannel:
@@ -1434,8 +1434,8 @@ bool ParseDrawTextureTags(F2DDrawer *drawer, FGameTexture *img, double x, double
 }
 // explicitly instantiate both versions for v_text.cpp.
 
-template bool ParseDrawTextureTags<Va_List>(F2DDrawer* drawer, FGameTexture *img, double x, double y, uint32_t tag, Va_List& tags, DrawParms *parms, int type, PalEntry fill, double fillalpha);
-template bool ParseDrawTextureTags<VMVa_List>(F2DDrawer* drawer, FGameTexture *img, double x, double y, uint32_t tag, VMVa_List& tags, DrawParms *parms, int type, PalEntry fill, double fillalpha);
+template bool ParseDrawTextureTags<Va_List>(F2DDrawer* drawer, FGameTexture *img, float x, float y, uint32_t tag, Va_List& tags, DrawParms *parms, int type, PalEntry fill, float fillalpha);
+template bool ParseDrawTextureTags<VMVa_List>(F2DDrawer* drawer, FGameTexture *img, float x, float y, uint32_t tag, VMVa_List& tags, DrawParms *parms, int type, PalEntry fill, float fillalpha);
 
 //==========================================================================
 //
@@ -1443,8 +1443,8 @@ template bool ParseDrawTextureTags<VMVa_List>(F2DDrawer* drawer, FGameTexture *i
 //
 //==========================================================================
 
-static void VirtualToRealCoords(F2DDrawer *drawer, double Width, double Height, double &x, double &y, double &w, double &h,
-	double vwidth, double vheight, bool vbottom, bool handleaspect)
+static void VirtualToRealCoords(F2DDrawer *drawer, float Width, float Height, float &x, float &y, float &w, float &h,
+	float vwidth, float vheight, bool vbottom, bool handleaspect)
 {
 	float myratio = float(handleaspect ? ActiveRatio (Width, Height) : (4.0 / 3.0));
 
@@ -1463,8 +1463,8 @@ static void VirtualToRealCoords(F2DDrawer *drawer, double Width, double Height, 
 		break;
 	}
 
-	double right = x + w;
-	double bottom = y + h;
+	float right = x + w;
+	float bottom = y + h;
 
 	if (myratio > 1.334f)
 	{ // The target surface is either 16:9 or 16:10, so expand the
@@ -1495,8 +1495,8 @@ static void VirtualToRealCoords(F2DDrawer *drawer, double Width, double Height, 
 	}
 }
 
-void VirtualToRealCoords(F2DDrawer* drawer, double& x, double& y, double& w, double& h,
-	double vwidth, double vheight, bool vbottom, bool handleaspect)
+void VirtualToRealCoords(F2DDrawer* drawer, float& x, float& y, float& w, float& h,
+	float vwidth, float vheight, bool vbottom, bool handleaspect)
 {
 	auto Width = drawer->GetWidth();
 	auto Height = drawer->GetHeight();
@@ -1540,7 +1540,7 @@ DEFINE_ACTION_FUNCTION(FCanvas, VirtualToRealCoords)
 void VirtualToRealCoordsInt(F2DDrawer *drawer, int &x, int &y, int &w, int &h,
 	int vwidth, int vheight, bool vbottom, bool handleaspect)
 {
-	double dx, dy, dw, dh;
+	float dx, dy, dw, dh;
 
 	dx = x;
 	dy = y;
@@ -1559,7 +1559,7 @@ void VirtualToRealCoordsInt(F2DDrawer *drawer, int &x, int &y, int &w, int &h,
 //
 //==========================================================================
 
-static void DrawLine(double x1, double y1, double x2, double y2, uint32_t realcolor, int alpha)
+static void DrawLine(float x1, float y1, float x2, float y2, uint32_t realcolor, int alpha)
 {
 	if (!twod->HasBegun2D()) ThrowAbortException(X_OTHER, "Attempt to draw to screen outside a draw function");
 	twod->AddLine(DVector2(x1, y1), DVector2(x2, y2), nullptr, realcolor | MAKEARGB(255, 0, 0, 0), alpha);
@@ -1592,7 +1592,7 @@ DEFINE_ACTION_FUNCTION(FCanvas, DrawLine)
 	return 0;
 }
 
-static void DrawThickLine(double x1, double y1, double x2, double y2, double thickness, uint32_t realcolor, int alpha)
+static void DrawThickLine(float x1, float y1, float x2, float y2, float thickness, uint32_t realcolor, int alpha)
 {
 	if (!twod->HasBegun2D()) ThrowAbortException(X_OTHER, "Attempt to draw to screen outside a draw function");
 	twod->AddThickLine(DVector2(x1, y1), DVector2(x2, y2), thickness, realcolor, alpha);

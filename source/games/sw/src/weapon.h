@@ -31,7 +31,7 @@ BEGIN_SW_NS
 
 #define NEW_ELECTRO 1
 #define HORIZ_MULT 128
-constexpr double HORIZ_MULTF = 64.;
+constexpr float HORIZ_MULTF = 64.;
 
 inline DAngle AngToSprite(DSWActor* actor, DSWActor* other)
 {
@@ -81,7 +81,7 @@ extern int LoWangsQueueHead;
 extern TObjPtr<DSWActor*> LoWangsQueue[MAX_LOWANGS_QUEUE];
 
 void ChangeState(DSWActor* actor, STATE* statep);
-void DoPlayerBeginRecoil(PLAYER* pp, double pix_amt);
+void DoPlayerBeginRecoil(PLAYER* pp, float pix_amt);
 SECTOR_OBJECT* DetectSectorObject(sectortype*);
 SECTOR_OBJECT* DetectSectorObjectByWall(walltype*);
 void ScaleSpriteVector(DSWActor* actor, int scale);
@@ -111,38 +111,38 @@ const char *DeathString(DSWActor*);
 #define DAMAGE_BLADE_TIME       (10)
 
 // Player Missile Speeds
-constexpr double STAR_VELOCITY     = (1800) / 16.;
-constexpr double ROCKET_VELOCITY   = (1350) / 16.;
-constexpr double FIREBALL_VELOCITY = 125;
+constexpr float STAR_VELOCITY     = (1800) / 16.;
+constexpr float ROCKET_VELOCITY   = (1350) / 16.;
+constexpr float FIREBALL_VELOCITY = 125;
 
-constexpr double TRACER_VELOCITY     = (1200)/ 16.;
-constexpr double TANK_SHELL_VELOCITY = (1200)/ 16.;
-constexpr double GRENADE_VELOCITY    = (900) / 16.;
-constexpr double MINE_VELOCITY       = (520) / 16.;  // Was 420
-constexpr double CHEMBOMB_VELOCITY = (420 /16.);
+constexpr float TRACER_VELOCITY     = (1200)/ 16.;
+constexpr float TANK_SHELL_VELOCITY = (1200)/ 16.;
+constexpr float GRENADE_VELOCITY    = (900) / 16.;
+constexpr float MINE_VELOCITY       = (520) / 16.;  // Was 420
+constexpr float CHEMBOMB_VELOCITY = (420 /16.);
 
 // Player Spell Missile Speeds
-constexpr double BLOOD_WORM_VELOCITY =  (800 / 16.);
-constexpr double NAPALM_VELOCITY     =  (800 / 16.);
-constexpr double MIRV_VELOCITY       =  (600 / 16.);
+constexpr float BLOOD_WORM_VELOCITY =  (800 / 16.);
+constexpr float NAPALM_VELOCITY     =  (800 / 16.);
+constexpr float MIRV_VELOCITY       =  (600 / 16.);
 
 // Trap Speeds
-constexpr double BOLT_TRAP_VELOCITY      = (950 / 16.);
-constexpr double FIREBALL_TRAP_VELOCITY  = (750 / 16.);
+constexpr float BOLT_TRAP_VELOCITY      = (950 / 16.);
+constexpr float FIREBALL_TRAP_VELOCITY  = (750 / 16.);
 
 // NPC Missile Speeds
-constexpr double NINJA_STAR_VELOCITY     = (1800 / 16.);
-constexpr double NINJA_BOLT_VELOCITY     = (500 / 16.);
-constexpr double SKEL_ELECTRO_VELOCITY   = (850 / 16.);
-constexpr double COOLG_FIRE_VELOCITY     = (400 / 16.);
+constexpr float NINJA_STAR_VELOCITY     = (1800 / 16.);
+constexpr float NINJA_BOLT_VELOCITY     = (500 / 16.);
+constexpr float SKEL_ELECTRO_VELOCITY   = (850 / 16.);
+constexpr float COOLG_FIRE_VELOCITY     = (400 / 16.);
 constexpr int GORO_FIREBALL_VELOCITY = 50;
 
 // Recoil speeds in pitch/degrees.
-constexpr double GRENADE_RECOIL_AMT = 5.356;
-constexpr double ROCKET_RECOIL_AMT = 3.13;
-constexpr double RAIL_RECOIL_AMT = 3.13;
-constexpr double SHOTGUN_RECOIL_AMT = 5.356;
-constexpr double NUKE_RECOIL_AMT = 33.275;
+constexpr float GRENADE_RECOIL_AMT = 5.356;
+constexpr float ROCKET_RECOIL_AMT = 3.13;
+constexpr float RAIL_RECOIL_AMT = 3.13;
+constexpr float SHOTGUN_RECOIL_AMT = 5.356;
+constexpr float NUKE_RECOIL_AMT = 33.275;
 
 // Damage amounts that determine the type of player death
 // The standard flip over death is default
@@ -156,7 +156,7 @@ extern int WeaponIsAmmo;
 
 #define MISSILEMOVETICS 6
 
-inline double CloseRangeDist(DSWActor* a1, DSWActor* a2, double fudge = 25)
+inline float CloseRangeDist(DSWActor* a1, DSWActor* a2, float fudge = 25)
 {
 	return a1->clipdist + a2->clipdist + fudge;
 }
@@ -164,7 +164,7 @@ inline double CloseRangeDist(DSWActor* a1, DSWActor* a2, double fudge = 25)
 extern short target_ang;
 
 DSWActor* SpawnShotgunSparks(PLAYER* pp, sectortype* hit_sect, walltype* hit_wall, const DVector3& hitpos, DAngle hit_ang);
-int DoActorBeginSlide(DSWActor* actor, DAngle ang, double vel);
+int DoActorBeginSlide(DSWActor* actor, DAngle ang, float vel);
 int GetOverlapSector(const DVector2& pos, sectortype** over, sectortype** under);
 
 bool MissileHitDiveArea(DSWActor*);

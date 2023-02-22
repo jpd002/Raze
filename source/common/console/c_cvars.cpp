@@ -1867,8 +1867,8 @@ void FZSFloatCVar::CallCVarCallback(FZSFloatCVar &self)
 	}
 	IFVIRTUALPTRNAME(self.customCVarHandler, "CustomFloatCVar", ModifyValue)
 	{
-		VMValue param[] = { self.customCVarHandler.Get() , self.cvarName.GetIndex() , (double) self.Value };
-		double v;
+		VMValue param[] = { self.customCVarHandler.Get() , self.cvarName.GetIndex() , (float) self.Value };
+		float v;
 		VMReturn ret(&v);
 		VMCall(func, param, 3, &ret, 1);
 		self.Value = (float) v;
@@ -1898,8 +1898,8 @@ UCVarValue FZSFloatCVar::GenericZSCVarCallback(UCVarValue value, ECVarType type)
 
 	IFVIRTUALPTRNAME(customCVarHandler, "CustomFloatCVar", ModifyValue)
 	{
-		VMValue param[] = { customCVarHandler.Get() , cvarName.GetIndex() , (double) val };
-		double v;
+		VMValue param[] = { customCVarHandler.Get() , cvarName.GetIndex() , (float) val };
+		float v;
 		VMReturn ret(&v);
 		VMCall(func, param, 3, &ret, 1);
 		val = (float) v;

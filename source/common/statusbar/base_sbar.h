@@ -10,7 +10,7 @@ class FFont;
 extern FGameTexture* CrosshairImage;
 void ST_LoadCrosshair(int num, bool alwaysload);
 void ST_UnloadCrosshair();
-void ST_DrawCrosshair(int phealth, double xpos, double ypos, double scale, DAngle angle = nullAngle);
+void ST_DrawCrosshair(int phealth, float xpos, float ypos, float scale, DAngle angle = nullAngle);
 
 
 enum DI_Flags
@@ -159,11 +159,11 @@ public:
 	int SBarTop;
 	int RelTop;
 	int HorizontalResolution, VerticalResolution;
-	double Alpha = 1.;
+	float Alpha = 1.;
 	DVector2 SBarScale;
 	DVector2 drawOffset = { 0,0 };			// can be set by subclasses to offset drawing operations
 	DVector2 defaultScale;					// factor for clean fully scaled display.
-	double drawClip[4] = { 0,0,0,0 };		// defines a clipping rectangle (not used yet)
+	float drawClip[4] = { 0,0,0,0 };		// defines a clipping rectangle (not used yet)
 	bool fullscreenOffsets = false;			// current screen is displayed with fullscreen behavior.
 	bool ForcedScale = false;
 	bool CompleteBorder = false;
@@ -176,21 +176,21 @@ public:
 
 
 	void BeginStatusBar(int resW, int resH, int relTop, bool forceScaled = false);
-	void BeginHUD(int resW, int resH, double Alpha, bool forceScaled = false);
+	void BeginHUD(int resW, int resH, float Alpha, bool forceScaled = false);
 	void SetSize(int reltop = 32, int hres = 320, int vres = 200, int hhres = -1, int hvres = -1);
 	virtual DVector2 GetHUDScale() const;
 	virtual uint32_t GetTranslation() const { return 0; }
 	void SetDrawSize(int reltop, int hres, int vres);
 	virtual void SetScale();
 	void ValidateResolution(int& hres, int& vres) const;
-	void StatusbarToRealCoords(double& x, double& y, double& w, double& h) const;
-	void DrawGraphic(FGameTexture* texture, double x, double y, int flags, double Alpha, double boxwidth, double boxheight, double scaleX, double scaleY, ERenderStyle style = STYLE_Translucent, PalEntry color = 0xffffffff, int translation = 0, double clipwidth = -1.0);
-	void DrawGraphic(FTextureID texture, double x, double y, int flags, double Alpha, double boxwidth, double boxheight, double scaleX, double scaleY, ERenderStyle style = STYLE_Translucent, PalEntry color = 0xffffffff, int translation = 0, double clipwidth = -1.0);
-	void DrawRotated(FTextureID texture, double x, double y, int flags, double angle, double Alpha, double scaleX, double scaleY, PalEntry color = 0xffffffff, int translation = 0, ERenderStyle style = STYLE_Translucent);
-	void DrawRotated(FGameTexture* tex, double x, double y, int flags, double angle, double Alpha, double scaleX, double scaleY, PalEntry color = 0xffffffff, int translation = 0, ERenderStyle style = STYLE_Translucent);
-	void DrawString(FFont* font, const FString& cstring, double x, double y, int flags, double Alpha, int translation, int spacing, EMonospacing monospacing, int shadowX, int shadowY, double scaleX, double scaleY, int pt, int style);
-	void TransformRect(double& x, double& y, double& w, double& h, int flags = 0);
-	void Fill(PalEntry color, double x, double y, double w, double h, int flags = 0);
-	void SetClipRect(double x, double y, double w, double h, int flags = 0);
+	void StatusbarToRealCoords(float& x, float& y, float& w, float& h) const;
+	void DrawGraphic(FGameTexture* texture, float x, float y, int flags, float Alpha, float boxwidth, float boxheight, float scaleX, float scaleY, ERenderStyle style = STYLE_Translucent, PalEntry color = 0xffffffff, int translation = 0, float clipwidth = -1.0);
+	void DrawGraphic(FTextureID texture, float x, float y, int flags, float Alpha, float boxwidth, float boxheight, float scaleX, float scaleY, ERenderStyle style = STYLE_Translucent, PalEntry color = 0xffffffff, int translation = 0, float clipwidth = -1.0);
+	void DrawRotated(FTextureID texture, float x, float y, int flags, float angle, float Alpha, float scaleX, float scaleY, PalEntry color = 0xffffffff, int translation = 0, ERenderStyle style = STYLE_Translucent);
+	void DrawRotated(FGameTexture* tex, float x, float y, int flags, float angle, float Alpha, float scaleX, float scaleY, PalEntry color = 0xffffffff, int translation = 0, ERenderStyle style = STYLE_Translucent);
+	void DrawString(FFont* font, const FString& cstring, float x, float y, int flags, float Alpha, int translation, int spacing, EMonospacing monospacing, int shadowX, int shadowY, float scaleX, float scaleY, int pt, int style);
+	void TransformRect(float& x, float& y, float& w, float& h, int flags = 0);
+	void Fill(PalEntry color, float x, float y, float w, float h, int flags = 0);
+	void SetClipRect(float x, float y, float w, float h, int flags = 0);
 
 };

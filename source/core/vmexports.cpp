@@ -42,7 +42,7 @@
 
 #include "buildtiles.h"
 
-sectortype* Raze_updatesector(double x, double y, sectortype* sec, double dist)
+sectortype* Raze_updatesector(float x, float y, sectortype* sec, float dist)
 {
 	updatesector(DVector2(x, y), &sec, dist);
 	return sec;
@@ -80,7 +80,7 @@ DEFINE_ACTION_FUNCTION(_Raze, clipmove)
 	return min(numret, 2);
 }
 
-int Raze_cansee(double x, double y, double z, sectortype* sec, double xe, double ye, double ze, sectortype* sece)
+int Raze_cansee(float x, float y, float z, sectortype* sec, float xe, float ye, float ze, sectortype* sece)
 {
 	return cansee(DVector3(x, y, z), sec, DVector3(xe, ye, ze), sece);
 }
@@ -99,7 +99,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(_Raze, cansee, Raze_cansee)
 	ACTION_RETURN_BOOL(Raze_cansee(x, y, z, s, xe, ye, ze, se));
 }
 
-int Raze_hitscan(double x, double y, double z, sectortype* sec, double xe, double ye, double ze, HitInfoBase* hit, unsigned cliptype, double maxrange)
+int Raze_hitscan(float x, float y, float z, sectortype* sec, float xe, float ye, float ze, HitInfoBase* hit, unsigned cliptype, float maxrange)
 {
 	return hitscan(DVector3(x, y, z), sec, DVector3(xe, ye, ze), *hit, cliptype, maxrange);
 }
@@ -228,7 +228,7 @@ DEFINE_GLOBAL_NAMED(wall, walls)
 DEFINE_GLOBAL_NAMED(sector, sectors)
 DEFINE_GLOBAL(display_mirror)
 
-void sector_setfloorz(sectortype* sect, double val)
+void sector_setfloorz(sectortype* sect, float val)
 {
 	if (!sect) ThrowAbortException(X_READ_NIL, nullptr);
 	sect->setfloorz(val);
@@ -242,7 +242,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(_sectortype, setfloorz, sector_setfloorz)
 	return 0;
 }
 
-void sector_setceilingz(sectortype* sect, double val)
+void sector_setceilingz(sectortype* sect, float val)
 {
 	if (!sect) ThrowAbortException(X_READ_NIL, nullptr);
 	sect->setceilingz(val);
@@ -256,7 +256,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(_sectortype, setceilingz, sector_setceilingz)
 	return 0;
 }
 
-void sector_addfloorz(sectortype* sect, double val)
+void sector_addfloorz(sectortype* sect, float val)
 {
 	if (!sect) ThrowAbortException(X_READ_NIL, nullptr);
 	sect->addfloorz(val);
@@ -270,7 +270,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(_sectortype, addfloorz, sector_addfloorz)
 	return 0;
 }
 
-void sector_addceilingz(sectortype* sect, double val)
+void sector_addceilingz(sectortype* sect, float val)
 {
 	if (!sect) ThrowAbortException(X_READ_NIL, nullptr);
 	sect->addceilingz(val);
@@ -284,7 +284,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(_sectortype, addceilingz, sector_addceilingz)
 	return 0;
 }
 
-void sector_setfloorxpan(sectortype* sect, double val)
+void sector_setfloorxpan(sectortype* sect, float val)
 {
 	if (!sect) ThrowAbortException(X_READ_NIL, nullptr);
 	sect->setfloorxpan(float(val));
@@ -298,7 +298,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(_sectortype, setfloorxpan, sector_setfloorxpan)
 	return 0;
 }
 
-void sector_setceilingxpan(sectortype* sect, double val)
+void sector_setceilingxpan(sectortype* sect, float val)
 {
 	if (!sect) ThrowAbortException(X_READ_NIL, nullptr);
 	sect->setceilingxpan(float(val));
@@ -312,7 +312,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(_sectortype, setceilingxpan, sector_setceilingxpan
 	return 0;
 }
 
-void sector_addfloorxpan(sectortype* sect, double val)
+void sector_addfloorxpan(sectortype* sect, float val)
 {
 	if (!sect) ThrowAbortException(X_READ_NIL, nullptr);
 	sect->addfloorxpan(float(val));
@@ -326,7 +326,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(_sectortype, addfloorxpan, sector_addfloorxpan)
 	return 0;
 }
 
-void sector_addceilingxpan(sectortype* sect, double val)
+void sector_addceilingxpan(sectortype* sect, float val)
 {
 	if (!sect) ThrowAbortException(X_READ_NIL, nullptr);
 	sect->addceilingxpan(float(val));
@@ -340,7 +340,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(_sectortype, addceilingxpan, sector_addceilingxpan
 	return 0;
 }
 
-void sector_setfloorypan(sectortype* sect, double val)
+void sector_setfloorypan(sectortype* sect, float val)
 {
 	if (!sect) ThrowAbortException(X_READ_NIL, nullptr);
 	sect->setfloorypan(float(val));
@@ -354,7 +354,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(_sectortype, setfloorypan, sector_setfloorypan)
 	return 0;
 }
 
-void sector_setceilingypan(sectortype* sect, double val)
+void sector_setceilingypan(sectortype* sect, float val)
 {
 	if (!sect) ThrowAbortException(X_READ_NIL, nullptr);
 	sect->setceilingypan(float(val));
@@ -368,7 +368,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(_sectortype, setceilingypan, sector_setceilingypan
 	return 0;
 }
 
-void sector_addfloorypan(sectortype* sect, double val)
+void sector_addfloorypan(sectortype* sect, float val)
 {
 	if (!sect) ThrowAbortException(X_READ_NIL, nullptr);
 	sect->addfloorypan(float(val));
@@ -382,7 +382,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(_sectortype, addfloorypan, sector_addfloorypan)
 	return 0;
 }
 
-void sector_addceilingypan(sectortype* sect, double val)
+void sector_addceilingypan(sectortype* sect, float val)
 {
 	if (!sect) ThrowAbortException(X_READ_NIL, nullptr);
 	sect->addceilingypan(float(val));
@@ -449,10 +449,10 @@ DEFINE_ACTION_FUNCTION_NATIVE(_sectortype, ceilingslope, sector_ceilingslope)
 	ACTION_RETURN_INT(self->getceilingslope());
 }
 
-double sector_getslopes(sectortype* sect, double x, double y, double *pf)
+float sector_getslopes(sectortype* sect, float x, float y, float *pf)
 {
 	if (!sect) ThrowAbortException(X_READ_NIL, nullptr);
-	double pc;
+	float pc;
 	calcSlope(sect, x, y, &pc, pf);
 	return pc;
 }
@@ -462,7 +462,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(_sectortype, getslopes, sector_getslopes)
 	PARAM_SELF_STRUCT_PROLOGUE(sectortype);
 	PARAM_FLOAT(x);
 	PARAM_FLOAT(y);
-	double c, f;
+	float c, f;
 	calcSlope(self, x, y, &c, &f);
 	if (numret > 0) ret[0].SetFloat(c);
 	if (numret > 1) ret[1].SetFloat(f);
@@ -531,7 +531,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(_sectortype, settexture, sector_settexture)
 
 //=============================================================================
 
-void wall_setxpan(walltype* wal, double val)
+void wall_setxpan(walltype* wal, float val)
 {
 	if (!wal) ThrowAbortException(X_READ_NIL, nullptr);
 	wal->setxpan(float(val));
@@ -545,7 +545,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(_walltype, setxpan, wall_setxpan)
 	return 0;
 }
 
-void wall_addxpan(walltype* wal, double val)
+void wall_addxpan(walltype* wal, float val)
 {
 	if (!wal) ThrowAbortException(X_READ_NIL, nullptr);
 	wal->addxpan(float(val));
@@ -559,7 +559,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(_walltype, addxpan, wall_addxpan)
 	return 0;
 }
 
-void wall_setypan(walltype* wal, double val)
+void wall_setypan(walltype* wal, float val)
 {
 	if (!wal) ThrowAbortException(X_READ_NIL, nullptr);
 	wal->setypan(float(val));
@@ -573,7 +573,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(_walltype, setypan, wall_setypan)
 	return 0;
 }
 
-void wall_addypan(walltype* wal, double val)
+void wall_addypan(walltype* wal, float val)
 {
 	if (!wal) ThrowAbortException(X_READ_NIL, nullptr);
 	wal->addypan(float(val));
@@ -672,7 +672,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(_walltype, center, wall_center)
 }
 
 
-double wall_length(walltype* wal)
+float wall_length(walltype* wal)
 {
 	if (!wal) ThrowAbortException(X_READ_NIL, nullptr);
 	return wal->Length();
@@ -684,7 +684,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(_walltype, length, wall_length)
 	ACTION_RETURN_FLOAT(self->Length());
 }
 
-void wall_move(walltype* wal, double x, double y)
+void wall_move(walltype* wal, float x, float y)
 {
 	if (!wal) ThrowAbortException(X_READ_NIL, nullptr);
 	wal->move(DVector2(x, y));
@@ -699,7 +699,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(_walltype, move, wall_move)
 	return 0;
 }
 
-void wall_dragpoint(walltype* wal, double x, double y)
+void wall_dragpoint(walltype* wal, float x, float y)
 {
 	if (!wal) ThrowAbortException(X_READ_NIL, nullptr);
 	dragpoint(wal, DVector2(x, y));
@@ -825,7 +825,7 @@ DEFINE_FIELD(DCoreActor, viewzoffset)
 DEFINE_FIELD(DCoreActor, oviewzoffset)
 DEFINE_FIELD(DCoreActor, opos)
 
-void coreactor_setpos(DCoreActor* self, double x, double y, double z, int relink)
+void coreactor_setpos(DCoreActor* self, float x, float y, float z, int relink)
 {
 	self->spr.pos = { x, y, z };
 	// todo: SW needs to call updatesectorz here or have a separate function.
@@ -860,7 +860,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(DCoreActor, copypos, coreactor_setpos)
 	return 0;
 }
 
-void coreactor_move(DCoreActor* self, double x, double y, double z, int relink)
+void coreactor_move(DCoreActor* self, float x, float y, float z, int relink)
 {
 	self->spr.pos += { x, y, z };
 	// todo: SW needs to call updatesectorz here or have a separate function.
@@ -890,7 +890,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(DCoreActor, backuppos, coreactor_backuppos)
 	return 0;
 }
 
-void coreactor_setposition(DCoreActor* self, double x, double y, double z)
+void coreactor_setposition(DCoreActor* self, float x, float y, float z)
 {
 	SetActor(self, DVector3(x, y, z));
 }
@@ -905,7 +905,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(DCoreActor, setposition, coreactor_setposition)
 	return 0;
 }
 
-void coreactor_setpositionz(DCoreActor* self, double x, double y, double z)
+void coreactor_setpositionz(DCoreActor* self, float x, float y, float z)
 {
 	SetActorZ(self, DVector3(x, y, z));
 }
@@ -920,7 +920,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(DCoreActor, setpositionz, coreactor_setpositionz)
 	return 0;
 }
 
-static double deltaangleDbl(double a1, double a2)
+static float deltaangleDbl(float a1, float a2)
 {
 	return deltaangle(DAngle::fromDeg(a1), DAngle::fromDeg(a2)).Degrees();
 }
@@ -933,7 +933,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(DCoreActor, deltaangle, deltaangleDbl)	// should t
 	ACTION_RETURN_FLOAT(deltaangle(DAngle::fromDeg(a1), DAngle::fromDeg(a2)).Degrees());
 }
 
-static double absangleDbl(double a1, double a2)
+static float absangleDbl(float a1, float a2)
 {
 	return absangle(DAngle::fromDeg(a1), DAngle::fromDeg(a2)).Degrees();
 }
@@ -946,7 +946,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(DCoreActor, absangle, absangleDbl)	// should this 
 	ACTION_RETURN_FLOAT(absangle(DAngle::fromDeg(a1), DAngle::fromDeg(a2)).Degrees());
 }
 
-static double Normalize180(double angle)
+static float Normalize180(float angle)
 {
 	return DAngle::fromDeg(angle).Normalized180().Degrees();
 }

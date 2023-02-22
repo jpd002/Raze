@@ -123,12 +123,12 @@ void GameInterface::RemoveQAVInterpProps(const int res_id)
 //
 //---------------------------------------------------------------------------
 
-void DrawFrame(double x, double y, double z, double a, double alpha, int picnum, int stat, int shade, int palnum, bool to3dview)
+void DrawFrame(float x, float y, float z, float a, float alpha, int picnum, int stat, int shade, int palnum, bool to3dview)
 {
 	if (!to3dview)
 	{
 		auto tex = tileGetTexture(picnum);
-		double scale = z * (1. / 65536.);
+		float scale = z * (1. / 65536.);
 		int renderstyle = (stat & RS_NOMASK) ? STYLE_Normal : STYLE_Translucent;
 		int pin = (stat & kQavOrientationLeft) ? -1 : (stat & RS_ALIGN_R) ? 1 : 0;
 		auto translation = TRANSLATION(Translation_Remap, palnum);
@@ -163,7 +163,7 @@ void DrawFrame(double x, double y, double z, double a, double alpha, int picnum,
 //
 //---------------------------------------------------------------------------
 
-void QAV::Draw(int ticks, int stat, int shade, int palnum, bool to3dview, double const interpfrac, DAngle angle)
+void QAV::Draw(int ticks, int stat, int shade, int palnum, bool to3dview, float const interpfrac, DAngle angle)
 {
 	assert(ticksPerFrame > 0);
 
@@ -184,24 +184,24 @@ void QAV::Draw(int ticks, int stat, int shade, int palnum, bool to3dview, double
 			TILE_FRAME* const thisTile = &thisFrame->tiles[i];
 			TILE_FRAME* const prevTile = interpolate && interpdata->CanInterpFrameTile(nFrame, i) ? interpdata->PrevTileFinder(thisFrame, prevFrame, i) : nullptr;
 
-			double tileX;
-			double tileY;
-			double tileZ;
+			float tileX;
+			float tileY;
+			float tileZ;
 			DAngle tileA;
-			double tileAlpha;
+			float tileAlpha;
 			int tileShade;
 			auto const tileStat = stat | thisTile->stat;
 
 			if (prevTile)
 			{
-				double prevAlpha = ((stat | prevTile->stat) & RS_TRANS1) ? glblend[0].def[!!((stat | prevTile->stat) & RS_TRANS2)].alpha : 1.f;
-				double thisAlpha = (tileStat & RS_TRANS1) ? glblend[0].def[!!(tileStat & RS_TRANS2)].alpha : 1.f;
+				float prevAlpha = ((stat | prevTile->stat) & RS_TRANS1) ? glblend[0].def[!!((stat | prevTile->stat) & RS_TRANS2)].alpha : 1.f;
+				float thisAlpha = (tileStat & RS_TRANS1) ? glblend[0].def[!!(tileStat & RS_TRANS2)].alpha : 1.f;
 
-				tileX = interpolatedvalue<double>(prevTile->x, thisTile->x, interpfrac);
-				tileY = interpolatedvalue<double>(prevTile->y, thisTile->y, interpfrac);
-				tileZ = interpolatedvalue<double>(prevTile->z, thisTile->z, interpfrac);
+				tileX = interpolatedvalue<float>(prevTile->x, thisTile->x, interpfrac);
+				tileY = interpolatedvalue<float>(prevTile->y, thisTile->y, interpfrac);
+				tileZ = interpolatedvalue<float>(prevTile->z, thisTile->z, interpfrac);
 				tileA = interpolatedvalue(prevTile->angle, thisTile->angle, interpfrac);
-				tileShade = (int)interpolatedvalue<double>(prevTile->shade, thisTile->shade, interpfrac);
+				tileShade = (int)interpolatedvalue<float>(prevTile->shade, thisTile->shade, interpfrac);
 				tileAlpha = interpolatedvalue(prevAlpha, thisAlpha, interpfrac);
 			}
 			else
@@ -326,7 +326,7 @@ void qavProcessTicker(QAV* const pQAV, int* duration, int* lastTick)
 //
 //---------------------------------------------------------------------------
 
-void qavProcessTimer(PLAYER* const pPlayer, QAV* const pQAV, int* duration, double* interpfrac, bool const fixedduration, bool const ignoreWeaponTimer)
+void qavProcessTimer(PLAYER* const pPlayer, QAV* const pQAV, int* duration, float* interpfrac, bool const fixedduration, bool const ignoreWeaponTimer)
 {
 	// Process if not paused.
 	if (!paused)

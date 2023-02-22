@@ -100,7 +100,7 @@ void FNotifyBuffer::AddString(int printlevel, FString source)
 
 	FFont* font = GetNotifyFont();
 	if (font == nullptr) return;	// Without an initialized font we cannot handle the message (this is for those which come here before the font system is ready.)
-	double fontscale = (generic_ui? 0.7 : NotifyFontScale) * con_notifyscale;
+	float fontscale = (generic_ui? 0.7f : NotifyFontScale) * con_notifyscale;
 
 	int width = int(320 * (screenratio / 1.333) / fontscale);
 	FNotifyBufferBase::AddString(printlevel & PRINT_TYPES, font, source, width, con_notifytime, con_notifylines);
@@ -121,10 +121,10 @@ void FNotifyBuffer::DrawNative()
 
 	FFont* font = isBlood() ? SmallFont2 : SmallFont;
 
-	double line = isBlood() ? Top : isSWALL() ? 40 : font->GetDisplacement();
+	float line = isBlood() ? Top : isSWALL() ? 40 : font->GetDisplacement();
 	bool canskip = isBlood();
-	double scale = 1 / (NotifyFontScale * con_notifyscale);
-	double lineadv = font->GetHeight() / NotifyFontScale;
+	float scale = 1 / (NotifyFontScale * con_notifyscale);
+	float lineadv = font->GetHeight() / NotifyFontScale;
 
 	for (unsigned i = topline; i < Text.Size(); ++i)
 	{
@@ -136,7 +136,7 @@ void FNotifyBuffer::DrawNative()
 		int j = notify.TimeOut - notify.Ticker;
 		if (j > 0)
 		{
-			double alpha = isBlood() ? ((j < NOTIFYFADETIME) ? 1. * j / NOTIFYFADETIME : 1) : 1;
+			float alpha = isBlood() ? ((j < NOTIFYFADETIME) ? 1. * j / NOTIFYFADETIME : 1) : 1;
 			if (pulse)
 			{
 				alpha *= 0.7 + 0.3 * sin(I_msTime() / 100.);
@@ -194,11 +194,11 @@ void FNotifyBuffer::Draw()
 
 
 	FFont* font = GetNotifyFont();
-	double nfscale = (generic_ui? 0.7 : NotifyFontScale);
-	double scale = 1 / (nfscale * con_notifyscale);
+	float nfscale = (generic_ui? 0.7 : NotifyFontScale);
+	float scale = 1 / (nfscale * con_notifyscale);
 
-	double line = Top + font->GetDisplacement() / nfscale;
-	double lineadv = font->GetHeight () / nfscale;
+	float line = Top + font->GetDisplacement() / nfscale;
+	float lineadv = font->GetHeight () / nfscale;
 
 	for (unsigned i = 0; i < Text.Size(); ++ i)
 	{
@@ -210,7 +210,7 @@ void FNotifyBuffer::Draw()
 		int j = notify.TimeOut - notify.Ticker;
 		if (j > 0)
 		{
-			double alpha = (j < NOTIFYFADETIME) ? 1. * j / NOTIFYFADETIME : 1;
+			float alpha = (j < NOTIFYFADETIME) ? 1. * j / NOTIFYFADETIME : 1;
 			if (con_pulsetext)
 			{
 				alpha *= 0.7 + 0.3 * sin(I_msTime() / 100.);

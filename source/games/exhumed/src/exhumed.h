@@ -148,7 +148,7 @@ inline FTextureID GameLogo()
     return TexMan.CheckForTexture((g_gameType & GAMEFLAG_EXHUMED) ? "ExhumedLogo" : "PowerslaveLogo", ETextureType::Any);
 }
 
-extern double g_frameDelay;
+extern float g_frameDelay;
 
 enum {
     kPalNormal = 0,
@@ -169,21 +169,21 @@ enum {
 class TextOverlay
 {
     FFont* font;
-	double nCrawlY;
+	float nCrawlY;
 	int16_t nLeft[50];
 	int nHeight;
-    double lastclock;
+    float lastclock;
 	TArray<FString> screentext;
     int currentCinemaPalette = 0;
 
 
 public:
 
-	void Start(double starttime);
+	void Start(float starttime);
 	void ComputeCinemaText();
 	void ReadyCinemaText(const char* nVal);
 	void DisplayText();
-	bool AdvanceCinemaText(double clock);
+	bool AdvanceCinemaText(float clock);
     void SetPalette(int pal) { currentCinemaPalette = pal; }
     void Create(const FString& text, int pal);
 };
@@ -193,7 +193,7 @@ extern char g_modDir[BMAX_PATH];
 
 void G_LoadGroupsInDir(const char* dirname);
 void G_DoAutoload(const char* dirname);
-void DrawRel(int tile, double x, double y, int shade = 0);
+void DrawRel(int tile, float x, float y, int shade = 0);
 void LevelFinished();
 
 // savegame.
@@ -225,18 +225,18 @@ struct GameInterface : public ::GameInterface
     void DrawBackground() override;
     void Render() override;
     //void DrawWeapons() override;
-    void GetInput(ControlInfo* const hidInput, double const scaleAdjust, InputPacket* packet = nullptr) override;
+    void GetInput(ControlInfo* const hidInput, float const scaleAdjust, InputPacket* packet = nullptr) override;
     void Startup() override;
     const char* GenericCheat(int player, int cheat) override;
 	void NewGame(MapRecord *map, int skill, bool) override;
 	void LevelCompleted(MapRecord *map, int skill) override;
 	void NextLevel(MapRecord *map, int skill) override;
-    bool DrawAutomapPlayer(const DVector2& mxy, const DVector2& cpos, const DAngle cang, const DVector2& xydim, const double czoom, double const interpfrac) override;
-    DAngle playerPitchMin() override { return DAngle::fromDeg(49.5); }
-    DAngle playerPitchMax() override { return DAngle::fromDeg(-49.5); }
-    void WarpToCoords(double x, double y, double z, DAngle ang) override;
+    bool DrawAutomapPlayer(const DVector2& mxy, const DVector2& cpos, const DAngle cang, const DVector2& xydim, const float czoom, float const interpfrac) override;
+    DAngle playerPitchMin() override { return DAngle::fromDeg(49.5f); }
+    DAngle playerPitchMax() override { return DAngle::fromDeg(-49.5f); }
+    void WarpToCoords(float x, float y, float z, DAngle ang) override;
     void ToggleThirdPerson() override;
-    void processSprites(tspriteArray& tsprites, const DVector3& view, DAngle viewang, double interpfrac) override;
+    void processSprites(tspriteArray& tsprites, const DVector3& view, DAngle viewang, float interpfrac) override;
     int GetCurrentSkill() override;
     std::pair<DVector3, DAngle> GetCoordinates() override;
     void StartSoundEngine() override;

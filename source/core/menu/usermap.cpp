@@ -216,7 +216,7 @@ DEFINE_ACTION_FUNCTION(_UserMapMenu, DrawPreview)
 	if (!entry) return 0;
 	LoadMapPreview(entry);
 	if (entry->walls.Size() == 0) return 0;
-	double minx = INT_MAX, miny = INT_MAX, maxx = INT_MIN, maxy = INT_MIN;
+	float minx = INT_MAX, miny = INT_MAX, maxx = INT_MIN, maxy = INT_MIN;
 	for (auto& wal : entry->walls)
 	{
 		if (wal.pos.X < minx) minx = wal.pos.X;
@@ -228,8 +228,8 @@ DEFINE_ACTION_FUNCTION(_UserMapMenu, DrawPreview)
 	float scaley = float(height / (maxy - miny));
 	float scale = min(scalex, scaley);
 
-	DVector2 center = { (minx + maxx) * 0.5, (miny + maxy) * 0.5 };
-	DVector2 dcenter = { left + (width * 0.5), top + (height * 0.5) };
+	DVector2 center = { (minx + maxx) * 0.5f, (miny + maxy) * 0.5f };
+	DVector2 dcenter = { left + (width * 0.5f), top + (height * 0.5f) };
 
 	for (auto& wal : entry->walls)
 	{

@@ -33,7 +33,7 @@ void moveplayers();
 void doanimations();
 void tickstat(int stat, bool deleteinvalid = false);
 void operaterespawns(int low);
-void moveclouds(double interpfrac);
+void moveclouds(float interpfrac);
 void movefta();
 
 void clearcameras(player_struct* p);
@@ -68,7 +68,7 @@ void handle_se19(DDukeActor* i);
 void handle_se20(DDukeActor* i);
 void handle_se21(DDukeActor* i);
 void handle_se22(DDukeActor* i);
-void handle_se24(DDukeActor* actor, bool scroll, double shift);
+void handle_se24(DDukeActor* actor, bool scroll, float shift);
 void handle_se25(DDukeActor* a, int snd1, int snd2);
 void handle_se26(DDukeActor* i);
 void handle_se27(DDukeActor* i);
@@ -96,11 +96,11 @@ int wakeup(DDukeActor* sn, int pn);
 int timedexit(int snum);
 void dokneeattack(int snum);
 int endoflevel(int snum);
-void playerisdead(int snum, int psectlotag, double fz, double cz);
+void playerisdead(int snum, int psectlotag, float fz, float cz);
 void footprints(int snum);
 int makepainsounds(int snum, int type);
 void playerCrouch(int snum);
-void playerJump(int snum, double fz, double cz);
+void playerJump(int snum, float fz, float cz);
 
 void checklook(int snum, ESyncBits actions);
 void playerCenterView(int snum);
@@ -111,7 +111,7 @@ void playerAimDown(int snum, ESyncBits actions);
 void tracers(const DVector3& start, const DVector3& dest, int n);
 DDukeActor* aim(DDukeActor* s, int aang);
 void checkweapons(player_struct* const p);
-int findotherplayer(int p, double* d);
+int findotherplayer(int p, float* d);
 void quickkill(player_struct* p);
 int setpal(player_struct* p);
 int madenoise(int playerNum);
@@ -121,8 +121,8 @@ void purplelavacheck(player_struct* p);
 bool checkhitceiling(sectortype* sectp);
 void checkhitwall(DDukeActor* spr, walltype* wal, const DVector3& pos);
 int callsound(sectortype* sectnum,DDukeActor* snum, bool endstate = false);
-double hitasprite(DDukeActor* snum,DDukeActor **hitSprite);
-int findplayer(const DDukeActor* s, double* dist);
+float hitasprite(DDukeActor* snum,DDukeActor **hitSprite);
+int findplayer(const DDukeActor* s, float* dist);
 
 void operatejaildoors(int hitag);
 void allignwarpelevators(void);
@@ -137,27 +137,27 @@ void hud_input(int playerNum);
 int getanimationindex(int animtype, sectortype* animindex);
 bool isanearoperator(int lotag);
 bool isanunderoperator(int lotag);
-int setanimation(sectortype* animsect, int animtype, walltype* animtarget, double thegoal, double thevel);
-int setanimation(sectortype* animsect, int animtype, sectortype* animtarget, double thegoal, double thevel);
+int setanimation(sectortype* animsect, int animtype, walltype* animtarget, float thegoal, float thevel);
+int setanimation(sectortype* animsect, int animtype, sectortype* animtarget, float thegoal, float thevel);
 void dofurniture(walltype* wallNum, sectortype* sectnum, int playerNum);
 void dotorch();
-double hitawall(player_struct* pl, walltype** hitWall);
-double hits(DDukeActor* snum);
+float hitawall(player_struct* pl, walltype** hitWall);
+float hits(DDukeActor* snum);
 
 DDukeActor* LocateTheLocator(int n, sectortype* sectnum);
 void clearcamera(player_struct* ps);
 
 void LoadActor(DDukeActor* i, int p, int x);
-bool execute(DDukeActor* s, int p, double d);
+bool execute(DDukeActor* s, int p, float d);
 void makeitfall(DDukeActor* s);
 DAngle furthestangle(DDukeActor* snum, int angDiv);
 void getglobalz(DDukeActor* s);
 void OnEvent(int id, int pnum = -1, DDukeActor* snum = nullptr, int dist = -1);
 void setFromSpawnRec(DDukeActor* act, SpawnRec* info);
 
-DDukeActor* CreateActor(sectortype* whatsectp, const DVector3& pos, int s_pn, int8_t s_shd, const DVector2& scale, DAngle s_ang, double s_vel, double s_zvel, DDukeActor* s_ow, int8_t s_stat);
-DDukeActor* CreateActor(sectortype* whatsectp, const DVector3& pos, PClassActor* cls, int8_t s_shd, const DVector2& scale, DAngle s_ang, double s_vel, double s_zvel, DDukeActor* s_ow, int8_t s_stat);
-DDukeActor* SpawnActor(sectortype* whatsectp, const DVector3& pos, PClassActor* cls, int8_t s_shd, const DVector2& scale, DAngle s_ang, double s_vel, double s_zvel, DDukeActor* s_ow, int8_t s_stat = -1);
+DDukeActor* CreateActor(sectortype* whatsectp, const DVector3& pos, int s_pn, int8_t s_shd, const DVector2& scale, DAngle s_ang, float s_vel, float s_zvel, DDukeActor* s_ow, int8_t s_stat);
+DDukeActor* CreateActor(sectortype* whatsectp, const DVector3& pos, PClassActor* cls, int8_t s_shd, const DVector2& scale, DAngle s_ang, float s_vel, float s_zvel, DDukeActor* s_ow, int8_t s_stat);
+DDukeActor* SpawnActor(sectortype* whatsectp, const DVector3& pos, PClassActor* cls, int8_t s_shd, const DVector2& scale, DAngle s_ang, float s_vel, float s_zvel, DDukeActor* s_ow, int8_t s_stat = -1);
 
 void ceilingglass(DDukeActor* snum, sectortype* sectnum, int cnt);
 void spriteglass(DDukeActor* snum, int cnt);
@@ -201,10 +201,10 @@ void OffBoat(player_struct *pl);
 void cameratext(DDukeActor* i);
 void dobonus(int bonusonly, const CompletionFunc& completion);
 
-void drawweapon(double interpfrac);
-void drawoverlays(double interpfrac);
+void drawweapon(float interpfrac);
+void drawoverlays(float interpfrac);
 void drawbackground(void);
-void displayrooms(int playerNum, double interpfrac, bool sceneonly);
+void displayrooms(int playerNum, float interpfrac, bool sceneonly);
 void setgamepalette(int palid);
 void resetmys();
 void resettimevars();
@@ -232,12 +232,12 @@ inline int32_t krand(void)
 	return ((uint32_t)randomseed) >> 16;
 }
 
-inline double krandf(double span)
+inline float krandf(float span)
 {
 	return (krand() & 0x7fff) * span / 32767;
 }
 
-inline double zrand(double spread)
+inline float zrand(float spread)
 {
 	int r = krand() % FloatToFixed<8>(spread);
 	return FixedToFloat<8>(r);

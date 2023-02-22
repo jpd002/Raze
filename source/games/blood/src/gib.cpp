@@ -277,12 +277,12 @@ void GibFX(DBloodActor* actor, GIBFX* pGFX, DVector3* pPos, DVector3* pVel)
 	
 	auto gPos = pPos? *pPos : actor->spr.pos;
 
-	double ceilZ, floorZ;
+	float ceilZ, floorZ;
 	calcSlope(pSector, gPos.XY(), &ceilZ, &floorZ);
 	int nCount = ChanceToCount(pGFX->chance, pGFX->at9);
-	double dz1 = floorZ - gPos.Z;
-	double dz2 = gPos.Z - ceilZ;
-	double top, bottom;
+	float dz1 = floorZ - gPos.Z;
+	float dz2 = gPos.Z - ceilZ;
+	float top, bottom;
 	GetActorExtents(actor, &top, &bottom);
 	for (int i = 0; i < nCount; i++)
 	{
@@ -350,7 +350,7 @@ void GibThing(DBloodActor* actor, GIBTHING* pGThing, DVector3* pPos, DVector3* p
 	if (pGThing->chance == 65536 || Chance(pGThing->chance))
 	{
 		auto pSector = actor->sector();
-		double top, bottom;
+		float top, bottom;
 		GetActorExtents(actor, &top, &bottom);
 		DVector3 gPos;
 		if (!pPos)
@@ -362,10 +362,10 @@ void GibThing(DBloodActor* actor, GIBTHING* pGThing, DVector3* pPos, DVector3* p
 		{
 			gPos = *pPos;
 		}
-		double ceilZ, floorZ;
+		float ceilZ, floorZ;
 		calcSlope(pSector, gPos, &ceilZ, &floorZ);
-		double dz1 = floorZ - gPos.Z;
-		double dz2 = gPos.Z - ceilZ;
+		float dz1 = floorZ - gPos.Z;
+		float dz2 = gPos.Z - ceilZ;
 		auto gibactor = actSpawnThing(pSector, gPos, pGThing->type);
 		if (!gibactor) return;
 
@@ -437,7 +437,7 @@ void GibSprite(DBloodActor* actor, GIBTYPE nGibType, DVector3* pPos, DVector3* p
 //
 //---------------------------------------------------------------------------
 
-void GibFX(walltype* pWall, GIBFX* pGFX, double ceilZ, const DVector3& spread, DVector3* pVel)
+void GibFX(walltype* pWall, GIBFX* pGFX, float ceilZ, const DVector3& spread, DVector3* pVel)
 {
 	assert(pWall);
 	int nCount = ChanceToCount(pGFX->chance, pGFX->at9);
@@ -484,9 +484,9 @@ void GibWall(walltype* pWall, GIBTYPE nGibType, DVector3* pVel)
 	center.XY() = pWall->center();
 
 	auto pSector = pWall->sectorp();
-	double ceilZ, floorZ;
+	float ceilZ, floorZ;
 	calcSlope(pSector, center, &ceilZ, &floorZ);
-	double ceilZ2, floorZ2;
+	float ceilZ2, floorZ2;
 	calcSlope(pWall->nextSector(), center, &ceilZ2, &floorZ2);
 
 	ceilZ = max(ceilZ, ceilZ2);

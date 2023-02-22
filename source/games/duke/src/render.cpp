@@ -65,7 +65,7 @@ BEGIN_DUKE_NS
 //
 //---------------------------------------------------------------------------
 
-void GameInterface::UpdateCameras(double smoothratio)
+void GameInterface::UpdateCameras(float smoothratio)
 {
 	const int VIEWSCREEN_ACTIVE_DISTANCE = 1024;
 
@@ -213,7 +213,7 @@ static int getdrugmode(player_struct *p, int oyrepeat)
 //
 //---------------------------------------------------------------------------
 
-void displayrooms(int snum, double interpfrac, bool sceneonly)
+void displayrooms(int snum, float interpfrac, bool sceneonly)
 {
 	DVector3 cpos;
 	DRotator cangles;
@@ -262,8 +262,8 @@ void displayrooms(int snum, double interpfrac, bool sceneonly)
 	{
 		if (isRRRA() && p->DrugMode)
 		{
-			double fovdelta = atan(getdrugmode(p, 65536) * (1. / 65536.)) * (360. / pi::pi()) - 90.;
-			fov = (float)clamp<double>(r_fov + fovdelta * 0.6, r_fov, 150.);
+			float fovdelta = atan(getdrugmode(p, 65536) * (1. / 65536.)) * (360. / pi::pi()) - 90.;
+			fov = (float)clamp<float>(r_fov + fovdelta * 0.6, r_fov, 150.);
 		}
 
 		// The camera texture must be rendered with the base palette, so this is the only place where the current global palette can be set.
@@ -309,8 +309,8 @@ void displayrooms(int snum, double interpfrac, bool sceneonly)
 			}
 		}
 
-		double cz = p->GetActor()->ceilingz;
-		double fz = p->GetActor()->floorz;
+		float cz = p->GetActor()->ceilingz;
+		float fz = p->GetActor()->floorz;
 
 		if (ud.earthquaketime > 0 && p->on_ground == 1)
 		{
@@ -358,7 +358,7 @@ bool GameInterface::GenerateSavePic()
 	return true;
 }
 
-void GameInterface::processSprites(tspriteArray& tsprites, const DVector3& view, DAngle viewang, double interpfrac)
+void GameInterface::processSprites(tspriteArray& tsprites, const DVector3& view, DAngle viewang, float interpfrac)
 {
 	fi.animatesprites(tsprites, view.XY(), viewang, interpfrac);
 }

@@ -39,16 +39,16 @@ BEGIN_BLD_NS
 void fxFlameLick(DBloodActor* actor, sectortype*) // 0
 {
 	if (!actor) return;
-	double top, bottom;
+	float top, bottom;
 	GetActorExtents(actor, &top, &bottom);
 	auto tex = TexMan.GetGameTexture(actor->spr.spritetexture());
-	double nDist = (actor->spr.scale.X * tex->GetDisplayWidth()) * (1. / 4);
+	float nDist = (actor->spr.scale.X * tex->GetDisplayWidth()) * (1. / 4);
 	for (int i = 0; i < 3; i++)
 	{
 		DAngle nAngle = RandomAngle();
 		DVector2 dv = nAngle.ToVector() * nDist;
 		DVector2 pos = actor->spr.pos.XY() + dv;
-		double z = bottom - RandomD(bottom - top, 8);
+		float z = bottom - RandomD(bottom - top, 8);
 
 		auto pFX = gFX.fxSpawnActor(FX_32, actor->sector(), DVector3(pos, z));
 		if (pFX)
@@ -88,7 +88,7 @@ void FlareBurst(DBloodActor* actor, sectortype*) // 2
 {
 	if (!actor) return;
 	auto nAngVec = actor->vel.XY().Angle().ToVector();
-	double nRadius = FixedToFloat(0x55555);
+	float nRadius = FixedToFloat(0x55555);
 	for (int i = 0; i < 8; i++)
 	{
 		auto spawnedactor = actSpawnSprite(actor, 5);
@@ -154,7 +154,7 @@ void fxZombieBloodSpurt(DBloodActor* actor, sectortype*) // 5
 {
 	if (!actor) return;
 	assert(actor->hasX());
-	double top, bottom;
+	float top, bottom;
 	GetActorExtents(actor, &top, &bottom);
 	auto pFX = gFX.fxSpawnActor(FX_27, actor->sector(), DVector3(actor->spr.pos.XY(), top));
 	if (pFX)
@@ -225,7 +225,7 @@ void fxDynPuff(DBloodActor* actor, sectortype*) // 8
 	if (actor->vel.Z)
 	{
 		auto tex = TexMan.GetGameTexture(actor->spr.spritetexture());
-		double nDist = (actor->spr.scale.X * tex->GetDisplayWidth()) * (1. / 2);
+		float nDist = (actor->spr.scale.X * tex->GetDisplayWidth()) * (1. / 2);
 		DVector3 pos = actor->spr.pos + (actor->spr.Angles.Yaw - DAngle90).ToVector() * nDist;
 		auto pFX = gFX.fxSpawnActor(FX_7, actor->sector(), pos);
 		if (pFX)
@@ -340,16 +340,16 @@ void PlayerBubble(DBloodActor* actor, sectortype*) // 10
 		PLAYER* pPlayer = &gPlayer[actor->spr.type - kDudePlayer1];
 		if (!pPlayer->bubbleTime)
 			return;
-		double top, bottom;
+		float top, bottom;
 		GetActorExtents(actor, &top, &bottom);
 
 		auto tex = TexMan.GetGameTexture(actor->spr.spritetexture());
-		double nDist = (actor->spr.scale.X * tex->GetDisplayWidth()) * (1. / 2);
+		float nDist = (actor->spr.scale.X * tex->GetDisplayWidth()) * (1. / 2);
 
 		for (int i = 0; i < (pPlayer->bubbleTime >> 6); i++)
 		{
 			DVector2 pos = actor->spr.pos.XY() + actor->spr.Angles.Yaw.ToVector() * nDist;
-			double z = bottom - RandomD(bottom - top, 8);
+			float z = bottom - RandomD(bottom - top, 8);
 			auto pFX = gFX.fxSpawnActor((FX_ID)(FX_23 + Random(3)), actor->sector(), DVector3(pos, z));
 			if (pFX)
 			{
@@ -371,15 +371,15 @@ void PlayerBubble(DBloodActor* actor, sectortype*) // 10
 void EnemyBubble(DBloodActor* actor, sectortype*) // 11
 {
 	if (!actor) return;
-	double top, bottom;
+	float top, bottom;
 	GetActorExtents(actor, &top, &bottom);
 	auto tex = TexMan.GetGameTexture(actor->spr.spritetexture());
-	double nDist = (actor->spr.scale.X * tex->GetDisplayWidth()) * (1. / 2);
+	float nDist = (actor->spr.scale.X * tex->GetDisplayWidth()) * (1. / 2);
 	for (int i = 0; i < int(abs(actor->vel.Z) * 0.25); i++)
 	{
 		auto nAngle = RandomAngle();
 		DVector2 pos = actor->spr.pos.XY() + nAngle.ToVector() * nDist;
-		double z = bottom - RandomD(bottom - top, 8);
+		float z = bottom - RandomD(bottom - top, 8);
 
 		auto pFX = gFX.fxSpawnActor((FX_ID)(FX_23 + Random(3)), actor->sector(), DVector3(pos, z));
 		if (pFX)
@@ -443,10 +443,10 @@ void FinishHim(DBloodActor* actor, sectortype*) // 13
 void fxBloodBits(DBloodActor* actor, sectortype*) // 14
 {
 	if (!actor) return;
-	double ceilZ, floorZ;
+	float ceilZ, floorZ;
 	Collision floorColl, ceilColl;
 	GetZRange(actor, &ceilZ, &ceilColl, &floorZ, &floorColl, actor->clipdist * 0.25, CLIPMASK0);
-	double top, bottom;
+	float top, bottom;
 	GetActorExtents(actor, &top, &bottom);
 	actor->spr.pos.Z += floorZ - bottom;
 	DAngle nAngle = RandomAngle();
@@ -500,15 +500,15 @@ static const int sawedOffSleeveSnd[] = { 610, 612 };
 void fxBouncingSleeve(DBloodActor* actor, sectortype*) // 16
 {
 	if (!actor) return;
-	double ceilZ, floorZ;
+	float ceilZ, floorZ;
 	Collision floorColl, ceilColl;
 
 	GetZRange(actor, &ceilZ, &ceilColl, &floorZ, &floorColl, actor->clipdist * 0.25, CLIPMASK0);
-	double top, bottom; 
+	float top, bottom; 
 	GetActorExtents(actor, &top, &bottom);
 	actor->spr.pos.Z += floorZ - bottom;
 
-	double veldiff = actor->vel.Z - actor->sector()->velFloor;
+	float veldiff = actor->vel.Z - actor->sector()->velFloor;
 
 	if (actor->vel.Z == 0) sleeveStopBouncing(actor);
 	else if (veldiff > 0)
@@ -632,11 +632,11 @@ void fxPodBloodSpray(DBloodActor* actor, sectortype*) // 18
 void fxPodBloodSplat(DBloodActor* actor, sectortype*) // 19
 {
 	if (!actor) return;
-	double ceilZ, floorZ;
+	float ceilZ, floorZ;
 	Collision floorColl, ceilColl;
 
 	GetZRange(actor, &ceilZ, &ceilColl, &floorZ, &floorColl, actor->clipdist * 0.25, CLIPMASK0);
-	double top, bottom;
+	float top, bottom;
 	GetActorExtents(actor, &top, &bottom);
 	actor->spr.pos.Z += floorZ - bottom;
 	DAngle nAngle = RandomAngle();
@@ -696,7 +696,7 @@ void LeechStateTimer(DBloodActor* actor, sectortype*) // 20
 
 void sub_76A08(DBloodActor* actor, DBloodActor* actor2, PLAYER* pPlayer) // ???
 {
-	double top, bottom;
+	float top, bottom;
 	GetActorExtents(actor, &top, &bottom);
 	actor->spr.pos = actor2->spr.pos.plusZ(-(bottom - actor->spr.pos.Z));
 	actor->spr.Angles.Yaw = actor2->spr.Angles.Yaw;

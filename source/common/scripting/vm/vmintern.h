@@ -239,7 +239,7 @@ extern const VMOpInfo OpInfo[NUM_OPS];
 // VM frame layout:
 //	VMFrame header
 //  parameter stack		- 16 byte boundary, 16 bytes each
-//	double registers	- 8 bytes each
+//	float registers	- 8 bytes each
 //	string registers	- 4 or 8 bytes each
 //	address registers	- 4 or 8 bytes each
 //	data registers		- 4 bytes each
@@ -260,7 +260,7 @@ struct VMFrame
 	{
 		int size = (sizeof(VMFrame) + 15) & ~15;
 		size += numparam * sizeof(VMValue);
-		size += numregf * sizeof(double);
+		size += numregf * sizeof(float);
 		size += numrega * sizeof(void *);
 		size += numregs * sizeof(FString);
 		size += numregd * sizeof(int);
@@ -278,9 +278,9 @@ struct VMFrame
 		return (VMValue *)(((size_t)(this + 1) + 15) & ~15);
 	}
 
-	double *GetRegF() const
+	float *GetRegF() const
 	{
-		return (double *)(GetParam() + MaxParam);
+		return (float *)(GetParam() + MaxParam);
 	}
 
 	FString *GetRegS() const
@@ -305,11 +305,11 @@ struct VMFrame
 		return (VM_UBYTE *)this + ((ofs + 15) & ~15);
 	}
 
-	void GetAllRegs(int *&d, double *&f, FString *&s, void **&a, VMValue *&param) const
+	void GetAllRegs(int *&d, float *&f, FString *&s, void **&a, VMValue *&param) const
 	{
 		// Calling the individual functions produces suboptimal code. :(
 		param = GetParam();
-		f = (double *)(param + MaxParam);
+		f = (float *)(param + MaxParam);
 		s = (FString *)(f + NumRegF);
 		a = (void **)(s + NumRegS);
 		d = (int *)(a + NumRegA);
@@ -330,7 +330,7 @@ struct VMRegisters
 	{ }
 
 	int *d;
-	double *f;
+	float *f;
 	FString *s;
 	void **a;
 	VMValue *param;
@@ -391,7 +391,7 @@ public:
 		Reg.d[RegD++] = val;
 	}
 
-	void ParamFloat(double val)
+	void ParamFloat(float val)
 	{
 		Reg.f[RegF++] = val;
 	}
@@ -455,7 +455,7 @@ public:
 	FStatementInfo *LineInfo;
 	FString SourceFileName;
 	int *KonstD;
-	double *KonstF;
+	float *KonstF;
 	FString *KonstS;
 	FVoidObj *KonstA;
 	int ExtraSpace;

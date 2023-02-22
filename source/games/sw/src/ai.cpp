@@ -41,7 +41,7 @@ Prepared for public release: 03/28/2005 - Charlie Wiederhold, 3D Realms
 BEGIN_SW_NS
 
 ANIMATOR InitActorRunToward;
-bool DropAhead(DSWActor* actor, double min_height);
+bool DropAhead(DSWActor* actor, float min_height);
 
 ANIMATOR* ChooseAction(DECISION decision[]);
 
@@ -273,8 +273,8 @@ int DoActorPickClosePlayer(DSWActor* actor)
     bool found = false;
     int i;
 
-    double near_dist = MAX_ACTIVE_RANGE;
-    double dist;
+    float near_dist = MAX_ACTIVE_RANGE;
+    float dist;
 
     if (actor->user.ID == ZOMBIE_RUN_R0 && gNet.MultiGameType == MULTI_GAME_COOPERATIVE)
         goto TARGETACTOR;
@@ -415,7 +415,7 @@ DSWActor* GetPlayerSpriteNum(DSWActor* actor)
 int DoActorOperate(DSWActor* actor)
 {
     HitInfo near{};
-    double z[2];
+    float z[2];
     unsigned int i;
 
     if (actor->user.ID == HORNET_RUN_R0 || actor->user.ID == EEL_RUN_R0 || actor->user.ID == BUNNY_RUN_R0)
@@ -517,7 +517,7 @@ ANIMATOR* DoActorActionDecide(DSWActor* actor)
         DoActorOperate(actor);
 
         // if far enough away and cannot see the player
-        double dist = (actor->spr.pos.XY() - actor->user.targetActor->spr.pos.XY()).Length();
+        float dist = (actor->spr.pos.XY() - actor->user.targetActor->spr.pos.XY()).Length();
 
         if (dist > 1875 && !ICanSee)
         {
@@ -608,7 +608,7 @@ ANIMATOR* DoActorActionDecide(DSWActor* actor)
             DoActorPickClosePlayer(actor);
 
         // if close by
-		double const dist = (actor->spr.pos.XY() - actor->user.targetActor->spr.pos.XY()).Length();
+		float const dist = (actor->spr.pos.XY() - actor->user.targetActor->spr.pos.XY()).Length();
         if (dist < 937.5 || ICanSee)
         {
             if ((Facing(actor, actor->user.targetActor) && dist < 625) || ICanSee)
@@ -914,7 +914,7 @@ int FindTrackToPlayer(DSWActor* actor)
     int point, track_dir, track;
     int i, size;
     const uint16_t* type;
-    double zdiff;
+    float zdiff;
 
     static const uint16_t PlayerAbove[] =
     {
@@ -1216,7 +1216,7 @@ int DoActorAttack(DSWActor* actor)
 
     DoActorNoise(ChooseAction(actor->user.Personality->Broadcast),actor);
 
-    double dist =(actor->spr.pos.XY() - actor->user.targetActor->spr.pos.XY()).Length();
+    float dist =(actor->spr.pos.XY() - actor->user.targetActor->spr.pos.XY()).Length();
 
     auto pActor = GetPlayerSpriteNum(actor);
     if ((actor->user.ActorActionSet->CloseAttack[0] && dist < CloseRangeDist(actor, actor->user.targetActor)) ||
@@ -1343,7 +1343,7 @@ int InitActorDuck(DSWActor* actor)
     actor->user.ActorActionFunc = DoActorDuck;
     NewStateGroup(actor, actor->user.ActorActionSet->Duck);
 
-	double dist = (actor->spr.pos.XY() - actor->user.targetActor->spr.pos.XY()).LengthSquared();
+	float dist = (actor->spr.pos.XY() - actor->user.targetActor->spr.pos.XY()).LengthSquared();
 
     if (dist > 500*500)
     {
@@ -1403,7 +1403,7 @@ int DoActorMoveJump(DSWActor* actor)
 //
 //---------------------------------------------------------------------------
 
-Collision move_scan(DSWActor* actor, DAngle ang, double dst, DVector3& stop)
+Collision move_scan(DSWActor* actor, DAngle ang, float dst, DVector3& stop)
 {
     uint32_t cliptype = CLIPMASK_ACTOR;
 
@@ -1463,7 +1463,7 @@ enum
     AWAY = -1
 };
 
-DAngle FindNewAngle(DSWActor* actor, int dir, double DistToMove)
+DAngle FindNewAngle(DSWActor* actor, int dir, float DistToMove)
 {
     static const int16_t toward_angle_delta[4][9] =
     {
@@ -1490,7 +1490,7 @@ DAngle FindNewAngle(DSWActor* actor, int dir, double DistToMove)
     
     int set;
     // start out with mininum distance that will be accepted as a move
-    double save_dist = 31.25;
+    float save_dist = 31.25;
 
     // if on fire, run shorter distances
     if (ActorFlaming(actor))
@@ -1544,7 +1544,7 @@ DAngle FindNewAngle(DSWActor* actor, int dir, double DistToMove)
 
         // check to see how far we can move
         auto ret = move_scan(actor, new_ang, DistToMove, stop);
-        double dist = (actor->spr.pos.XY() - stop.XY()).Length();
+        float dist = (actor->spr.pos.XY() - stop.XY()).Length();
 
         if (ret.type == kHitNone)
         {
@@ -1603,7 +1603,7 @@ int InitActorReposition(DSWActor* actor)
 {
     DAngle ang;
     int rnum;
-    double dist;
+    float dist;
 
     static const int16_t AwayDist[8] =
     {

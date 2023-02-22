@@ -221,11 +221,11 @@ bool MenuTransition::StartTransition(DMenu* from, DMenu* to, MenuTransitionType 
 
 bool MenuTransition::Draw()
 {
-	double now = I_GetTimeNS() * (120. / 1'000'000'000);
+	float now = I_GetTimeNS() * (120. / 1'000'000'000);
 	if (now < start + length)
 	{
-		double factor = screen->GetWidth()/2;
-		double phase = (now - start) / double(length) * M_PI + M_PI / 2;
+		float factor = screen->GetWidth()/2;
+		float phase = (now - start) / float(length) * M_PI + M_PI / 2;
 		DVector2 origin;
 
 		origin.Y = 0;
@@ -347,7 +347,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(DMenu, SetMouseCapture, SetMouseCapture)
 
 void DMenu::Close ()
 {
-	if (CurrentMenu == nullptr) return;	// double closing can happen in the save menu.
+	if (CurrentMenu == nullptr) return;	// float closing can happen in the save menu.
 	assert(CurrentMenu == this);
 	CurrentMenu = mParentMenu;
 
@@ -1139,7 +1139,7 @@ DMenuItemBase * CreateOptionMenuItemCommand(const char *label, FName cmd, bool c
 	return (DMenuItemBase*)p;
 }
 
-DMenuItemBase * CreateListMenuItemPatch(double x, double y, int height, int hotkey, FTextureID tex, FName command, int param)
+DMenuItemBase * CreateListMenuItemPatch(float x, float y, int height, int hotkey, FTextureID tex, FName command, int param)
 {
 	auto c = PClass::FindClass("ListMenuItemPatchItem");
 	auto p = c->CreateNew();
@@ -1150,7 +1150,7 @@ DMenuItemBase * CreateListMenuItemPatch(double x, double y, int height, int hotk
 	return (DMenuItemBase*)p;
 }
 
-DMenuItemBase * CreateListMenuItemText(double x, double y, int height, int hotkey, const char *text, FFont *font, PalEntry color1, PalEntry color2, FName command, int param)
+DMenuItemBase * CreateListMenuItemText(float x, float y, int height, int hotkey, const char *text, FFont *font, PalEntry color1, PalEntry color2, FName command, int param)
 {
 	auto c = PClass::FindClass("ListMenuItemTextItem");
 	auto p = c->CreateNew();
@@ -1162,7 +1162,7 @@ DMenuItemBase * CreateListMenuItemText(double x, double y, int height, int hotke
 	return (DMenuItemBase*)p;
 }
 
-DMenuItemBase* CreateListMenuItemStaticText(double x, double y, const char* text, FFont* font, PalEntry color, bool centered)
+DMenuItemBase* CreateListMenuItemStaticText(float x, float y, const char* text, FFont* font, PalEntry color, bool centered)
 {
 	auto c = PClass::FindClass("ListMenuItemStaticText");
 	auto p = c->CreateNew();

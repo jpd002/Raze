@@ -551,7 +551,7 @@ bool HWMirrorPortal::Setup(HWDrawInfo *di, FRenderState &rstate, Clipper *clippe
 	vp.HWAngles.Yaw = FAngle::fromBam(-ANGLE_90 + newan);
 
 	double FocalTangent = tan(vp.FieldOfView.Radians() / 2);
-	DAngle an = DAngle::fromDeg(270. - vp.HWAngles.Yaw.Degrees());
+	DAngle an = DAngle::fromDeg(270.f - vp.HWAngles.Yaw.Degrees());
 	vp.TanSin = FocalTangent * an.Sin();
 	vp.TanCos = FocalTangent * an.Cos();
 	vp.ViewVector = an.ToVector();

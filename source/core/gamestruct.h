@@ -52,10 +52,10 @@ struct GeoEffect
 	sectortype** geosectorwarp;
 	sectortype** geosectorwarp2;
 	sectortype** geosector;
-	double* geox;
-	double* geoy;
-	double* geox2;
-	double* geoy2;
+	float* geox;
+	float* geoy;
+	float* geox2;
+	float* geoy2;
 	int geocnt;
 
 };
@@ -83,13 +83,13 @@ struct GameInterface
 	virtual void CustomMenuSelection(int menu, int item) {}
 	virtual bool StartGame(FNewGameStartup& gs) { return true; }
 	virtual FSavegameInfo GetSaveSig() { return { "", 0, 0}; }
-	virtual double SmallFontScale() { return 1; }
+	virtual float SmallFontScale() { return 1; }
 	virtual void SerializeGameState(FSerializer& arc) {}
 	virtual void DrawPlayerSprite(const DVector2& origin, bool onteam) {}
 	virtual void SetAmbience(bool on) {}
 	virtual std::pair<DVector3, DAngle> GetCoordinates() { return {}; }
 	virtual void ExitFromMenu() { throw CExitEvent(0); }
-	virtual void GetInput(ControlInfo* const hidInput, double const scaleAdjust, InputPacket* packet = nullptr) {}
+	virtual void GetInput(ControlInfo* const hidInput, float const scaleAdjust, InputPacket* packet = nullptr) {}
 	virtual void UpdateSounds() {}
 	virtual void ErrorCleanup() {}
 	virtual void Startup() {}
@@ -102,15 +102,15 @@ struct GameInterface
 	virtual void NextLevel(MapRecord* map, int skill) {}
 	virtual void NewGame(MapRecord* map, int skill, bool special = false) {}
 	virtual void LevelCompleted(MapRecord* map, int skill) {}
-	virtual bool DrawAutomapPlayer(const DVector2& mxy, const DVector2& cpos, const DAngle cang, const DVector2& xydim, const double czoom, double const interpfrac) { return false; }
-	virtual DAngle playerPitchMin() { return DAngle::fromDeg(57.375); }
-	virtual DAngle playerPitchMax() { return DAngle::fromDeg(-57.375); }
-	virtual void WarpToCoords(double x, double y, double z, DAngle a) {}
+	virtual bool DrawAutomapPlayer(const DVector2& mxy, const DVector2& cpos, const DAngle cang, const DVector2& xydim, const float czoom, float const interpfrac) { return false; }
+	virtual DAngle playerPitchMin() { return DAngle::fromDeg(57.375f); }
+	virtual DAngle playerPitchMax() { return DAngle::fromDeg(-57.375f); }
+	virtual void WarpToCoords(float x, float y, float z, DAngle a) {}
 	virtual void ToggleThirdPerson() { }
 	virtual void SwitchCoopView() { Printf("Unsupported command\n"); }
 	virtual void ToggleShowWeapon() { Printf("Unsupported command\n"); }
-	virtual void processSprites(tspriteArray& tsprites, const DVector3& view, DAngle viewang, double interpfrac) = 0;
-	virtual void UpdateCameras(double smoothratio) {}
+	virtual void processSprites(tspriteArray& tsprites, const DVector3& view, DAngle viewang, float interpfrac) = 0;
+	virtual void UpdateCameras(float smoothratio) {}
 	virtual void EnterPortal(DCoreActor* viewer, int type) {}
 	virtual void LeavePortal(DCoreActor* viewer, int type) {}
 	virtual bool GetGeoEffect(GeoEffect* eff, sectortype* viewsector) { return false; }

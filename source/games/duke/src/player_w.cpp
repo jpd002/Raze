@@ -326,7 +326,7 @@ void operateweapon_ww(int snum, ESyncBits actions)
 		p->kickback_pic++;
 		if (p->kickback_pic == aplWeaponHoldDelay(p->curr_weapon, snum))
 		{
-			double zvel, vel;
+			float zvel, vel;
 
 			p->ammo_amount[p->curr_weapon]--;
 
@@ -362,11 +362,11 @@ void operateweapon_ww(int snum, ESyncBits actions)
 					spawned->spr.pos.Z += 8;
 				}
 
-				double hd = hits(p->GetActor());
+				float hd = hits(p->GetActor());
 				if (hd < 32)
 				{
 					spawned->spr.Angles.Yaw += DAngle180;
-					spawned->vel *= 1./3.;
+					spawned->vel *= 1.f/3.f;
 				}
 
 				p->hbomb_on = 1;

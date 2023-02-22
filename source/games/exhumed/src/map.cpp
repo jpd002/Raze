@@ -50,7 +50,7 @@ void UpdateMap()
     }
 }
 
-void DrawMap(const DVector2& pos, const DAngle yaw, const double interpfrac)
+void DrawMap(const DVector2& pos, const DAngle yaw, const float interpfrac)
 {
     if (!nFreeze && automapMode != am_off) 
     {
@@ -64,7 +64,7 @@ void DrawMap(const DVector2& pos, const DAngle yaw, const double interpfrac)
 //
 //---------------------------------------------------------------------------
 
-bool GameInterface::DrawAutomapPlayer(const DVector2& mxy, const DVector2& cpos, const DAngle cang, const DVector2& xydim, const double czoom, double const interpfrac)
+bool GameInterface::DrawAutomapPlayer(const DVector2& mxy, const DVector2& cpos, const DAngle cang, const DVector2& xydim, const float czoom, float const interpfrac)
 {
     auto cangvect = cang.ToVector();
 

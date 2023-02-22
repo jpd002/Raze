@@ -538,12 +538,12 @@ inline unsigned int Random(int a1)
 	return MulScale(wrand(), a1, 15);
 }
 
-inline double RandomF(int a1, int scale = 16)
+inline float RandomF(int a1, int scale = 16)
 {
 	return FixedToFloat(Random(a1), scale);
 }
 
-inline double RandomD(double val, int scale = 16)
+inline float RandomD(float val, int scale = 16)
 {
 	return FixedToFloat(Random(FloatToFixed(val, scale)), scale);
 }
@@ -559,12 +559,12 @@ inline int Random2(int a1)
 	return MulScale(wrand(), a1, 14) - a1;
 }
 
-inline double Random2F(int a1, int scale = 16)
+inline float Random2F(int a1, int scale = 16)
 {
 	return FixedToFloat(Random2(a1), scale);
 }
 
-inline double Random2D(double val, int scale)
+inline float Random2D(float val, int scale)
 {
 	return FixedToFloat(Random2(FloatToFixed(val, scale)), scale);
 }
@@ -580,7 +580,7 @@ inline int Random3(int a1)
 	return MulScale(wrand() + wrand(), a1, 15) - a1;
 }
 
-inline double Random3F(int a1, int scale = 16)
+inline float Random3F(int a1, int scale = 16)
 {
 	return FixedToFloat(Random3(a1), scale);
 }
@@ -596,7 +596,7 @@ inline int QRandom2(int a1)
 	return MulScale(qrand(), a1, 14) - a1;
 }
 
-inline double QRandom2F(double a1)
+inline float QRandom2F(float a1)
 {
 	return (qrand() * (1. / 16384.) * a1) - a1;
 }

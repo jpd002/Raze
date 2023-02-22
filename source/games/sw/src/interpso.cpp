@@ -56,10 +56,10 @@ static struct so_interp
     struct interp_data
     {
         int curelement;
-        double oldipos;
-        double bakipos;
-        double lastipos;
-        double lastoldipos;
+        float oldipos;
+        float bakipos;
+        float lastipos;
+        float lastoldipos;
         DAngle lastangdiff;
         TObjPtr<DSWActor*> actorofang;
     } data[SO_MAXINTERPOLATIONS];
@@ -100,7 +100,7 @@ void MarkSOInterp()
 //
 //---------------------------------------------------------------------------
 
-static double getvalue(so_interp::interp_data& element)
+static float getvalue(so_interp::interp_data& element)
 {
     int index = element.curelement & soi_base;
     int type = element.curelement & ~soi_base;
@@ -144,7 +144,7 @@ static double getvalue(so_interp::interp_data& element)
 //
 //---------------------------------------------------------------------------
 
-static void setvalue(so_interp::interp_data& element, double value)
+static void setvalue(so_interp::interp_data& element, float value)
 {
     int index = element.curelement & soi_base;
     int type = element.curelement & ~soi_base;
@@ -424,7 +424,7 @@ void so_updateinterpolations(void) // Stick at beginning of domovethings
 //
 //---------------------------------------------------------------------------
 
-void so_dointerpolations(double interpfrac)                      // Stick at beginning of drawscreen
+void so_dointerpolations(float interpfrac)                      // Stick at beginning of drawscreen
 {
     int32_t i;
     SECTOR_OBJECT* sop;
@@ -490,7 +490,7 @@ void so_dointerpolations(double interpfrac)                      // Stick at beg
                !Player[screenpeek].sop_remote)))
             continue;
 
-        double ratio = interpfrac * synctics + interp->tic;
+        float ratio = interpfrac * synctics + interp->tic;
         ratio /= interp->lasttic;
         ratio = (interp->tic == interp->lasttic) ? 1. : ratio;
 
@@ -519,7 +519,7 @@ void so_dointerpolations(double interpfrac)                      // Stick at beg
             }
             else
             {
-                double delta = data->lastipos - data->lastoldipos;
+                float delta = data->lastipos - data->lastoldipos;
                 setvalue(*data, data->lastoldipos + delta * ratio);
             }
         }

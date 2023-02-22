@@ -217,12 +217,12 @@ int SetActorRotation(tspriteArray& tsprites, int tSpriteNum, const DVector2& vie
 //
 //---------------------------------------------------------------------------
 
-double DoShadowFindGroundPoint(tspritetype* tspr)
+float DoShadowFindGroundPoint(tspritetype* tspr)
 {
     // USES TSPRITE !!!!!
     auto ownerActor = static_cast<DSWActor*>(tspr->ownerActor);
     Collision ceilhit, florhit;
-    double hiz, loz = ownerActor->user.loz;
+    float hiz, loz = ownerActor->user.loz;
     ESpriteFlags save_cstat, bak_cstat;
 
     // recursive routine to find the ground - either sector or floor sprite
@@ -277,12 +277,12 @@ double DoShadowFindGroundPoint(tspritetype* tspr)
 //
 //---------------------------------------------------------------------------
 
-void DoShadows(tspriteArray& tsprites, tspritetype* tsp, double viewz)
+void DoShadows(tspriteArray& tsprites, tspritetype* tsp, float viewz)
 {
     auto ownerActor = static_cast<DSWActor*>(tsp->ownerActor);
     int ground_dist = 0;
     int view_dist = 0;
-    double loz;
+    float loz;
 	DVector2 scale;
 
 
@@ -303,7 +303,7 @@ void DoShadows(tspriteArray& tsprites, tspritetype* tsp, double viewz)
     if (tsp->scale.Y > 0.25)
     {
         auto tex = TexMan.GetGameTexture(tsp->spritetexture());
-        double sizey = tex->GetDisplayHeight() * tsp->scale.Y;
+        float sizey = tex->GetDisplayHeight() * tsp->scale.Y;
         scale.Y = (tsp->scale.Y * 0.25) - (sizey / 2048.);
         scale.X = tsp->scale.X;
     }
@@ -344,9 +344,9 @@ void DoShadows(tspriteArray& tsprites, tspritetype* tsp, double viewz)
     // make shadow smaller depending on height from ground
     ground_dist = int(abs(loz - GetSpriteZOfBottom(tsp)) * (1./16));
 	
-	double scaleofs = (ground_dist - view_dist) * REPEAT_SCALE;
-	scale.X = clamp(scale.X + scaleofs, 0.0625, 4.);
-	scale.Y = clamp(scale.Y + scaleofs, 0.0625, 4.);
+	float scaleofs = (ground_dist - view_dist) * REPEAT_SCALE;
+	scale.X = clamp(scale.X + scaleofs, 0.0625f, 4.f);
+	scale.Y = clamp(scale.Y + scaleofs, 0.0625f, 4.f);
 	tSpr->scale = scale;
 
     if (tilehasmodelorvoxel(tsp->spritetexture(), tsp->pal))
@@ -379,9 +379,9 @@ void DoMotionBlur(tspriteArray& tsprites, tspritetype const * const tsp)
     auto ownerActor = static_cast<DSWActor*>(tsp->ownerActor);
     DVector3 npos(0, 0, 0), dpos(0, 0, 0);
     int i;
-    double repeat_adj = 0;
+    float repeat_adj = 0;
 	DVector2 scale;
-    double z_amt_per_pixel;
+    float z_amt_per_pixel;
 
     auto angle = tsp->Angles.Yaw + DAngle180;
 
@@ -501,11 +501,11 @@ void WarpCopySprite(tspriteArray& tsprites)
 //
 //---------------------------------------------------------------------------
 
-void DoStarView(tspritetype* tsp, DSWActor* tActor, double viewz)
+void DoStarView(tspritetype* tsp, DSWActor* tActor, float viewz)
 {
     extern STATE s_Star[], s_StarDown[];
     extern STATE s_StarStuck[], s_StarDownStuck[];
-    double zdiff = viewz - tsp->pos.Z;
+    float zdiff = viewz - tsp->pos.Z;
 
     if (abs(zdiff) > 24)
     {
@@ -563,7 +563,7 @@ DSWActor* CopySprite(spritetypebase const* tsp, sectortype* newsector)
 DSWActor* ConnectCopySprite(spritetypebase const* tsp)
 {
     sectortype* newsector;
-    double testz;
+    float testz;
 
     if (FAF_ConnectCeiling(tsp->sectp))
     {
@@ -602,7 +602,7 @@ DSWActor* ConnectCopySprite(spritetypebase const* tsp)
 //
 //---------------------------------------------------------------------------
 
-static void analyzesprites(tspriteArray& tsprites, const DVector3& viewpos, double interpfrac)
+static void analyzesprites(tspriteArray& tsprites, const DVector3& viewpos, float interpfrac)
 {
     int tSpriteNum;
     static int ang = 0;
@@ -610,12 +610,12 @@ static void analyzesprites(tspriteArray& tsprites, const DVector3& viewpos, doub
     int newshade=0;
 
     const int DART_PIC = 2526;
-    const double DART_REPEAT = 0.25;
+    const float DART_REPEAT = 0.25;
 
     ang = NORM_ANGLE(ang + 12);
 
-    double smr4 = interpfrac + MoveSkip4;
-    double smr2 = interpfrac + MoveSkip2;
+    float smr4 = interpfrac + MoveSkip4;
+    float smr2 = interpfrac + MoveSkip2;
 
     for (tSpriteNum = (int)tsprites.Size() - 1; tSpriteNum >= 0; tSpriteNum--)
     {
@@ -668,7 +668,7 @@ static void analyzesprites(tspriteArray& tsprites, const DVector3& viewpos, doub
             // workaround for mines and floor decals beneath the floor
             if (tsp->picnum == BETTY_R0 || tsp->picnum == FLOORBLOOD1)
             {
-                double const florz = getflorzofslopeptr(tActor->sector(), tActor->spr.pos);
+                float const florz = getflorzofslopeptr(tActor->sector(), tActor->spr.pos);
                 if (tActor->spr.pos.Z > florz)
                     tsp->pos.Z = florz;
             }
@@ -1021,7 +1021,7 @@ void PrintSpriteInfo(PLAYER* pp)
 //
 //---------------------------------------------------------------------------
 
-static void DrawCrosshair(PLAYER* pp, const double interpfrac)
+static void DrawCrosshair(PLAYER* pp, const float interpfrac)
 {
     auto offsets = pp->Angles.getCrosshairOffsets(interpfrac);
     ::DrawCrosshair(2326, pp->actor->user.Health, offsets.first.X, offsets.first.Y + ((pp->Flags & PF_VIEW_FROM_OUTSIDE) ? 5 : 0), 2, offsets.second, shadeToLight(10));
@@ -1223,7 +1223,7 @@ void RestorePortalState()
 //
 //---------------------------------------------------------------------------
 
-void drawscreen(PLAYER* pp, double interpfrac, bool sceneonly)
+void drawscreen(PLAYER* pp, float interpfrac, bool sceneonly)
 {
     // prediction player if prediction is on, else regular player
     PLAYER* camerapp = (PredictionOn && CommEnabled && pp == Player+myconnectindex) ? ppp : pp;
@@ -1391,7 +1391,7 @@ bool GameInterface::GenerateSavePic()
 //
 //---------------------------------------------------------------------------
 
-bool GameInterface::DrawAutomapPlayer(const DVector2& mxy, const DVector2& cpos, const DAngle cang, const DVector2& xydim, const double czoom, double const interpfrac)
+bool GameInterface::DrawAutomapPlayer(const DVector2& mxy, const DVector2& cpos, const DAngle cang, const DVector2& xydim, const float czoom, float const interpfrac)
 {
     static int pspr_ndx[8] = { 0,0,0,0,0,0,0,0 };
     bool sprisplayer = false;
@@ -1459,7 +1459,7 @@ bool GameInterface::DrawAutomapPlayer(const DVector2& mxy, const DVector2& cpos,
                     auto vect = OutAutomapVector(mxy - cpos, cangvect, czoom, xydim);
 
                     // This repeat scale is correct.
-                    double sc = czoom * actor->spr.scale.Y * 2;
+                    float sc = czoom * actor->spr.scale.Y * 2;
 
                     DrawTexture(twod, tileGetTexture(1196 + pspr_ndx[myconnectindex], true), vect.X, vect.Y, DTA_ScaleX, sc, DTA_ScaleY, sc, DTA_Rotate, daang,
                         DTA_CenterOffsetRel, 2, DTA_TranslationIndex, TRANSLATION(Translation_Remap, actor->spr.pal), DTA_Color, shadeToLight(actor->spr.shade),
@@ -1477,7 +1477,7 @@ bool GameInterface::DrawAutomapPlayer(const DVector2& mxy, const DVector2& cpos,
 //
 //---------------------------------------------------------------------------
 
-void GameInterface::processSprites(tspriteArray& tsprites, const DVector3& view, DAngle viewang, double interpfrac)
+void GameInterface::processSprites(tspriteArray& tsprites, const DVector3& view, DAngle viewang, float interpfrac)
 {
     analyzesprites(tsprites, view, interpfrac);
     post_analyzesprites(tsprites);

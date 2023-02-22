@@ -45,8 +45,8 @@ public:
 	DVector3 opos;
 	DRotator PrevAngles;
 	DVector3 vel;
-	double oviewzoffset, viewzoffset;
-	double clipdist;
+	float oviewzoffset, viewzoffset;
+	float clipdist;
 
 	int time;
 	int16_t spritesetindex;
@@ -63,7 +63,7 @@ public:
 	virtual void BeginPlay() {}
 	void OnDestroy() override;
 	size_t PropagateMark() override;
-	double GetOffsetAndHeight(double& height);
+	float GetOffsetAndHeight(float& height);
 	
 	void initFromSprite(spritetype* pspr);
 
@@ -93,12 +93,12 @@ public:
 		spr.Angles.Yaw = spr.Angles.Yaw.Normalized360();
 	}
 
-	DVector3 interpolatedpos(double const interpfrac)
+	DVector3 interpolatedpos(float const interpfrac)
 	{
 		return interpolatedvalue(opos, spr.pos, interpfrac);
 	}
 
-	DAngle interpolatedyaw(double const interpfrac)
+	DAngle interpolatedyaw(float const interpfrac)
 	{
 		return interpolatedvalue(PrevAngles.Yaw, spr.Angles.Yaw, interpfrac);
 	}
@@ -159,12 +159,12 @@ public:
 		restoreang();
 	}
 
-	double getOffsetZ()
+	float getOffsetZ()
 	{
 		return spr.pos.Z + viewzoffset;
 	}
 
-	double getPrevOffsetZ()
+	float getPrevOffsetZ()
 	{
 		return opos.Z + oviewzoffset;
 	}
@@ -179,7 +179,7 @@ public:
 		return opos.plusZ(oviewzoffset);
 	}
 
-	DVector3 getRenderPos(const double interpfrac)
+	DVector3 getRenderPos(const float interpfrac)
 	{
 		return interpolatedpos(interpfrac).plusZ(interpolatedvalue(oviewzoffset, viewzoffset, interpfrac));
 	}
@@ -480,7 +480,7 @@ void SetActorZ(DCoreActor* actor, const DVector3& newpos);
 void SetActor(DCoreActor* actor, const DVector3& newpos);
 
 inline int clipmove(DVector3& pos, sectortype** const sect, const DVector2& mvec,
-	double const walldist, double const ceildist, double const flordist, unsigned const cliptype, CollisionBase& result, int clipmoveboxtracenum = 3)
+	float const walldist, float const ceildist, float const flordist, unsigned const cliptype, CollisionBase& result, int clipmoveboxtracenum = 3)
 {
 	auto vect = vec3_t(int(pos.X * worldtoint), int(pos.Y * worldtoint), int(pos.Z * zworldtoint));
 	int sectno = *sect ? sector.IndexOf(*sect) : -1;
@@ -490,8 +490,8 @@ inline int clipmove(DVector3& pos, sectortype** const sect, const DVector2& mvec
 	return result.type;
 }
 
-inline int clipmove(DVector2& pos, double z, sectortype** const sect, const DVector2& mvec,
-	double const walldist, double const ceildist, double const flordist, unsigned const cliptype, CollisionBase& result, int clipmoveboxtracenum = 3)
+inline int clipmove(DVector2& pos, float z, sectortype** const sect, const DVector2& mvec,
+	float const walldist, float const ceildist, float const flordist, unsigned const cliptype, CollisionBase& result, int clipmoveboxtracenum = 3)
 {
 	auto vect = DVector3(pos, z);
 	auto res = clipmove(vect, sect, mvec, walldist, ceildist, flordist, cliptype, result);

@@ -40,7 +40,7 @@ int16_t dVertPan[kMaxPlayers];
 DVector3 nCamerapos;
 bool bTouchFloor;
 
-double nQuake[kMaxPlayers] = { 0 };
+float nQuake[kMaxPlayers] = { 0 };
 
 int nChunkTotal = 0;
 
@@ -58,7 +58,7 @@ tspriteArray* mytspriteArray;
 //
 //---------------------------------------------------------------------------
 
-static void analyzesprites(tspriteArray& tsprites, const DVector3& view, double const interpfrac)
+static void analyzesprites(tspriteArray& tsprites, const DVector3& view, float const interpfrac)
 {
     mytspriteArray = &tsprites;
 
@@ -76,8 +76,8 @@ static void analyzesprites(tspriteArray& tsprites, const DVector3& view, double 
 
     auto pPlayerActor = PlayerList[nLocalPlayer].pActor;
 
-    double bestclose = 20;
-    double bestside = 30000;
+    float bestclose = 20;
+    float bestside = 30000;
 
 
     bestTarget = nullptr;
@@ -106,7 +106,7 @@ static void analyzesprites(tspriteArray& tsprites, const DVector3& view, double 
         {
             pTSprite->cstat |= CSTAT_SPRITE_YCENTER;
             auto tex = TexMan.GetGameTexture(pTSprite->spritetexture());
-            double nTileY = (tex->GetDisplayHeight() * pTSprite->scale.Y) * 0.5;
+            float nTileY = (tex->GetDisplayHeight() * pTSprite->scale.Y) * 0.5;
             pTSprite->pos.Z -= nTileY;
         }
 
@@ -122,17 +122,17 @@ static void analyzesprites(tspriteArray& tsprites, const DVector3& view, double 
             {
                 DVector2 delta = pActor->spr.pos.XY() - view.XY();
 
-                double vcos = nAngle.Cos();
-                double vsin = nAngle.Sin();
+                float vcos = nAngle.Cos();
+                float vsin = nAngle.Sin();
 
 
-                double fwd = ((vcos * delta.Y) + (delta.X * vsin));
-                double side = abs((vcos * delta.X) - (delta.Y * vsin));
+                float fwd = ((vcos * delta.Y) + (delta.X * vsin));
+                float side = abs((vcos * delta.X) - (delta.Y * vsin));
 
                 if (!side)
                     continue;
 
-                double close = (abs(fwd) * 32) / side;
+                float close = (abs(fwd) * 32) / side;
                 if (side < 1000 / 16. && side < bestside && close < 10)
                 {
                     bestTarget = pActor;
@@ -141,7 +141,7 @@ static void analyzesprites(tspriteArray& tsprites, const DVector3& view, double 
                 }
                 else if (side < 30000 / 16.)
                 {
-                    double t = bestclose - close;
+                    float t = bestclose - close;
                     if (t > 3 || (side < bestside && abs(t) < 5))
                     {
                         bestclose = close;
@@ -187,7 +187,7 @@ static TextOverlay subtitleOverlay;
 //
 //---------------------------------------------------------------------------
 
-void DrawView(double interpfrac, bool sceneonly)
+void DrawView(float interpfrac, bool sceneonly)
 {
     DExhumedActor* pEnemy = nullptr;
     int nEnemyPal = -1;
@@ -257,7 +257,7 @@ void DrawView(double interpfrac, bool sceneonly)
     else
     {
         nCamerapos.Z = min(nCamerapos.Z + nQuake[nLocalPlayer], pPlayerActor->sector()->floorz);
-        nCameraangles.Yaw += DAngle::fromDeg(fmod(nQuake[nLocalPlayer], 16.) * (45. / 128.));
+        nCameraangles.Yaw += DAngle::fromDeg(fmod(nQuake[nLocalPlayer], 16.f) * (45.f / 128.f));
 
         if (bCamera)
         {
@@ -406,7 +406,7 @@ bool GameInterface::GenerateSavePic()
     return true;
 }
 
-void GameInterface::processSprites(tspriteArray& tsprites, const DVector3& view, DAngle viewang, double interpfrac)
+void GameInterface::processSprites(tspriteArray& tsprites, const DVector3& view, DAngle viewang, float interpfrac)
 {
     analyzesprites(tsprites, view, interpfrac);
 }

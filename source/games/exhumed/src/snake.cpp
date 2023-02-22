@@ -159,7 +159,7 @@ void ExplodeSnakeSprite(DExhumedActor* pActor, int nPlayer)
 //
 //---------------------------------------------------------------------------
 
-void BuildSnake(int nPlayer, double zVal)
+void BuildSnake(int nPlayer, float zVal)
 {
     zVal -= 5;
 
@@ -172,7 +172,7 @@ void BuildSnake(int nPlayer, double zVal)
     HitInfo hit{};
     hitscan(pos, pPlayerActor->sector(), DVector3(pPlayerActor->spr.Angles.Yaw.ToVector() * 1024, 0), hit, CLIPMASK1);
 
-	double nSize = (hit.hitpos.XY() - pos.XY()).Length();
+	float nSize = (hit.hitpos.XY() - pos.XY()).Length();
 
     if (nSize < 64)
     {
@@ -221,7 +221,7 @@ void BuildSnake(int nPlayer, double zVal)
             else
             {
 				pActor->spr.pos = sprt->spr.pos;
-				double s = 0.625 + 0.046875 * i;
+				float s = 0.625 + 0.046875 * i;
 				pActor->spr.scale = DVector2(s, s);
             }
 
@@ -345,7 +345,7 @@ void AISnake::Tick(RunListEvent* ev)
     DExhumedActor* pEnemySprite = SnakeList[nSnake].pEnemy;
 
     Collision nMov;
-    double zVal;
+    float zVal;
 
     if (pEnemySprite == nullptr)
     {
@@ -385,8 +385,8 @@ void AISnake::Tick(RunListEvent* ev)
     else
     {
         DAngle nAngle = pActor->spr.Angles.Yaw;
-        double cosang = -nAngle.Cos() * 4;
-        double sinang = -nAngle.Sin() * 4;
+        float cosang = -nAngle.Cos() * 4;
+        float sinang = -nAngle.Sin() * 4;
 
         DAngle snakeang = DAngle::fromBuild(SnakeList[nSnake].nAngle);
 
@@ -405,7 +405,7 @@ void AISnake::Tick(RunListEvent* ev)
 
             ChangeActorSect(pActor2, pSector);
 
-            double eax = snakeang.Sin() * 2 * SnakeList[nSnake].c[i];
+            float eax = snakeang.Sin() * 2 * SnakeList[nSnake].c[i];
 
             DVector2 vect;
             vect.X = cosang + cosang * i + eax * normalang.Cos();

@@ -252,7 +252,7 @@ CONDITION_TYPE_NAMES gCondTypeNames[7] = {
 //
 //---------------------------------------------------------------------------
 
-static DBloodActor* nnExtSpawnDude(DBloodActor* sourceactor, DBloodActor* origin, int nType, double dist, double zadd)
+static DBloodActor* nnExtSpawnDude(DBloodActor* sourceactor, DBloodActor* origin, int nType, float dist, float zadd)
 {
 	DBloodActor* pDudeActor = nullptr;
 
@@ -981,7 +981,7 @@ static DBloodActor* randomDropPickupObject(DBloodActor* sourceactor, int prevIte
 //
 //---------------------------------------------------------------------------
 
-DBloodActor* randomSpawnDude(DBloodActor* sourceactor, DBloodActor* origin, double dist, double zadd)
+DBloodActor* randomSpawnDude(DBloodActor* sourceactor, DBloodActor* origin, float dist, float zadd)
 {
 	DBloodActor* spawned = NULL; int selected = -1;
 
@@ -999,7 +999,7 @@ DBloodActor* randomSpawnDude(DBloodActor* sourceactor, DBloodActor* origin, doub
 
 static void windGenDoVerticalWind(int factor, sectortype* pSector)
 {
-	double maxZ = 0, zdiff;
+	float maxZ = 0, zdiff;
 	bool maxZfound = false;
 
 	// find maxz marker first
@@ -1040,7 +1040,7 @@ static void windGenDoVerticalWind(int factor, sectortype* pSector)
 			continue;
 		}
 
-		double val = -factor / 1024.;
+		float val = -factor / 1024.;
 		if (actor->vel.Z >= 0) actor->vel.Z += val;
 		else actor->vel.Z = val;
 
@@ -1209,7 +1209,7 @@ void nnExtProcessSuperSprites()
 
 
 			auto pSightSect = pSight->sector();
-			double ztop2, zbot2;
+			float ztop2, zbot2;
 
 			for (int a = connecthead; a >= 0; a = connectpoint2[a])
 			{
@@ -1274,7 +1274,7 @@ void nnExtProcessSuperSprites()
 			int mass = debrisactor->spriteMass.mass;
 			int airVel = debrisactor->spriteMass.airVel;
 
-			double top, bottom;
+			float top, bottom;
 			GetActorExtents(debrisactor, &top, &bottom);
 
 			if (pXSector != nullptr)
@@ -1283,7 +1283,7 @@ void nnExtProcessSuperSprites()
 				if (pXSector->panVel != 0 && getflorzofslopeptr(debrisactor->sector(), debrisactor->spr.pos) <= bottom)
 				{
 					DAngle angle = pXSector->panAngle;
-					double speed = 0;
+					float speed = 0;
 					if (pXSector->panAlways || pXSector->state || pXSector->busy)
 					{
 						speed = pXSector->panVel / 128.;
@@ -1308,8 +1308,8 @@ void nnExtProcessSuperSprites()
 
 					if (pact && pact->hit.hit.type == kHitSprite && pact->hit.hit.actor() == debrisactor)
 					{
-						double nSpeed = pact->vel.XY().Length();
-						nSpeed = max<double>(nSpeed - nSpeed * FixedToFloat<6>(mass), FixedToFloat(0x9000 - (mass << 3))); // very messy math (TM)...
+						float nSpeed = pact->vel.XY().Length();
+						nSpeed = max<float>(nSpeed - nSpeed * FixedToFloat<6>(mass), FixedToFloat(0x9000 - (mass << 3))); // very messy math (TM)...
 
 						debrisactor->vel += pPlayer->actor->spr.Angles.Yaw.ToVector() * nSpeed;
 						debrisactor->hit.hit.setSprite(pPlayer->actor);
@@ -1345,12 +1345,12 @@ void nnExtProcessSuperSprites()
 			else if (ang > debrisactor->xspr.goalAng) debrisactor->spr.Angles.Yaw = max(ang - angStep, debrisactor->xspr.goalAng);
 
 			auto pSector = debrisactor->sector();
-			double fz, cz;
+			float fz, cz;
 			calcSlope(pSector, debrisactor->spr.pos, &cz, &fz);
 			GetActorExtents(debrisactor, &top, &bottom);
 
-			if (fz >= bottom && pSector->lowerLink == nullptr && !(pSector->ceilingstat & CSTAT_SECTOR_SKY)) debrisactor->spr.pos.Z += max(cz - top, 0.);
-			if (cz <= top && pSector->upperLink == nullptr && !(pSector->floorstat & CSTAT_SECTOR_SKY)) debrisactor->spr.pos.Z += min(fz - bottom, 0.);
+			if (fz >= bottom && pSector->lowerLink == nullptr && !(pSector->ceilingstat & CSTAT_SECTOR_SKY)) debrisactor->spr.pos.Z += max(cz - top, 0.f);
+			if (cz <= top && pSector->upperLink == nullptr && !(pSector->floorstat & CSTAT_SECTOR_SKY)) debrisactor->spr.pos.Z += min(fz - bottom, 0.f);
 		}
 	}
 }
@@ -1389,7 +1389,7 @@ int getSpriteMassBySize(DBloodActor* actor)
 {
 	int mass = 0;
 	int seqId = -1;
-	double clipDist = actor->clipdist;
+	float clipDist = actor->clipdist;
 	if (!actor->hasX())
 	{
 		I_Error("getSpriteMassBySize: actor->spr.hasX == false");
@@ -1438,7 +1438,7 @@ int getSpriteMassBySize(DBloodActor* actor)
 	auto tex = TexMan.GetGameTexture(texid);
 	if (!tex) return 0;
 
-	clipDist = max(actor->clipdist, 0.25);
+	clipDist = max(actor->clipdist, 0.25f);
 	int x = (int)tex->GetDisplayWidth();
 	int y = (int)tex->GetDisplayHeight();
 	int xscale = int(actor->spr.scale.X * 64);
@@ -1557,12 +1557,12 @@ void debrisConcuss(DBloodActor* owneractor, int listIndex, const DVector3& pos, 
 		dmg = int(dmg * (0x4000 / (0x4000 + dv.LengthSquared())));
 		bool thing = (actor->spr.type >= kThingBase && actor->spr.type < kThingMax);
 		auto tex = TexMan.GetGameTexture(actor->spr.spritetexture());
-		double size = (tex->GetDisplayWidth() * actor->spr.scale.X * tex->GetDisplayHeight() * actor->spr.scale.Y) * 2048;
+		float size = (tex->GetDisplayWidth() * actor->spr.scale.X * tex->GetDisplayHeight() * actor->spr.scale.Y) * 2048;
 		if (actor->xspr.physAttr & kPhysDebrisExplode)
 		{
 			if (actor->spriteMass.mass > 0)
 			{
-				double t = double(dmg) * size / actor->spriteMass.mass;
+				float t = float(dmg) * size / actor->spriteMass.mass;
 
 				actor->vel += dv * t / (1 << 24);
 			}
@@ -1586,11 +1586,11 @@ void debrisConcuss(DBloodActor* owneractor, int listIndex, const DVector3& pos, 
 
 void debrisBubble(DBloodActor* actor)
 {
-	double top, bottom;
+	float top, bottom;
 	GetActorExtents(actor, &top, &bottom);
 
 	auto tex = TexMan.GetGameTexture(actor->spr.spritetexture());
-	double nDist = (actor->spr.scale.X * tex->GetDisplayWidth()) * (1. / 2);
+	float nDist = (actor->spr.scale.X * tex->GetDisplayWidth()) * (1. / 2);
 	for (unsigned int i = 0; i < 1 + Random(5); i++)
 	{
 		DAngle nAngle = RandomAngle();
@@ -1627,14 +1627,14 @@ void debrisMove(int listIndex)
 		return;
 	}
 
-	double top, bottom;
+	float top, bottom;
 	GetActorExtents(actor, &top, &bottom);
 
 	Collision moveHit;
 	moveHit.setNone();
-	double floorDist = (bottom - actor->spr.pos.Z) * 0.25;
-	double ceilDist = (actor->spr.pos.Z - top) * 0.25;
-	double clipDistf = actor->clipdist;
+	float floorDist = (bottom - actor->spr.pos.Z) * 0.25;
+	float ceilDist = (actor->spr.pos.Z - top) * 0.25;
+	float clipDistf = actor->clipdist;
 	int mass = actor->spriteMass.mass;
 
 	bool uwater = false;
@@ -1692,17 +1692,17 @@ void debrisMove(int listIndex)
 
 	actor->spr.pos.Z += actor->vel.Z;
 
-	double ceilZ, floorZ;
+	float ceilZ, floorZ;
 	Collision ceilColl, floorColl;
 	GetZRange(actor, &ceilZ, &ceilColl, &floorZ, &floorColl, clipDistf, CLIPMASK0, PARALLAXCLIP_CEILING | PARALLAXCLIP_FLOOR);
 	GetActorExtents(actor, &top, &bottom);
 
 	if ((actor->xspr.physAttr & kPhysDebrisSwim) && uwater)
 	{
-		double vc = 0;
-		double cz = getceilzofslopeptr(pSector, actor->spr.pos);
-		double fz = getflorzofslopeptr(pSector, actor->spr.pos);
-		double div = max(bottom - top, 1 / 256.);
+		float vc = 0;
+		float cz = getceilzofslopeptr(pSector, actor->spr.pos);
+		float fz = getflorzofslopeptr(pSector, actor->spr.pos);
+		float div = max(bottom - top, 1 / 256.f);
 
 		if (pSector->lowerLink) cz += (cz < 0) ? 5. : -5.;
 		if (top > cz && (!(actor->xspr.physAttr & kPhysDebrisFloat) || fz <= bottom * 4))
@@ -1759,7 +1759,7 @@ void debrisMove(int listIndex)
 	if (floorZ <= bottom) {
 
 		actor->hit.florhit = floorColl;
-		double veldiff = actor->vel.Z - actor->sector()->velFloor;
+		float veldiff = actor->vel.Z - actor->sector()->velFloor;
 
 		if (veldiff > 0)
 		{
@@ -1809,7 +1809,7 @@ void debrisMove(int listIndex)
 	if (top <= ceilZ)
 	{
 		actor->hit.ceilhit = moveHit = ceilColl;
-		actor->spr.pos.Z += max(ceilZ - top, 0.);
+		actor->spr.pos.Z += max(ceilZ - top, 0.f);
 		if (actor->vel.Z <= 0 && (actor->xspr.physAttr & kPhysFalling))
 			actor->vel.Z *= 0.875;
 
@@ -1838,11 +1838,11 @@ void debrisMove(int listIndex)
 		}
 	}
 
-	actor->xspr.height = int(max(floorZ - bottom, 0.));
+	actor->xspr.height = int(max(floorZ - bottom, 0.f));
 	if (uwater || actor->xspr.height >= 0x100)
 		return;
 
-	double nDrag = 0.1640625;
+	float nDrag = 0.1640625;
 	if (actor->xspr.height > 0)
 		nDrag *= 1 - actor->xspr.height / 256.;
 
@@ -1862,8 +1862,8 @@ bool ceilIsTooLow(DBloodActor* actor)
 	if (actor != nullptr)
 	{
 		sectortype* pSector = actor->sector();
-		double a = pSector->ceilingz - pSector->floorz;
-		double top, bottom;
+		float a = pSector->ceilingz - pSector->floorz;
+		float top, bottom;
 		GetActorExtents(actor, &top, &bottom);
 		if (a > top - bottom) return true;
 	}
@@ -2181,12 +2181,12 @@ void trPlayerCtrlSetScreenEffect(int value, int timeval, PLAYER* pPlayer)
 
 void trPlayerCtrlSetLookAngle(int value, PLAYER* pPlayer)
 {
-	static constexpr double upAngle = 289;
-	static constexpr double downAngle = -347;
-	static constexpr double lookStepUp = 4.0 * upAngle / 60.0;
-	static constexpr double lookStepDown = -4.0 * downAngle / 60.0;
+	static constexpr float upAngle = 289;
+	static constexpr float downAngle = -347;
+	static constexpr float lookStepUp = 4.0 * upAngle / 60.0;
+	static constexpr float lookStepDown = -4.0 * downAngle / 60.0;
 
-	if (const double adjustment = clamp(value * 0.125 * (value > 0 ? lookStepUp : lookStepDown), downAngle, upAngle))
+	if (const float adjustment = clamp(value * 0.125f * (value > 0 ? lookStepUp : lookStepDown), downAngle, upAngle))
 	{
 		setForcedSyncInput();
 		pPlayer->actor->spr.Angles.Pitch = maphoriz(-100. * tan(adjustment * pi::pi() * (1. / 1024.)));
@@ -2979,7 +2979,7 @@ void usePropertiesChanger(DBloodActor* sourceactor, int objType, sectortype* pSe
 void useVelocityChanger(DBloodActor* actor, sectortype* sect, DBloodActor* initiator, DBloodActor* pSprite)
 //void useVelocityChanger(XSPRITE* pXSource, int causerID, short objType, int objIndex)
 {
-	const double kVelScale = 1 / 64.; // scaled 8 left, 14 right, i.e. 6 right altogether.
+	const float kVelScale = 1 / 64.; // scaled 8 left, 14 right, i.e. 6 right altogether.
 	const int kVelShift = 8;
 	const int kScaleVal = 0x10000;
 
@@ -3000,7 +3000,7 @@ void useVelocityChanger(DBloodActor* actor, sectortype* sect, DBloodActor* initi
 	{
 		if ((r = MulScale(actor->xspr.data4 << kVelShift, kScaleVal, 14)) != 0)
 			r = nnExtRandom(-r, r);
-		double rr = FixedToFloat(r);
+		float rr = FixedToFloat(r);
 
 		if (valueIsBetween(actor->xspr.data3, -32767, 32767))
 		{
@@ -3038,7 +3038,7 @@ void useVelocityChanger(DBloodActor* actor, sectortype* sect, DBloodActor* initi
 			if (chgDstAng)
 				changeSpriteAngle(pSprite, nAng);
 
-			double v = actor->xspr.data1 * kVelScale;
+			float v = actor->xspr.data1 * kVelScale;
 			if (v != 0) v += rr;
 
 			vv.XY() += nAng.ToVector() * v;
@@ -3146,7 +3146,7 @@ void useTeleportTarget(DBloodActor* sourceactor, DBloodActor* actor)
 		ChangeActorSect(actor, sourceactor->sector());
 
 	actor->spr.pos.XY() =sourceactor->spr.pos.XY();
-	double zTop, zBot;
+	float zTop, zBot;
 	GetActorExtents(sourceactor, &zTop, &zBot);
 	actor->spr.pos.Z = zBot;
 
@@ -3302,7 +3302,7 @@ void useEffectGen(DBloodActor* sourceactor, DBloodActor* actor)
 	}
 	else if (valueIsBetween(fxId, 0, kFXMax))
 	{
-		double pos, top, bottom;
+		float pos, top, bottom;
 		GetActorExtents(actor, &top, &bottom);
 		DBloodActor* pEffect = nullptr;
 
@@ -3315,7 +3315,7 @@ void useEffectGen(DBloodActor* sourceactor, DBloodActor* actor)
 		case 2: // middle
 		{
 			auto tex = TexMan.GetGameTexture(actor->spr.spritetexture());
-			double center = tex->GetDisplayHeight() / 2 + tex->GetDisplayTopOffset();
+			float center = tex->GetDisplayHeight() / 2 + tex->GetDisplayTopOffset();
 			pos = actor->spr.pos.Z + center * actor->spr.scale.Y;
 			break;
 		}
@@ -3485,7 +3485,7 @@ void useSpriteDamager(DBloodActor* sourceactor, int objType, sectortype* targSec
 {
 	sectortype* pSector = sourceactor->sector();
 
-	double top, bottom;
+	float top, bottom;
 	bool floor, ceil, wall, enter;
 
 	switch (objType)
@@ -3721,9 +3721,9 @@ void useSeqSpawnerGen(DBloodActor* sourceactor, int objType, sectortype* pSector
 				
 				cpos.XY() = pWall->center();
 				auto pMySector = pWall->sectorp();
-				double ceilZ, floorZ;
+				float ceilZ, floorZ;
 				calcSlope(pSector, cpos, &ceilZ, &floorZ);
-				double ceilZ2, floorZ2;
+				float ceilZ2, floorZ2;
 				calcSlope(pWall->nextSector(), cpos, &ceilZ2, &floorZ2);
 				ceilZ = max(ceilZ, ceilZ2);
 				floorZ = min(floorZ, floorZ2);
@@ -3744,7 +3744,7 @@ void useSeqSpawnerGen(DBloodActor* sourceactor, int objType, sectortype* pSector
 				auto spawned = InsertSprite(iactor->sector(), kStatDecoration);
 				if (spawned != nullptr)
 				{
-					double top, bottom;
+					float top, bottom;
 					GetActorExtents(spawned, &top, &bottom);
 					DVector3 pos = iactor->spr.pos;
 					switch (sourceactor->xspr.data3)
@@ -3761,7 +3761,7 @@ void useSeqSpawnerGen(DBloodActor* sourceactor, int objType, sectortype* pSector
 					{
 						// this had no value shift and no repeat handling, which looks like a bug.
 						auto tex = TexMan.GetGameTexture(iactor->spr.spritetexture());
-						double center = tex->GetDisplayHeight() / 2 + tex->GetDisplayTopOffset();
+						float center = tex->GetDisplayHeight() / 2 + tex->GetDisplayTopOffset();
 						pos.Z += center * iactor->spr.scale.Y;
 						break;
 					}
@@ -4205,7 +4205,7 @@ bool condCheckSector(DBloodActor* aCond, int cmpOp, bool PUSH)
 		case 51: return condCmp(pXSect->Depth, arg1, arg2, cmpOp);
 		case 55: // compare floor height (in %)
 		case 56: { // compare ceil height (in %)
-			double h = 0, curH = 0;
+			float h = 0, curH = 0;
 			switch (pSect->type)
 			{
 			case kSectorZMotion:
@@ -4429,7 +4429,7 @@ bool condCheckDude(DBloodActor* aCond, int cmpOp, bool PUSH)
 			condError(aCond, "Dude #%d has no target!", objActor->GetIndex());
 
 		DUDEINFO* pInfo = getDudeInfo(objActor->spr.type);
-		double height = (pInfo->eyeHeight * objActor->spr.scale.Y);
+		float height = (pInfo->eyeHeight * objActor->spr.scale.Y);
 
 		auto delta = targ->spr.pos.XY() - objActor->spr.pos.XY();
 
@@ -4625,7 +4625,7 @@ bool condCheckSprite(DBloodActor* aCond, int cmpOp, bool PUSH)
 			case  2: arg1 = CLIPMASK1; break;
 			}
 
-			double range = arg3 * 2;
+			float range = arg3 * 2;
 			if ((pPlayer = getPlayerById(objActor->spr.type)) != NULL)
 				var = HitScan(objActor, pPlayer->zWeapon, pPlayer->flt_aim(), arg1, range);
 			else if (objActor->IsDudeActor())
@@ -5058,8 +5058,8 @@ DBloodActor* aiFightGetTargetInRange(DBloodActor* actor, int minDist, int maxDis
 		{
 			if (actor->GetTarget())
 			{
-				double fineDist1 = aiFightGetFineTargetDist(actor, actor->GetTarget());
-				double fineDist2 = aiFightGetFineTargetDist(actor, targactor);
+				float fineDist1 = aiFightGetFineTargetDist(actor, actor->GetTarget());
+				float fineDist2 = aiFightGetFineTargetDist(actor, targactor);
 				if (fineDist1 < fineDist2)
 					continue;
 			}
@@ -5147,7 +5147,7 @@ bool aiFightDudeCanSeeTarget(DBloodActor* dudeactor, DUDEINFO* pDudeInfo, DBlood
 	// check target
 	if (dv.Length() < pDudeInfo->SeeDist())
 	{
-		double height = (pDudeInfo->eyeHeight * dudeactor->spr.scale.Y);
+		float height = (pDudeInfo->eyeHeight * dudeactor->spr.scale.Y);
 
 		// is there a line of sight to the target?
 		if (cansee(dudeactor->spr.pos, dudeactor->sector(), targetactor->spr.pos.plusZ(-height), targetactor->sector()))
@@ -5331,10 +5331,10 @@ bool aiFightIsMeleeUnit(DBloodActor* dude)
 int aiFightGetTargetDist(DBloodActor* actor, DUDEINFO* pDudeInfo, DBloodActor* target)
 {
 	auto dvec = target->spr.pos.XY() - actor->spr.pos.XY();
-	double dist = dvec.Length();
+	float dist = dvec.Length();
 
 	if (dist <= pDudeInfo->MeleeDist()) return 0;
-	double seeDist = pDudeInfo->SeeDist();
+	float seeDist = pDudeInfo->SeeDist();
 	if (dist >= seeDist) return 13;
 	if (dist <= seeDist / 12) return 1;
 	if (dist <= seeDist / 11) return 2;
@@ -5356,7 +5356,7 @@ int aiFightGetTargetDist(DBloodActor* actor, DUDEINFO* pDudeInfo, DBloodActor* t
 //
 //---------------------------------------------------------------------------
 
-double aiFightGetFineTargetDist(DBloodActor* actor, DBloodActor* target)
+float aiFightGetFineTargetDist(DBloodActor* actor, DBloodActor* target)
 {
 	auto dvec = target->spr.pos.XY() - actor->spr.pos.XY();
 	return (dvec).LengthSquared();
@@ -6652,7 +6652,7 @@ void useIncDecGen(DBloodActor* sourceactor, int objType, sectortype* destSect, w
 void sprite2sectorSlope(DBloodActor* actor, sectortype* pSector, int rel, bool forcez)
 {
 	int slope = 0;
-	double z = 0;
+	float z = 0;
 	switch (rel) {
 	default:
 		z = getflorzofslopeptr(actor->sector(), actor->spr.pos);
@@ -7303,7 +7303,7 @@ void playerQavSceneProcess(PLAYER* pPlayer, QAVSCENE* pQavScene)
 //
 //---------------------------------------------------------------------------
 
-void playerQavSceneDraw(PLAYER* pPlayer, int shade, double xpos, double ypos, int palnum, DAngle angle)
+void playerQavSceneDraw(PLAYER* pPlayer, int shade, float xpos, float ypos, int palnum, DAngle angle)
 {
 	if (pPlayer == NULL || pPlayer->sceneQav == -1) return;
 
@@ -7314,7 +7314,7 @@ void playerQavSceneDraw(PLAYER* pPlayer, int shade, double xpos, double ypos, in
 	{
 		QAV* pQAV = pQavScene->qavResrc;
 		int duration;
-		double interpfrac;
+		float interpfrac;
 
 		qavProcessTimer(pPlayer, pQAV, &duration, &interpfrac);
 
@@ -7661,14 +7661,14 @@ bool setDataValueOfObject(int objType, sectortype* sect, walltype* wal, DBloodAc
 //
 //---------------------------------------------------------------------------
 
-bool nnExtCanMove(DBloodActor* actor, DBloodActor* target, DAngle nAngle, double nRange)
+bool nnExtCanMove(DBloodActor* actor, DBloodActor* target, DAngle nAngle, float nRange)
 {
 	DVector3 pos = actor->spr.pos;
 	DVector3 nAngVect(nAngle.ToVector(), 0);
 
 	auto pSector = actor->sector();
 	HitScan(actor, pos.Z, nAngVect, CLIPMASK0, nRange);
-	double nDist = (actor->spr.pos.XY() - gHitInfo.hitpos.XY()).Length();
+	float nDist = (actor->spr.pos.XY() - gHitInfo.hitpos.XY()).Length();
 
 	if (target != nullptr && nDist - actor->clipdist < nRange)
 		return (target == gHitInfo.actor());
@@ -7700,7 +7700,7 @@ void nnExtAiSetDirection(DBloodActor* actor, DAngle direction)
 
 	DAngle vc = deltaangle(actor->spr.Angles.Yaw, direction);
 	DAngle v8 = vc > nullAngle ? DAngle180 / 3 : -DAngle180 / 3;
-	double range = actor->vel.XY().dot(actor->spr.Angles.Yaw.ToVector()) * 120;
+	float range = actor->vel.XY().dot(actor->spr.Angles.Yaw.ToVector()) * 120;
 
 	if (nnExtCanMove(actor, actor->GetTarget(), actor->spr.Angles.Yaw + vc, range))
 		actor->xspr.goalAng = actor->spr.Angles.Yaw + vc;
@@ -7858,7 +7858,7 @@ bool aiPatrolMarkerReached(DBloodActor* actor)
 	auto markeractor = actor->GetTarget();
 	if (markeractor && markeractor->spr.type == kMarkerPath)
 	{
-		double okDist = max(markeractor->clipdist * 8, 4.);
+		float okDist = max(markeractor->clipdist * 8, 4.f);
 		auto ov = markeractor->spr.pos.XY() - actor->spr.pos.XY(); // this was already shifted right by 4 in the old code.
 
 		if (ov.Length() <= okDist)
@@ -7866,12 +7866,12 @@ bool aiPatrolMarkerReached(DBloodActor* actor)
 			if (spriteIsUnderwater(actor) || pExtra->flying)
 			{
 				okDist = markeractor->clipdist * 16;
-				double ztop, zbot, ztop2, zbot2;
+				float ztop, zbot, ztop2, zbot2;
 				GetActorExtents(actor, &ztop, &zbot);
 				GetActorExtents(markeractor, &ztop2, &zbot2);
 
-				double oZ1 = abs(zbot - ztop2);
-				double oZ2 = abs(ztop - zbot2);
+				float oZ1 = abs(zbot - ztop2);
+				float oZ2 = abs(ztop - zbot2);
 				if (oZ1 > okDist && oZ2 > okDist)
 					return false;
 			}
@@ -7937,13 +7937,13 @@ void aiPatrolSetMarker(DBloodActor* actor)
 	auto targetactor = actor->GetTarget();
 
 	DBloodActor* selected = nullptr;
-	double closest = DBL_MAX;
+	float closest = DBL_MAX;
 
 	// select closest marker that dude can see
 	if (targetactor == nullptr)
 	{
-		double zt1, zb1, zt2, zb2;
-		double dist;
+		float zt1, zb1, zt2, zb2;
+		float dist;
 		GetActorExtents(actor, &zt2, &zb2);
 
 		BloodStatIterator it(kStatPathMarker);
@@ -8198,7 +8198,7 @@ void aiPatrolMove(DBloodActor* actor)
 		actor->vel += actor->spr.Angles.Yaw.ToVector() * FixedToFloat(frontSpeed);
 	}
 
-	double vel = (actor->xspr.unused1 & kDudeFlagCrouch) ? kMaxPatrolCrouchVelocity : kMaxPatrolVelocity;
+	float vel = (actor->xspr.unused1 & kDudeFlagCrouch) ? kMaxPatrolCrouchVelocity : kMaxPatrolVelocity;
 
 	vel *= dv.XY().Length() / 1024; // was: MulScale16 with length << 6, effectively resulting in >> 10.
 	actor->vel.X = clamp(actor->vel.X, -vel, vel);
@@ -8219,7 +8219,7 @@ void aiPatrolAlarmLite(DBloodActor* actor, DBloodActor* targetactor)
 	if (actor->xspr.health <= 0)
 		return;
 
-	double zt1, zb1, zt2, zb2;
+	float zt1, zb1, zt2, zb2;
 	GetActorExtents(actor, &zt1, &zb1);
 	GetActorExtents(targetactor, &zt2, &zb2);
 
@@ -8232,8 +8232,8 @@ void aiPatrolAlarmLite(DBloodActor* actor, DBloodActor* targetactor)
 		if (dudeactor->xspr.health <= 0)
 			continue;
 
-		double eaz2 = (getDudeInfo(targetactor->spr.type)->eyeHeight * targetactor->spr.scale.Y);
-		double nDist = (dudeactor->spr.pos.XY() - actor->spr.pos.XY()).LengthSquared();
+		float eaz2 = (getDudeInfo(targetactor->spr.type)->eyeHeight * targetactor->spr.scale.Y);
+		float nDist = (dudeactor->spr.pos.XY() - actor->spr.pos.XY()).LengthSquared();
 		if (nDist >= kPatrolAlarmSeeDistSq || !cansee(DVector3(actor->spr.pos, zt1), actor->sector(), dudeactor->spr.pos.plusZ(-eaz2), dudeactor->sector()))
 		{
 			nDist = (dudeactor->spr.pos.XY() - targetactor->spr.pos.XY()).LengthSquared();
@@ -8264,12 +8264,12 @@ void aiPatrolAlarmFull(DBloodActor* actor, DBloodActor* targetactor, bool chain)
 	if (actor->xspr.health <= 0)
 		return;
 
-	double eaz2 = (getDudeInfo(actor->spr.type)->eyeHeight * actor->spr.scale.Y);
+	float eaz2 = (getDudeInfo(actor->spr.type)->eyeHeight * actor->spr.scale.Y);
 	auto pos2 = actor->spr.pos.plusZ(-eaz2);
 
 	auto pSect2 = actor->sector();
 
-	double tzt, tzb;
+	float tzt, tzb;
 	GetActorExtents(targetactor, &tzt, &tzb);
 	DVector3 pos3(targetactor->spr.pos.XY(), tzt);
 
@@ -8284,16 +8284,16 @@ void aiPatrolAlarmFull(DBloodActor* actor, DBloodActor* targetactor, bool chain)
 		if (dudeactor->xspr.health <= 0)
 			continue;
 
-		double eaz1 = (getDudeInfo(dudeactor->spr.type)->eyeHeight * dudeactor->spr.scale.Y);
+		float eaz1 = (getDudeInfo(dudeactor->spr.type)->eyeHeight * dudeactor->spr.scale.Y);
 		auto pos1 = dudeactor->spr.pos.plusZ(-eaz1);
 
 		auto pSect1 = dudeactor->sector();
 
-		double nDist1 = (pos1 - pos2).Length();
-		double nDist2 = (pos1 - pos3).Length();
+		float nDist1 = (pos1 - pos2).Length();
+		float nDist2 = (pos1 - pos3).Length();
 
-		//double hdist = (dudeactor->xspr.dudeDeaf)  ? 0 : getDudeInfo(dudeactor->spr.type)->HearDist() / 4;
-		double sdist = (dudeactor->xspr.dudeGuard) ? 0 : getDudeInfo(dudeactor->spr.type)->SeeDist() / 2;
+		//float hdist = (dudeactor->xspr.dudeDeaf)  ? 0 : getDudeInfo(dudeactor->spr.type)->HearDist() / 4;
+		float sdist = (dudeactor->xspr.dudeGuard) ? 0 : getDudeInfo(dudeactor->spr.type)->SeeDist() / 2;
 
 		if (//(nDist1 < hdist || nDist2 < hdist) ||
 			((nDist1 < sdist && cansee(pos1, pSect1, pos2, pSect2)) || (nDist2 < sdist && cansee(pos1, pSect1, pos3, pSect3)))) 
@@ -8411,18 +8411,18 @@ DBloodActor* aiPatrolSearchTargets(DBloodActor* actor)
 		seeChance = hearChance = 0x0000;
 		auto pos = plActor->spr.pos;
 		auto dv = pos.XY() - actor->spr.pos.XY();
-		double nDistf = dv.Length();
-		double seeDistf = (stealth) ? pDudeInfo->SeeDist() / 3 : pDudeInfo->SeeDist() / 4;
-		double hearDistf = pDudeInfo->HearDist(); 
-		double feelDistf = hearDistf / 2;
+		float nDistf = dv.Length();
+		float seeDistf = (stealth) ? pDudeInfo->SeeDist() / 3 : pDudeInfo->SeeDist() / 4;
+		float hearDistf = pDudeInfo->HearDist(); 
+		float feelDistf = hearDistf / 2;
 
 		// TO-DO: is there any dudes that sees this patrol dude and sees target?
 
 
 		if (nDistf <= seeDistf)
 		{
-			double scratch;
-			double eyeAboveZ = (pDudeInfo->eyeHeight * actor->spr.scale.Y);
+			float scratch;
+			float eyeAboveZ = (pDudeInfo->eyeHeight * actor->spr.scale.Y);
 			if (nDistf < seeDistf / 8) GetActorExtents(pPlayer->actor, &pos.Z, &scratch); //use ztop of the target sprite
 			if (!cansee(pos, plActor->sector(), actor->spr.pos - eyeAboveZ, actor->sector()))
 				continue;
@@ -8468,7 +8468,7 @@ DBloodActor* aiPatrolSearchTargets(DBloodActor* actor)
 						searchsect = &sector[chan->UserData];
 					}
 					if (searchsect == nullptr) return false;
-					double nsDist = (sndv - actor->spr.pos.XY()).Length();
+					float nsDist = (sndv - actor->spr.pos.XY()).Length();
 					if (nsDist > hearDistf) return false;
 
 
@@ -8547,8 +8547,8 @@ DBloodActor* aiPatrolSearchTargets(DBloodActor* actor)
 
 			bool itCanHear = false; 
 			bool itCanSee = false;
-			feelDistf = max(feelDistf, 0.);
-			seeDistf = max(seeDistf, 0.);
+			feelDistf = max(feelDistf, 0.f);
+			seeDistf = max(seeDistf, 0.f);
 
 			if (hearDistf)
 			{
@@ -9169,7 +9169,7 @@ void callbackUniMissileBurst(DBloodActor* actor, sectortype*) // 22
 	if (!actor) return;
 	if (actor->spr.statnum != kStatProjectile) return;
 	auto nAngVec = actor->vel.XY().Angle().ToVector();
-	double nRadius = FixedToFloat(0x55555);
+	float nRadius = FixedToFloat(0x55555);
 
 	for (int i = 0; i < 8; i++)
 	{
@@ -9228,14 +9228,14 @@ void callbackGenDudeUpdate(DBloodActor* actor, sectortype*) // 24
 
 void clampSprite(DBloodActor* actor, int which)
 {
-	double zTop, zBot;
+	float zTop, zBot;
 	if (actor->insector())
 	{
 		GetActorExtents(actor, &zTop, &zBot);
 		if (which & 0x01)
-			actor->spr.pos.Z += min(getflorzofslopeptr(actor->sector(), actor->spr.pos) - zBot, 0.);
+			actor->spr.pos.Z += min(getflorzofslopeptr(actor->sector(), actor->spr.pos) - zBot, 0.f);
 		if (which & 0x02)
-			actor->spr.pos.Z += max(getceilzofslopeptr(actor->sector(), actor->spr.pos) - zTop, 0.);
+			actor->spr.pos.Z += max(getceilzofslopeptr(actor->sector(), actor->spr.pos) - zTop, 0.f);
 
 	}
 

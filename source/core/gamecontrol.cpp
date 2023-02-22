@@ -1410,13 +1410,13 @@ void GameInterface::FreeLevelData()
 //
 //---------------------------------------------------------------------------
 
-void ST_DrawCrosshair(int phealth, double xpos, double ypos, double scale, DAngle angle);
-//void DrawGenericCrosshair(int num, int phealth, double xdelta);
+void ST_DrawCrosshair(int phealth, float xpos, float ypos, float scale, DAngle angle);
+//void DrawGenericCrosshair(int num, int phealth, float xdelta);
 void ST_LoadCrosshair(int num, bool alwaysload);
 CVAR(Int, crosshair, 0, CVAR_ARCHIVE)
 
 
-void DrawCrosshair(int deftile, int health, double xdelta, double ydelta, double scale, DAngle angle, PalEntry color)
+void DrawCrosshair(int deftile, int health, float xdelta, float ydelta, float scale, DAngle angle, PalEntry color)
 {
 	if (automapMode == am_off && cl_crosshair)
 	{
@@ -1425,7 +1425,7 @@ void DrawCrosshair(int deftile, int health, double xdelta, double ydelta, double
 			auto tile = tileGetTexture(deftile);
 			if (tile)
 			{
-				double crosshair_scale = crosshairscale > 0.0f ? crosshairscale * scale : 1.;
+				float crosshair_scale = crosshairscale > 0.0f ? crosshairscale * scale : 1.;
 				DrawTexture(twod, tile, 160 + xdelta, 100 + ydelta, DTA_Color, color, DTA_Rotate, angle.Degrees(),
 					DTA_FullscreenScale, FSMode_Fit320x200, DTA_ScaleX, crosshair_scale, DTA_ScaleY, crosshair_scale, DTA_CenterOffsetRel, true,
 					DTA_ViewportX, viewport3d.Left(), DTA_ViewportY, viewport3d.Top(), DTA_ViewportWidth, viewport3d.Width(), DTA_ViewportHeight, viewport3d.Height(), TAG_DONE);
@@ -1436,8 +1436,8 @@ void DrawCrosshair(int deftile, int health, double xdelta, double ydelta, double
 		// 0 means 'game provided crosshair' - use type 2 as fallback.
 		ST_LoadCrosshair(crosshair == 0 ? 2 : *crosshair, false);
 
-		double xpos = viewport3d.Width() * 0.5 + xdelta * viewport3d.Height() / 240.;
-		double ypos = viewport3d.Height() * 0.5 + ydelta * viewport3d.Width() / 320.;
+		float xpos = viewport3d.Width() * 0.5 + xdelta * viewport3d.Height() / 240.;
+		float ypos = viewport3d.Height() * 0.5 + ydelta * viewport3d.Width() / 320.;
 		ST_DrawCrosshair(health, xpos, ypos, 1, angle);
 	}
 }

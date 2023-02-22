@@ -97,7 +97,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(_Duke, PlaySpecialMusic, S_PlaySpecialMusic)
 	return 0;
 }
 
-static int duke_PlaySound(int num, int chan, int flags, double vol)
+static int duke_PlaySound(int num, int chan, int flags, float vol)
 {
 	return S_PlaySound(FSoundID::fromInt(num), chan, EChanFlags::FromInt(flags), float(vol));
 }
@@ -309,16 +309,16 @@ DEFINE_ACTION_FUNCTION_NATIVE(DDukeActor, getglobalz, getglobalz)
 	return 0;
 }
 
-player_struct* DukeActor_findplayer(DDukeActor* self, double* dist)
+player_struct* DukeActor_findplayer(DDukeActor* self, float* dist)
 {
-	double a;
+	float a;
 	return &ps[findplayer(self, dist? dist : &a)];
 }
 
 DEFINE_ACTION_FUNCTION_NATIVE(DDukeActor, findplayer, DukeActor_findplayer)
 {
 	PARAM_SELF_PROLOGUE(DDukeActor);
-	double d;
+	float d;
 	auto p = DukeActor_findplayer(self, &d);
 	if (numret > 0) ret[0].SetPointer(p);
 	if (numret > 1) ret[1].SetFloat(d);
@@ -434,7 +434,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(DDukeActor, lotsofstuff, DukeActor_Lotsofstuff)
 	return 0;
 }
 
-double DukeActor_gutsoffset(DDukeActor* self)
+float DukeActor_gutsoffset(DDukeActor* self)
 {
 	return gs.actorinfo[self->spr.picnum].gutsoffset;
 }
@@ -446,7 +446,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(DDukeActor, gutsoffset, DukeActor_gutsoffset)
 	return 0;
 }
 
-int DukeActor_movesprite(DDukeActor* actor, double velx, double vely, double velz, int clipmask)
+int DukeActor_movesprite(DDukeActor* actor, float velx, float vely, float velz, int clipmask)
 {
 	Collision coll;
 	return movesprite_ex(actor, DVector3(velx, vely, velz), clipmask, coll);
@@ -462,7 +462,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(DDukeActor, movesprite, DukeActor_movesprite)
 	ACTION_RETURN_INT(DukeActor_movesprite(self, velx, vely, velz, clipmask));
 }
 
-int DukeActor_movesprite_ex(DDukeActor* actor, double velx, double vely, double velz, int clipmask, Collision* coll)
+int DukeActor_movesprite_ex(DDukeActor* actor, float velx, float vely, float velz, int clipmask, Collision* coll)
 {
 	return movesprite_ex(actor, DVector3(velx, vely, velz), clipmask, *coll);
 }
@@ -570,7 +570,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(DDukeActor, hitasprite, hitasprite)
 {
 	PARAM_SELF_PROLOGUE(DDukeActor);
 	DDukeActor* p;
-	double d = hitasprite(self, &p);
+	float d = hitasprite(self, &p);
 	if (numret > 0) ret[0].SetFloat(d);
 	if (numret > 1) ret[1].SetPointer(p);
 	return min(numret, 2);
@@ -996,7 +996,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(_DukePlayer, backupxyz, dukeplayer_backupxyz)
 	return 0;
 }
 
-void dukeplayer_setpos(player_struct* self, double x, double y, double z)
+void dukeplayer_setpos(player_struct* self, float x, float y, float z)
 {
 	self->GetActor()->spr.pos = { x, y, z + self->GetActor()->viewzoffset };
 }
@@ -1011,7 +1011,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(_DukePlayer, setpos, dukeplayer_setpos)
 	return 0;
 }
 
-void dukeplayer_addpos(player_struct* self, double x, double y, double z)
+void dukeplayer_addpos(player_struct* self, float x, float y, float z)
 {
 	self->GetActor()->spr.pos += { x, y, z };
 }
@@ -1050,7 +1050,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(_DukePlayer, playerinput, DukePlayer_PlayerInput)
 	ACTION_RETURN_INT(DukePlayer_PlayerInput(self, bit));
 }
 
-void dukeplayer_settargetangle(player_struct* self, double a, int backup)
+void dukeplayer_settargetangle(player_struct* self, float a, int backup)
 {
 	self->GetActor()->spr.Angles.Yaw = DAngle::fromDeg(a);
 	if (backup) self->GetActor()->PrevAngles.Yaw = self->GetActor()->spr.Angles.Yaw;
@@ -1065,7 +1065,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(_DukePlayer, settargetangle, dukeplayer_settargeta
 	return 0;
 }
 
-double dukeplayer_angle(player_struct* self)
+float dukeplayer_angle(player_struct* self)
 {
 	return self->GetActor()->spr.Angles.Yaw.Degrees();
 }
@@ -1076,7 +1076,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(_DukePlayer, angle, dukeplayer_angle)
 	ACTION_RETURN_FLOAT(dukeplayer_angle(self));
 }
 
-void dukeplayer_addpitch(player_struct* self, double a)
+void dukeplayer_addpitch(player_struct* self, float a)
 {
 	self->GetActor()->spr.Angles.Pitch += DAngle::fromDeg(a);
 }
@@ -1150,7 +1150,7 @@ DEFINE_ACTION_FUNCTION(_DukePlayer, hitablockingwall)
 	ACTION_RETURN_BOOL(pwal && pwal->overtexture.isValid());
 }
 
-inline double DukePlayer_GetPitchwithView(player_struct* pl)
+inline float DukePlayer_GetPitchwithView(player_struct* pl)
 {
 	return pl->Angles.getPitchWithView().Degrees();
 }
@@ -1260,7 +1260,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(_DukeSpriteIterator, Next, duke_nextSprite)
 	ACTION_RETURN_POINTER(duke_nextSprite(self));
 }
 
-DDukeActor* DukeLevel_SpawnActor(DukeLevel* self, sectortype* sect, double x, double y, double z, PClassActor* type, int shade, double scalex, double scaley, double angle, double vel, double zvel, DDukeActor* owner, int stat)
+DDukeActor* DukeLevel_SpawnActor(DukeLevel* self, sectortype* sect, float x, float y, float z, PClassActor* type, int shade, float scalex, float scaley, float angle, float vel, float zvel, DDukeActor* owner, int stat)
 {
 	return SpawnActor(sect, DVector3(x, y, z), type, shade, DVector2(scalex, scaley), DAngle::fromDeg(angle), vel, zvel, owner, stat);
 }
@@ -1382,7 +1382,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(_DukeLevel, ismirror, duke_ismirror)
 	ACTION_RETURN_BOOL(duke_ismirror(wal));
 }
 
-void duke_checkhitwall(walltype* wal, DDukeActor * actor, double x, double y, double z)
+void duke_checkhitwall(walltype* wal, DDukeActor * actor, float x, float y, float z)
 {
 	checkhitwall(actor, wal, DVector3(x, y, z));
 }
@@ -1477,7 +1477,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(_DukeLevel, getanimationindex, getanimationindex)
 	ACTION_RETURN_INT(getanimationindex(tag, sect));
 }
 
-DEFINE_ACTION_FUNCTION_NATIVE(_DukeLevel, setanimation, static_cast<int(*)(sectortype*, int, sectortype*, double, double)>(setanimation))
+DEFINE_ACTION_FUNCTION_NATIVE(_DukeLevel, setanimation, static_cast<int(*)(sectortype*, int, sectortype*, float, float)>(setanimation))
 {
 	PARAM_PROLOGUE;
 	PARAM_POINTER(asect, sectortype);

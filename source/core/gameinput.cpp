@@ -39,20 +39,20 @@ enum
 	TURBOTURNBASE = 590,
 };
 
-static constexpr double YAW_TURNSPEEDS[3] = { 41.1987304, 156.555175, 272.24121 };
-static constexpr double YAW_PREAMBLESCALE = YAW_TURNSPEEDS[0] / YAW_TURNSPEEDS[1];
-static constexpr double YAW_LOOKINGSPEED = 801.5625;
-static constexpr double YAW_ROTATESPEED = 63.28125;
-static constexpr double YAW_LOOKRETURN = 7.5;
-static constexpr double YAW_SPINSTAND = 675.;
-static constexpr double YAW_SPINCROUCH = YAW_SPINSTAND * 0.5;
-static constexpr double PITCH_LOOKSPEED = 222.83185;
-static constexpr double PITCH_AIMSPEED = PITCH_LOOKSPEED * 0.5;
-static constexpr double PITCH_CENTERSPEED = 10.7375;
-static constexpr double PITCH_HORIZOFFSPEED = 4.375;
-static constexpr DAngle PITCH_CNTRSINEOFFSET = DAngle90 / 8.;
-static constexpr DAngle PITCH_HORIZOFFCLIMB = DAngle::fromDeg(-38.);
-static constexpr DAngle PITCH_HORIZOFFPUSH = DAngle::fromDeg(0.4476);
+static constexpr float YAW_TURNSPEEDS[3] = { 41.1987304f, 156.555175f, 272.24121f };
+static constexpr float YAW_PREAMBLESCALE = YAW_TURNSPEEDS[0] / YAW_TURNSPEEDS[1];
+static constexpr float YAW_LOOKINGSPEED = 801.5625f;
+static constexpr float YAW_ROTATESPEED = 63.28125f;
+static constexpr float YAW_LOOKRETURN = 7.5f;
+static constexpr float YAW_SPINSTAND = 675.f;
+static constexpr float YAW_SPINCROUCH = YAW_SPINSTAND * 0.5f;
+static constexpr float PITCH_LOOKSPEED = 222.83185f;
+static constexpr float PITCH_AIMSPEED = PITCH_LOOKSPEED * 0.5f;
+static constexpr float PITCH_CENTERSPEED = 10.7375f;
+static constexpr float PITCH_HORIZOFFSPEED = 4.375f;
+static constexpr DAngle PITCH_CNTRSINEOFFSET = DAngle90 / 8.f;
+static constexpr DAngle PITCH_HORIZOFFCLIMB = DAngle::fromDeg(-38.f);
+static constexpr DAngle PITCH_HORIZOFFPUSH = DAngle::fromDeg(0.4476f);
 
 
 //---------------------------------------------------------------------------
@@ -61,17 +61,17 @@ static constexpr DAngle PITCH_HORIZOFFPUSH = DAngle::fromDeg(0.4476);
 //
 //---------------------------------------------------------------------------
 
-static inline double getTicrateScale(const double value)
+static inline float getTicrateScale(const float value)
 {
 	return value / GameTicRate;
 }
 
-static inline DAngle getscaledangle(const DAngle angle, const double scale, const DAngle push)
+static inline DAngle getscaledangle(const DAngle angle, const float scale, const DAngle push)
 {
 	return (angle.Normalized180() * getTicrateScale(scale)) + push;
 }
 
-static inline bool scaletozero(DAngle& angle, const double scale, const DAngle push = DAngle::fromDeg(32. / 465.))
+static inline bool scaletozero(DAngle& angle, const float scale, const DAngle push = DAngle::fromDeg(32.f / 465.f))
 {
 	auto sgn = angle.Sgn();
 
@@ -90,9 +90,9 @@ static inline bool scaletozero(DAngle& angle, const double scale, const DAngle p
 //
 //---------------------------------------------------------------------------
 
-static double turnheldtime;
+static float turnheldtime;
 
-void updateTurnHeldAmt(double const scaleAdjust)
+void updateTurnHeldAmt(float const scaleAdjust)
 {
 	turnheldtime += getTicrateScale(BUILDTICRATE) * scaleAdjust;
 }
@@ -114,7 +114,7 @@ void resetTurnHeldAmt()
 //
 //---------------------------------------------------------------------------
 
-void processMovement(InputPacket* const currInput, InputPacket* const inputBuffer, ControlInfo* const hidInput, double const scaleAdjust, int const drink_amt, bool const allowstrafe, double const turnscale)
+void processMovement(InputPacket* const currInput, InputPacket* const inputBuffer, ControlInfo* const hidInput, float const scaleAdjust, int const drink_amt, bool const allowstrafe, float const turnscale)
 {
 	// set up variables.
 	int const keymove = 1 << int(!!(inputBuffer->actions & SB_RUN));
@@ -255,8 +255,8 @@ void PlayerAngles::doViewPitch(const DVector2& pos, DAngle const ang, bool const
 			{
 				// Get the floorz as if the new (x,y) point was still in
 				// your sector, unless it's Blood.
-				double const j = getflorzofslopeptr(cursectnum, pos);
-				double const k = getflorzofslopeptr(!isBlood() ? cursectnum : tempsect, rotpt);
+				float const j = getflorzofslopeptr(cursectnum, pos);
+				float const k = getflorzofslopeptr(!isBlood() ? cursectnum : tempsect, rotpt);
 
 				// If extended point is in same sector as you or the slopes
 				// of the sector of the extended point and your sector match

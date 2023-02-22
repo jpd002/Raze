@@ -342,7 +342,7 @@ void JS_InitMirrors(void)
 
                     // For magic mirrors, set allowable viewing time to 30
                     // secs
-                    // Base rate is supposed to be 120, but time is double
+                    // Base rate is supposed to be 120, but time is float
                     // what I expect
                     mirror[mirrorcnt].maxtics = 60 * 30;
 
@@ -365,7 +365,7 @@ void JS_InitMirrors(void)
 /////////////////////////////////////////////////////
 //  Draw a 3d screen to a specific tile
 /////////////////////////////////////////////////////
-void drawroomstotile(const DVector3& pos, DAngle ang, DAngle horiz, sectortype* dacursect, short tilenume, double smoothratio)
+void drawroomstotile(const DVector3& pos, DAngle ang, DAngle horiz, sectortype* dacursect, short tilenume, float smoothratio)
 {
     auto tex = tileGetTexture(tilenume);
     auto canvas = dynamic_cast<FCanvasTexture*>(tex->GetTexture());
@@ -388,9 +388,9 @@ void JS_ProcessEchoSpot()
     SWStatIterator it(STAT_ECHO);
     while (auto actor = it.Next())
     {
-        double maxdist = SP_TAG4(actor) * maptoworld;
+        float maxdist = SP_TAG4(actor) * maptoworld;
         auto v = actor->spr.pos.XY() - pp->actor->spr.pos.XY();
-        double dist = abs(v.X) + abs(v.Y);
+        float dist = abs(v.X) + abs(v.Y);
 
         if (dist <= maxdist) // tag4 = ang
         {
@@ -421,10 +421,10 @@ short camplayerview = 1;                // Don't show yourself!
 // Hack job alert!
 // Mirrors and cameras are maintained in the same data structure, but for hardware rendering they cannot be interleaved.
 // So this function replicates JS_DrawMirrors to only process the camera textures but not change any global state.
-void JS_DrawCameras(PLAYER* pp, const DVector3& campos, double smoothratio)
+void JS_DrawCameras(PLAYER* pp, const DVector3& campos, float smoothratio)
 {
     int  cnt;
-    double dist;
+    float dist;
     int tposx, tposy; // Camera
     int* longptr;
 
@@ -591,7 +591,7 @@ void JS_CameraParms(PLAYER* pp, const DVector3& tpos)
     cam_pos = tpos;
 }
 
-void GameInterface::UpdateCameras(double smoothratio)
+void GameInterface::UpdateCameras(float smoothratio)
 {
     JS_DrawCameras(cam_pp, cam_pos, smoothratio);
 }

@@ -127,60 +127,60 @@ struct VMReturn
 		assert(RegType == REGT_INT);
 		*(int *)Location = val;
 	}
-	void SetFloat(double val)
+	void SetFloat(float val)
 	{
 		assert(RegType == REGT_FLOAT);
-		*(double *)Location = val;
+		*(float *)Location = val;
 	}
-	void SetVector4(const double val[4])
+	void SetVector4(const float val[4])
 	{
 		assert(RegType == (REGT_FLOAT|REGT_MULTIREG4));
-		((double *)Location)[0] = val[0];
-		((double *)Location)[1] = val[1];
-		((double *)Location)[2] = val[2];
-		((double *)Location)[3] = val[3];
+		((float *)Location)[0] = val[0];
+		((float *)Location)[1] = val[1];
+		((float *)Location)[2] = val[2];
+		((float *)Location)[3] = val[3];
 	}
 	void SetVector4(const DVector4 &val)
 	{
 		assert(RegType == (REGT_FLOAT | REGT_MULTIREG4));
-		((double *)Location)[0] = val[0];
-		((double *)Location)[1] = val[1];
-		((double *)Location)[2] = val[2];
-		((double *)Location)[3] = val[3];
+		((float *)Location)[0] = val[0];
+		((float *)Location)[1] = val[1];
+		((float *)Location)[2] = val[2];
+		((float *)Location)[3] = val[3];
 	}
 	void SetQuaternion(const DQuaternion &val)
 	{
 		assert(RegType == (REGT_FLOAT | REGT_MULTIREG4));
-		((double *)Location)[0] = val[0];
-		((double *)Location)[1] = val[1];
-		((double *)Location)[2] = val[2];
-		((double *)Location)[3] = val[3];
+		((float *)Location)[0] = val[0];
+		((float *)Location)[1] = val[1];
+		((float *)Location)[2] = val[2];
+		((float *)Location)[3] = val[3];
 	}
-	void SetVector(const double val[3])
+	void SetVector(const float val[3])
 	{
 		assert(RegType == (REGT_FLOAT|REGT_MULTIREG3));
-		((double *)Location)[0] = val[0];
-		((double *)Location)[1] = val[1];
-		((double *)Location)[2] = val[2];
+		((float *)Location)[0] = val[0];
+		((float *)Location)[1] = val[1];
+		((float *)Location)[2] = val[2];
 	}
 	void SetVector(const DVector3 &val)
 	{
 		assert(RegType == (REGT_FLOAT | REGT_MULTIREG3));
-		((double *)Location)[0] = val[0];
-		((double *)Location)[1] = val[1];
-		((double *)Location)[2] = val[2];
+		((float *)Location)[0] = val[0];
+		((float *)Location)[1] = val[1];
+		((float *)Location)[2] = val[2];
 	}
-	void SetVector2(const double val[2])
+	void SetVector2(const float val[2])
 	{
 		assert(RegType == (REGT_FLOAT|REGT_MULTIREG2));
-		((double *)Location)[0] = val[0];
-		((double *)Location)[1] = val[1];
+		((float *)Location)[0] = val[0];
+		((float *)Location)[1] = val[1];
 	}
 	void SetVector2(const DVector2 &val)
 	{
 		assert(RegType == (REGT_FLOAT | REGT_MULTIREG2));
-		((double *)Location)[0] = val[0];
-		((double *)Location)[1] = val[1];
+		((float *)Location)[0] = val[0];
+		((float *)Location)[1] = val[1];
 	}
 	void SetString(const FString &val)
 	{
@@ -205,7 +205,7 @@ struct VMReturn
 		Location = loc;
 		RegType = REGT_INT;
 	}
-	void FloatAt(double *loc)
+	void FloatAt(float *loc)
 	{
 		Location = loc;
 		RegType = REGT_FLOAT;
@@ -232,7 +232,7 @@ struct VMReturn
 	}
 	VMReturn() { }
 	VMReturn(int *loc) { IntAt(loc); }
-	VMReturn(double *loc) { FloatAt(loc); }
+	VMReturn(float *loc) { FloatAt(loc); }
 	VMReturn(DVector2 *loc) { Vec2At(loc); }
 	VMReturn(DVector3 *loc) { Vec3At(loc); }
 	VMReturn(FString *loc) { StringAt(loc); }
@@ -247,7 +247,7 @@ struct TypedVMValue
 	{
 		int i;
 		void *a;
-		double f;
+		float f;
 		struct { int pad[3]; VM_UBYTE Type; };
 		struct { int foo[4]; } biggest;
 		const FString *sp;
@@ -269,7 +269,7 @@ struct TypedVMValue
 		i = v;
 		Type = REGT_INT;
 	}
-	TypedVMValue(double v)
+	TypedVMValue(float v)
 	{
 		f = v;
 		Type = REGT_FLOAT;
@@ -301,7 +301,7 @@ struct TypedVMValue
 		Type = REGT_INT;
 		return *this;
 	}
-	TypedVMValue &operator=(double v)
+	TypedVMValue &operator=(float v)
 	{
 		f = v;
 		Type = REGT_FLOAT;
@@ -328,7 +328,7 @@ struct VMValue
 	{
 		int i;
 		void *a;
-		double f;
+		float f;
 		struct { int foo[2]; } biggest;
 		const FString *sp;
 	};
@@ -351,7 +351,7 @@ struct VMValue
 	{
 		i = v;
 	}
-	VMValue(double v)
+	VMValue(float v)
 	{
 		f = v;
 	}
@@ -381,7 +381,7 @@ struct VMValue
 		i = v;
 		return *this;
 	}
-	VMValue &operator=(double v)
+	VMValue &operator=(float v)
 	{
 		f = v;
 		return *this;
@@ -415,7 +415,7 @@ struct VMValue
 		// FIXME
 		return 0;
 	}
-	double ToDouble(int Type)
+	float ToDouble(int Type)
 	{
 		if (Type == REGT_FLOAT)
 		{
@@ -423,7 +423,7 @@ struct VMValue
 		}
 		if (Type == REGT_INT)
 		{
-			return i;
+			return (float)i;
 		}
 		if (Type == REGT_STRING)
 		{
@@ -547,7 +547,7 @@ bool AssertObject(void * ob);
 #define PARAM_NAME_AT(p,x)			assert((p) < numparam); assert(reginfo[p] == REGT_INT); FName x = ENamedName(param[p].i);
 #define PARAM_SOUND_AT(p,x)			assert((p) < numparam); assert(reginfo[p] == REGT_INT); FSoundID x = FSoundID::fromInt(param[p].i);
 #define PARAM_COLOR_AT(p,x)			assert((p) < numparam); assert(reginfo[p] == REGT_INT); PalEntry x = param[p].i;
-#define PARAM_FLOAT_AT(p,x)			assert((p) < numparam); assert(reginfo[p] == REGT_FLOAT); double x = param[p].f;
+#define PARAM_FLOAT_AT(p,x)			assert((p) < numparam); assert(reginfo[p] == REGT_FLOAT); float x = param[p].f;
 #define PARAM_ANGLE_AT(p,x)			assert((p) < numparam); assert(reginfo[p] == REGT_FLOAT); DAngle x = DAngle::fromDeg(param[p].f);
 #define PARAM_FANGLE_AT(p,x)			assert((p) < numparam); assert(reginfo[p] == REGT_FLOAT); FAngle x = FAngle::fromDeg(param[p].f);
 #define PARAM_STRING_VAL_AT(p,x)	assert((p) < numparam); assert(reginfo[p] == REGT_STRING); FString x = param[p].s();
@@ -616,7 +616,7 @@ namespace
 	template<> struct native_is_valid<int32_t> { static const bool value = true;  static const bool retval = true; };
 	template<> struct native_is_valid<uint32_t> { static const bool value = true; static const bool retval = true; };
 #endif
-	template<> struct native_is_valid<double> { static const bool value = true; static const bool retval = true; };
+	template<> struct native_is_valid<float> { static const bool value = true; static const bool retval = true; };
 	template<> struct native_is_valid<bool> { static const bool value = true; static const bool retval = false;};	// Bool as return does not work!
 }
 
@@ -765,7 +765,7 @@ class AActor;
 #define ACTION_RETURN_STATE(v) do { FState *state = v; if (numret > 0) { assert(ret != NULL); ret->SetPointer(state); return 1; } return 0; } while(0)
 #define ACTION_RETURN_POINTER(v) do { void *state = v; if (numret > 0) { assert(ret != NULL); ret->SetPointer(state); return 1; } return 0; } while(0)
 #define ACTION_RETURN_OBJECT(v) do { auto state = v; if (numret > 0) { assert(ret != NULL); ret->SetObject(state); return 1; } return 0; } while(0)
-#define ACTION_RETURN_FLOAT(v) do { double u = v; if (numret > 0) { assert(ret != nullptr); ret->SetFloat(u); return 1; } return 0; } while(0)
+#define ACTION_RETURN_FLOAT(v) do { float u = v; if (numret > 0) { assert(ret != nullptr); ret->SetFloat(u); return 1; } return 0; } while(0)
 #define ACTION_RETURN_VEC2(v) do { DVector2 u = v; if (numret > 0) { assert(ret != nullptr); ret[0].SetVector2(u); return 1; } return 0; } while(0)
 #define ACTION_RETURN_VEC3(v) do { DVector3 u = v; if (numret > 0) { assert(ret != nullptr); ret[0].SetVector(u); return 1; } return 0; } while(0)
 #define ACTION_RETURN_VEC4(v) do { DVector4 u = v; if (numret > 0) { assert(ret != nullptr); ret[0].SetVector4(u); return 1; } return 0; } while(0)

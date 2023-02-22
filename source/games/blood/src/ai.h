@@ -93,6 +93,6 @@ void aiLookForTarget(DBloodActor* actor);
 void aiProcessDudes(void);
 void aiInit(void);
 void aiInitSprite(DBloodActor* pSprite);
-bool CanMove(DBloodActor* pSprite, DBloodActor* target, DAngle nAngle, double nRange);
+bool CanMove(DBloodActor* pSprite, DBloodActor* target, DAngle nAngle, float nRange);
 
 END_BLD_NS

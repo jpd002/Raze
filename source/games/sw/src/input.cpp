@@ -34,7 +34,7 @@ Prepared for public release: 03/28/2005 - Charlie Wiederhold, 3D Realms
 
 BEGIN_SW_NS
 
-void DoPlayerTurnVehicle(PLAYER* pp, DAngle& plyaw, float avel, double z, double floor_dist);
+void DoPlayerTurnVehicle(PLAYER* pp, DAngle& plyaw, float avel, float z, float floor_dist);
 void DoPlayerTurnTurret(PLAYER* pp, DAngle& plyaw, float avel);
 
 static InputPacket loc;
@@ -160,7 +160,7 @@ static void processWeapon(PLAYER* const pp)
     }
 }
 
-void GameInterface::GetInput(ControlInfo* const hidInput, double const scaleAdjust, InputPacket *packet)
+void GameInterface::GetInput(ControlInfo* const hidInput, float const scaleAdjust, InputPacket *packet)
 {
     PLAYER* pp = &Player[myconnectindex];
 

@@ -175,7 +175,7 @@ DDukeActor* spawninit_d(DDukeActor* actj, DDukeActor* act, TArray<DDukeActor*>* 
 		if (spawnbloodpoolpart1(act)) break;
 
 		act->spr.cstat |= CSTAT_SPRITE_ALIGNMENT_FLOOR;
-		act->spr.pos.Z = getflorzofslopeptr(act->sector(), act->spr.pos) - 0.78125;
+		act->spr.pos.Z = getflorzofslopeptr(act->sector(), act->spr.pos) - 0.78125f;
 		[[fallthrough]];
 
 	case DTILE_FECES:
@@ -267,7 +267,7 @@ DDukeActor* spawninit_d(DDukeActor* actj, DDukeActor* act, TArray<DDukeActor*>* 
 
 		if (actj)
 		{
-			double x = getflorzofslopeptr(act->sector(), act->spr.pos);
+			float x = getflorzofslopeptr(act->sector(), act->spr.pos);
 			if (act->spr.pos.Z > x - 12)
 				act->spr.pos.Z = x - 12;
 		}

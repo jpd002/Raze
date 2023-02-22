@@ -40,7 +40,7 @@ source as it is released.
 
 BEGIN_DUKE_NS 
 
-inline static double getavel(int snum)
+inline static float getavel(int snum)
 {
 	return PlayerInputAngVel(snum) * (2048. / 360.);
 }
@@ -51,7 +51,7 @@ inline static double getavel(int snum)
 //
 //---------------------------------------------------------------------------
 
-inline static void hud_drawpal(double x, double y, int tilenum, int shade, int orientation, int p, DAngle angle)
+inline static void hud_drawpal(float x, float y, int tilenum, int shade, int orientation, int p, DAngle angle)
 {
 	hud_drawsprite(x, y, 65536, angle.Degrees(), tilenum, shade, p, 2 | orientation);
 }
@@ -62,18 +62,18 @@ inline static void hud_drawpal(double x, double y, int tilenum, int shade, int o
 //
 //---------------------------------------------------------------------------
 
-static void displayloogie(player_struct* p, double const interpfrac)
+static void displayloogie(player_struct* p, float const interpfrac)
 {
 	if (p->loogcnt == 0) return;
 
-	const double loogi = interpolatedvalue<double>(p->oloogcnt, p->loogcnt, interpfrac);
-	const double y = loogi * 4.;
+	const float loogi = interpolatedvalue<float>(p->oloogcnt, p->loogcnt, interpfrac);
+	const float y = loogi * 4.;
 
 	for (int i = 0; i < p->numloogs; i++)
 	{
-		const double a = fabs(BobVal((loogi + i) * 32.) * 90);
-		const double z = 4096. + ((loogi + i) * 512.);
-		const double x = -getavel(p->GetPlayerNum()) + BobVal((loogi + i) * 64.) * 16;
+		const float a = fabs(BobVal((loogi + i) * 32.f) * 90);
+		const float z = 4096. + ((loogi + i) * 512.);
+		const float x = -getavel(p->GetPlayerNum()) + BobVal((loogi + i) * 64.f) * 16;
 
 		hud_drawsprite((p->loogie[i].X + x), (200 + p->loogie[i].Y - y), z - (i << 8), a - 22.5, DTILE_LOOGIE, 0, 0, 2);
 	}
@@ -85,15 +85,15 @@ static void displayloogie(player_struct* p, double const interpfrac)
 //
 //---------------------------------------------------------------------------
 
-static bool animatefist(int gs, player_struct* p, double xoffset, double yoffset, int fistpal, double const interpfrac)
+static bool animatefist(int gs, player_struct* p, float xoffset, float yoffset, int fistpal, float const interpfrac)
 {
-	const double fisti = min(interpolatedvalue<double>(p->ofist_incs, p->fist_incs, interpfrac), 32.);
+	const float fisti = min(interpolatedvalue<float>(p->ofist_incs, p->fist_incs, interpfrac), 32.f);
 	if (fisti <= 0) return false;
 
 	hud_drawsprite(
 		(-fisti + 222 + xoffset),
-		(yoffset + 194 + BobVal((6 + fisti) * 128.) * 32),
-		clamp(65536. - 65536. * BobVal(512 + fisti * 64.), 40920., 90612.), 0, DTILE_FIST, gs, fistpal, 2);
+		(yoffset + 194 + BobVal((6 + fisti) * 128.f) * 32),
+		clamp(65536.f - 65536.f * BobVal(512 + fisti * 64.f), 40920.f, 90612.f), 0, DTILE_FIST, gs, fistpal, 2);
 
 	return true;
 }
@@ -104,12 +104,12 @@ static bool animatefist(int gs, player_struct* p, double xoffset, double yoffset
 //
 //---------------------------------------------------------------------------
 
-static bool animateknee(int gs, player_struct* p, double xoffset, double yoffset, int pal, double const interpfrac, DAngle angle)
+static bool animateknee(int gs, player_struct* p, float xoffset, float yoffset, int pal, float const interpfrac, DAngle angle)
 {
 	if (p->knee_incs > 11 || p->knee_incs == 0 || p->GetActor()->spr.extra <= 0) return false;
 
 	static const int8_t knee_y[] = { 0,-8,-16,-32,-64,-84,-108,-108,-108,-72,-32,-8 };
-	const double kneei = interpolatedvalue<double>(knee_y[p->oknee_incs], knee_y[p->knee_incs], interpfrac);
+	const float kneei = interpolatedvalue<float>(knee_y[p->oknee_incs], knee_y[p->knee_incs], interpfrac);
 
 	hud_drawpal(105 + (kneei * 0.25) + xoffset, 280 + kneei + yoffset, DTILE_KNEE, gs, 4, pal, angle);
 
@@ -122,7 +122,7 @@ static bool animateknee(int gs, player_struct* p, double xoffset, double yoffset
 //
 //---------------------------------------------------------------------------
 
-static bool animateknuckles(int gs, player_struct* p, double xoffset, double yoffset, int pal, DAngle angle)
+static bool animateknuckles(int gs, player_struct* p, float xoffset, float yoffset, int pal, DAngle angle)
 {
 	if (isWW2GI() || p->over_shoulder_on != 0 || p->knuckle_incs == 0 || p->GetActor()->spr.extra <= 0) return false;
 
@@ -140,7 +140,7 @@ static bool animateknuckles(int gs, player_struct* p, double xoffset, double yof
 //
 //---------------------------------------------------------------------------
 
-void displaymasks_d(int snum, int p, double interpfrac)
+void displaymasks_d(int snum, int p, float interpfrac)
 {
 	if (ps[snum].scuba_on)
 	{
@@ -156,12 +156,12 @@ void displaymasks_d(int snum, int p, double interpfrac)
 //
 //---------------------------------------------------------------------------
 
-static bool animatetip(int gs, player_struct* p, double xoffset, double yoffset, int pal, double const interpfrac, DAngle angle)
+static bool animatetip(int gs, player_struct* p, float xoffset, float yoffset, int pal, float const interpfrac, DAngle angle)
 {
 	if (p->tipincs == 0) return false;
 
 	static const int8_t tip_y[] = { 0,-8,-16,-32,-64,-84,-108,-108,-108,-108,-108,-108,-108,-108,-108,-108,-96,-72,-64,-32,-16 };
-	const double tipi = interpolatedvalue<double>(tip_y[p->otipincs], tip_y[p->tipincs], interpfrac) * 0.5;
+	const float tipi = interpolatedvalue<float>(tip_y[p->otipincs], tip_y[p->tipincs], interpfrac) * 0.5;
 
 	hud_drawpal(170 + xoffset, 240 + tipi + yoffset, DTILE_TIP + ((26 - p->tipincs) >> 4), gs, 0, pal, angle);
 
@@ -174,12 +174,12 @@ static bool animatetip(int gs, player_struct* p, double xoffset, double yoffset,
 //
 //---------------------------------------------------------------------------
 
-static bool animateaccess(int gs, player_struct* p, double xoffset, double yoffset, double const interpfrac, DAngle angle)
+static bool animateaccess(int gs, player_struct* p, float xoffset, float yoffset, float const interpfrac, DAngle angle)
 {
 	if (p->access_incs == 0 || p->GetActor()->spr.extra <= 0) return false;
 
 	static const int8_t access_y[] = {0,-8,-16,-32,-64,-84,-108,-108,-108,-108,-108,-108,-108,-108,-108,-108,-96,-72,-64,-32,-16};
-	const double accessi = interpolatedvalue<double>(access_y[p->oaccess_incs], access_y[p->access_incs], interpfrac);
+	const float accessi = interpolatedvalue<float>(access_y[p->oaccess_incs], access_y[p->access_incs], interpfrac);
 
 	const int pal = p->access_spritenum != nullptr ? p->access_spritenum->spr.pal : 0;
 
@@ -197,7 +197,7 @@ static bool animateaccess(int gs, player_struct* p, double xoffset, double yoffs
 //
 //---------------------------------------------------------------------------
 
-void displayweapon_d(int snum, double interpfrac)
+void displayweapon_d(int snum, float interpfrac)
 {
 	int pal, pal2;
 	player_struct* p = &ps[snum];
@@ -205,17 +205,17 @@ void displayweapon_d(int snum, double interpfrac)
 	if (p->newOwner != nullptr || ud.cameraactor != nullptr || p->over_shoulder_on > 0 || (p->GetActor()->spr.pal != 1 && p->GetActor()->spr.extra <= 0))
 		return;
 
-	double weapon_sway, gun_pos, kickback_pic, random_club_frame, hard_landing;
+	float weapon_sway, gun_pos, kickback_pic, random_club_frame, hard_landing;
 	auto kb = &p->kickback_pic;
 	int o = 0;
 
 	if (cl_hudinterpolation)
 	{
-		weapon_sway = interpolatedvalue<double>(p->oweapon_sway, p->weapon_sway, interpfrac);
-		kickback_pic = interpolatedvalue<double>(p->okickback_pic, p->kickback_pic, interpfrac);
-		random_club_frame = interpolatedvalue<double>(p->orandom_club_frame, p->random_club_frame, interpfrac);
-		hard_landing = interpolatedvalue<double>(p->ohard_landing, p->hard_landing, interpfrac);
-		gun_pos = 80 - interpolatedvalue<double>(p->oweapon_pos * p->oweapon_pos, p->weapon_pos * p->weapon_pos, interpfrac);
+		weapon_sway = interpolatedvalue<float>(p->oweapon_sway, p->weapon_sway, interpfrac);
+		kickback_pic = interpolatedvalue<float>(p->okickback_pic, p->kickback_pic, interpfrac);
+		random_club_frame = interpolatedvalue<float>(p->orandom_club_frame, p->random_club_frame, interpfrac);
+		hard_landing = interpolatedvalue<float>(p->ohard_landing, p->hard_landing, interpfrac);
+		gun_pos = 80 - interpolatedvalue<float>(p->oweapon_pos * p->oweapon_pos, p->weapon_pos * p->weapon_pos, interpfrac);
 	}
 	else
 	{
@@ -227,14 +227,14 @@ void displayweapon_d(int snum, double interpfrac)
 	}
 
 	hard_landing *= 8.;
-	gun_pos -= fabs(p->GetActor()->spr.scale.X < 0.5 ? BobVal(weapon_sway * 4.) * 32 : BobVal(weapon_sway * 0.5) * 16) + hard_landing;
+	gun_pos -= fabs(p->GetActor()->spr.scale.X < 0.5 ? BobVal(weapon_sway * 4.f) * 32 : BobVal(weapon_sway * 0.5f) * 16) + hard_landing;
 
 	auto offpair = p->Angles.getWeaponOffsets(interpfrac);
 	auto offsets = offpair.first;
 	auto pitchoffset = 16. * (p->Angles.getRenderAngles(interpfrac).Pitch / DAngle90);
 	auto yawinput = getavel(snum) * (1. / 16.);
 	auto angle = offpair.second;
-	auto weapon_xoffset = 160 - 90 - (BobVal(512 + weapon_sway * 0.5) * (16384. / 1536.)) - 58 - p->weapon_ang;
+	auto weapon_xoffset = 160 - 90 - (BobVal(512 + weapon_sway * 0.5f) * (16384.f / 1536.f)) - 58 - p->weapon_ang;
 	auto shade = min(p->GetActor()->spr.shade, (int8_t)24);
 
 	pal2 = pal = !p->insector() ? 0 : p->GetActor()->spr.pal == 1 ? 1 : p->cursector->floorpal;
@@ -337,7 +337,7 @@ void displayweapon_d(int snum, double interpfrac)
 		{
 			const int pin = ((gs.displayflags & DUKE3D_NO_WIDESCREEN_PINNING)) ? 0 : RS_ALIGN_R;
 
-			offsets -= BobVal(512 + (min(kickback_pic, 16.) * 128.)) * 8;
+			offsets -= BobVal(512 + (min(kickback_pic, 16.f) * 128.f)) * 8;
 
 			if (*kb > 0)
 			{
@@ -375,7 +375,7 @@ void displayweapon_d(int snum, double interpfrac)
 			offsets.X -= 8;
 
 			if (*kb > 0)
-				offsets.Y += BobVal(kickback_pic * 128.) * 4;
+				offsets.Y += BobVal(kickback_pic * 128.f) * 4;
 
 			if (*kb > 0 && p->GetActor()->spr.pal != 1)
 				offsets.X += 1 - (rand() & 3);
@@ -483,7 +483,7 @@ void displayweapon_d(int snum, double interpfrac)
 		auto displaychaingun_ww = [&]()
 		{
 			if (*kb > 0)
-				offsets.Y += BobVal(kickback_pic * 128.) * 4;
+				offsets.Y += BobVal(kickback_pic * 128.f) * 4;
 
 			if (*kb > 0 && p->GetActor()->spr.pal != 1)
 				offsets.X += 1 - (rand() & 3);
@@ -505,7 +505,7 @@ void displayweapon_d(int snum, double interpfrac)
 				// 4) hold weapon up/right, hand inserting clip (2518)
 				// 5) move weapon down/left, clip inserted (2519)
 
-				double adj;
+				float adj;
 				int pic;
 				const int iFifths = max((weapReload - weapTotalTime) / 5, 1);
 
@@ -554,7 +554,7 @@ void displayweapon_d(int snum, double interpfrac)
 		auto displaychaingun = [&]
 		{
 			if (*kb > 0)
-				offsets.Y += BobVal(kickback_pic * 128.) * 4;
+				offsets.Y += BobVal(kickback_pic * 128.f) * 4;
 
 			if (*kb > 0 && p->GetActor()->spr.pal != 1)
 				offsets.X += 1 - (rand() & 3);

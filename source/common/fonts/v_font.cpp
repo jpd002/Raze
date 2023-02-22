@@ -716,7 +716,7 @@ static void CalcDefaultTranslation(FFont* base, int index)
 	uint32_t othercolors[256] = {};
 	base->RecordAllTextureColors(othercolors);
 
-	TArray<double> otherluminosity;
+	TArray<float> otherluminosity;
 	base->GetLuminosity(othercolors, otherluminosity);
 
 	PalEntry *remap = &paletteptr[index * 256];
@@ -759,7 +759,7 @@ static void CalcDefaultTranslation(FFont* base, int index)
 			{
 				PalEntry color1 = remap[lowindex];
 				PalEntry color2 = remap[highindex];
-				double weight = (i - lowindex) / double(highindex - lowindex);
+				float weight = (i - lowindex) / float(highindex - lowindex);
 				int r = int(color1.r + weight * (color2.r - color1.r));
 				int g = int(color1.g + weight * (color2.g - color1.g));
 				int b = int(color1.b + weight * (color2.b - color1.b));

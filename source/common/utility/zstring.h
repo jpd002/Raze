@@ -321,7 +321,7 @@ public:
 	bool IsFloat () const;
 	int64_t ToLong (int base=0) const;
 	uint64_t ToULong (int base=0) const;
-	double ToDouble () const;
+	float ToDouble () const;
 
 	size_t Len() const { return Data()->Len; }
 	size_t CharacterCount() const;

@@ -117,10 +117,10 @@ static void addclipline(int32_t dax1, int32_t day1, int32_t dax2, int32_t day2, 
 }
 
 inline void clipmove_tweak_pos(const vec3_t *pos, int32_t gx, int32_t gy, int32_t x1, int32_t y1, int32_t x2,
-                                      int32_t y2, double *daxptr, double *dayptr)
+                                      int32_t y2, float *daxptr, float *dayptr)
 {
-    double x = pos->X * inttoworld, y = pos->Y * inttoworld;
-    double result = InterceptLineSegments(x, y, gx * inttoworld, gy * inttoworld, x1 * inttoworld, y1 * inttoworld, (x2 - x1) * inttoworld, (y2 - y1) * inttoworld);
+    float x = pos->X * inttoworld, y = pos->Y * inttoworld;
+    float result = InterceptLineSegments(x, y, gx * inttoworld, gy * inttoworld, x1 * inttoworld, y1 * inttoworld, (x2 - x1) * inttoworld, (y2 - y1) * inttoworld);
     if (result > 0)
     {
         *daxptr = x + result * gx * inttoworld;
@@ -376,7 +376,7 @@ CollisionBase clipmove_(vec3_t * const pos, int * const sectnum, int32_t xvect, 
             case CSTAT_SPRITE_ALIGNMENT_FACING:
                 if (p1.X >= clipMin.X && p1.X <= clipMax.X && p1.Y >= clipMin.Y && p1.Y <= clipMax.Y)
                 {
-                    double height_, daz_ = actor->spr.pos.Z + actor->GetOffsetAndHeight(height_);
+                    float height_, daz_ = actor->spr.pos.Z + actor->GetOffsetAndHeight(height_);
                     int height = int(height_ * zworldtoint), daz = int(daz_ * zworldtoint);
 
                     if (pos->Z > daz-height-flordist && pos->Z < daz+ceildist)
@@ -394,7 +394,7 @@ CollisionBase clipmove_(vec3_t * const pos, int * const sectnum, int32_t xvect, 
 
             case CSTAT_SPRITE_ALIGNMENT_WALL:
             {
-                double height_, daz_ = actor->spr.pos.Z + actor->GetOffsetAndHeight(height_);
+                float height_, daz_ = actor->spr.pos.Z + actor->GetOffsetAndHeight(height_);
                 int height = int(height_ * zworldtoint), daz = int(daz_ * zworldtoint);
 
                 if (pos->Z > daz-height-flordist && pos->Z < daz+ceildist)

@@ -308,8 +308,8 @@ Collision CheckCloseRange(int nPlayer, DVector3& pos, sectortype* *ppSector)
     HitInfo hit{};
     hitscan(pos, *ppSector, DVector3(pActor->spr.Angles.Yaw.ToVector() * 1024, 0 ), hit, CLIPMASK1);
 
-	const double ecx = 56.84; // bsin(150, -3)
-	double sqrtNum = (hit.hitpos.XY() - pos.XY()).LengthSquared();
+	const float ecx = 56.84; // bsin(150, -3)
+	float sqrtNum = (hit.hitpos.XY() - pos.XY()).LengthSquared();
 
     Collision c;
     c.setNone();
@@ -705,7 +705,7 @@ loc_flag:
             DAngle nAngle = pPlayerActor->spr.Angles.Yaw;
 			auto thePos = pPlayerActor->spr.pos;
 
-            double nHeight = GetActorHeight(pPlayerActor) * -0.5;
+            float nHeight = GetActorHeight(pPlayerActor) * -0.5;
 
             if (nAction < 6)
             {
@@ -834,7 +834,7 @@ loc_flag:
                 }
                 case kWeaponPistol:
                 {
-                    double h = PlayerList[nLocalPlayer].pActor->spr.Angles.Pitch.Tan() * 2.;
+                    float h = PlayerList[nLocalPlayer].pActor->spr.Angles.Pitch.Tan() * 2.;
                     nHeight += h;
 
                     DExhumedActor* target = nullptr;
@@ -926,7 +926,7 @@ loc_flag:
 //
 //---------------------------------------------------------------------------
 
-void DrawWeapons(double interpfrac)
+void DrawWeapons(float interpfrac)
 {
     if (bCamera) {
         return;
@@ -958,17 +958,17 @@ void DrawWeapons(double interpfrac)
 
     nPal = RemapPLU(nPal);
 
-    double xOffset = 0, yOffset = 0;
+    float xOffset = 0, yOffset = 0;
 	bool screenalign = false;
 
     if (cl_weaponsway)
     {
-        double nBobAngle, nVal;
+        float nBobAngle, nVal;
 
         if (cl_hudinterpolation)
         {
-            nBobAngle = interpolatedvalue<double>(obobangle, bobangle, interpfrac);
-            nVal = interpolatedvalue<double>(PlayerList[nLocalPlayer].ototalvel, PlayerList[nLocalPlayer].totalvel, interpfrac);
+            nBobAngle = interpolatedvalue<float>(obobangle, bobangle, interpfrac);
+            nVal = interpolatedvalue<float>(PlayerList[nLocalPlayer].ototalvel, PlayerList[nLocalPlayer].totalvel, interpfrac);
         }
         else
         {

@@ -60,20 +60,20 @@ struct PACKINFO
 
 struct POSTURE
 {
-	double frontAccel;
-	double sideAccel;
-	double backAccel;
+	float frontAccel;
+	float sideAccel;
+	float backAccel;
 	int pace[2];
-	double bobV;
-	double bobH;
-	double swayV;
-	double swayH;
-	double eyeAboveZ;
-	double weaponAboveZ;
-	double xOffset;
-	double zOffset;
-	double normalJumpZ;
-	double pwupJumpZ;
+	float bobV;
+	float bobH;
+	float swayV;
+	float swayH;
+	float eyeAboveZ;
+	float weaponAboveZ;
+	float xOffset;
+	float zOffset;
+	float normalJumpZ;
+	float pwupJumpZ;
 };
 
 extern POSTURE gPostureDefaults[kModeMax][kPostureMax];
@@ -91,28 +91,28 @@ struct PLAYER
 	bool                isRunning;
 	int                 posture;   // stand, crouch, swim
 	int                 sceneQav;  // by NoOne: used to keep qav id
-	double              bobPhase;
+	float              bobPhase;
 	int                 bobAmp;
-	double              bobHeight;
-	double              bobWidth;
-	double              obobHeight;
-	double              obobWidth;
+	float              bobHeight;
+	float              bobWidth;
+	float              obobHeight;
+	float              obobWidth;
 	int                 swayPhase;
 	int                 swayAmp;
-	double              swayHeight;
-	double              swayWidth;
-	double              oswayHeight;
-	double              oswayWidth;
+	float              swayHeight;
+	float              swayWidth;
+	float              oswayHeight;
+	float              oswayWidth;
 	int                 nPlayer;  // Connect id
 	int                 lifeMode;
 	int                 bloodlust;  // ---> useless
-	double              zView;
-	double              ozView;
-	double              zViewVel;
-	double              zWeapon;
-	double              ozWeapon;
-	double              zWeaponVel;
-	double              slope;
+	float              zView;
+	float              ozView;
+	float              zViewVel;
+	float              zWeapon;
+	float              ozWeapon;
+	float              zWeaponVel;
+	float              slope;
 	bool                isUnderwater;
 	bool                hasKey[8];
 	int8_t              hasFlag;
@@ -133,7 +133,7 @@ struct PLAYER
 	int                 qavTimer;
 	int                 fuseTime;
 	int                 throwTime;
-	double              throwPower;
+	float              throwPower;
 	DVector3            aim;  // world
 	DVector3            relAim;  // relative
 	DVector3 flt_aim() const { return aim; }
@@ -233,8 +233,8 @@ void playerInit(int nPlayer, unsigned int a2);
 void CheckPickUp(PLAYER* pPlayer);
 void ProcessInput(PLAYER* pPlayer);
 void playerProcess(PLAYER* pPlayer);
-DBloodActor* playerFireMissile(PLAYER* pPlayer, double xyoff, const DVector3& vec, int nType);
-DBloodActor* playerFireThing(PLAYER* pPlayer, double xyoff, double zvel, int thingType, double nSpeed);
+DBloodActor* playerFireMissile(PLAYER* pPlayer, float xyoff, const DVector3& vec, int nType);
+DBloodActor* playerFireThing(PLAYER* pPlayer, float xyoff, float zvel, int thingType, float nSpeed);
 void playerFrag(PLAYER* pKiller, PLAYER* pVictim);
 int playerDamageArmor(PLAYER* pPlayer, DAMAGE_TYPE nType, int nDamage);
 int playerDamageSprite(DBloodActor* nSource, PLAYER* pPlayer, DAMAGE_TYPE nDamageType, int nDamage);

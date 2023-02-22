@@ -349,4 +349,4 @@ public:
 };
 
 typedef TQuaternion<float>	FQuaternion;
-typedef TQuaternion<double>		DQuaternion;
+typedef TQuaternion<float>		DQuaternion;

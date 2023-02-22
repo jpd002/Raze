@@ -157,7 +157,7 @@ DDukeActor* spawninit_r(DDukeActor* actj, DDukeActor* act, TArray<DDukeActor*>* 
 
 		if (actj)
 		{
-			double x = getflorzofslopeptr(act->sector(), act->spr.pos);
+			float x = getflorzofslopeptr(act->sector(), act->spr.pos);
 			if (act->spr.pos.Z > x - 12)
 				act->spr.pos.Z = x - 12;
 		}
@@ -196,7 +196,7 @@ DDukeActor* spawninit_r(DDukeActor* actj, DDukeActor* act, TArray<DDukeActor*>* 
 		{
 			if (actj)
 				act->spr.Angles.Yaw = actj->spr.Angles.Yaw;
-			double s = REPEAT_SCALE + (krand() & 7) * REPEAT_SCALE;
+			float s = REPEAT_SCALE + (krand() & 7) * REPEAT_SCALE;
 			act->spr.scale = DVector2(s, s);
 		}
 		else

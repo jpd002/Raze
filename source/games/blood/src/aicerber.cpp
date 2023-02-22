@@ -55,8 +55,8 @@ AISTATE cerberus4Burn = { kAiStateChase, 6, nCerberusBurnClient2, 60, NULL, NULL
 AISTATE cerberus139890 = { kAiStateOther, 7, -1, 120, NULL, aiMoveTurn, NULL, &cerberusChase };
 AISTATE cerberus1398AC = { kAiStateOther, 7, -1, 120, NULL, aiMoveTurn, NULL, &cerberusChase };
 
-static constexpr double Cerberus_XYOff = 350. / 16;
-static constexpr double Cerberus_ZOff = 100. / 256;
+static constexpr float Cerberus_XYOff = 350. / 16;
+static constexpr float Cerberus_ZOff = 100. / 256;
 
 void cerberusBiteSeqCallback(int, DBloodActor* actor)
 {
@@ -78,21 +78,21 @@ void cerberusBiteSeqCallback(int, DBloodActor* actor)
 void cerberusBurnSeqCallback(int, DBloodActor* actor)
 {
 	DUDEINFO* pDudeInfo = getDudeInfo(actor->spr.type);
-	double height = pDudeInfo->eyeHeight * actor->spr.scale.Y * 0.25;
+	float height = pDudeInfo->eyeHeight * actor->spr.scale.Y * 0.25;
 	if (!actor->ValidateTarget(__FUNCTION__)) return;
 
 	DVector3 pos(actor->spr.pos.XY(), height);
 	//auto pos = actor->spr.pos.plusZ(height); //  what it probably should be
 
 	DVector3 Aim(actor->spr.Angles.Yaw.ToVector(), actor->dudeSlope);
-	double nClosest = 0x7fffffff;
+	float nClosest = 0x7fffffff;
 	BloodStatIterator it(kStatDude);
 	while (auto actor2 = it.Next())
 	{
 		if (actor == actor2 || !(actor2->spr.flags & 8))
 			continue;
 		auto pos2 = actor2->spr.pos;
-		double nDist = (pos2 - pos).Length();
+		float nDist = (pos2 - pos).Length();
 		if (nDist == 0 || nDist > 0x280)
 			continue;
 
@@ -101,19 +101,19 @@ void cerberusBurnSeqCallback(int, DBloodActor* actor)
 		DVector3 tvec = pos;
 		tvec.XY() += actor->spr.Angles.Yaw.ToVector() * nDist;
 		tvec.Z += actor->dudeSlope * nDist;
-		double tsr = nDist * 9.23828125;
-		double top, bottom;
+		float tsr = nDist * 9.23828125;
+		float top, bottom;
 		GetActorExtents(actor2, &top, &bottom);
 		if (tvec.Z - tsr > bottom || tvec.Z + tsr < top)
 			continue;
-		double nDist2 = (tvec - pos2).Length();
+		float nDist2 = (tvec - pos2).Length();
 		if (nDist2 < nClosest)
 		{
 			DAngle nAngle = (pos2.XY() - pos.XY()).Angle();
 			DAngle nDeltaAngle = absangle(nAngle, actor->spr.Angles.Yaw);
 			if (nDeltaAngle <= DAngle45)
 			{
-				double tz1 = actor2->spr.pos.Z - actor->spr.pos.Z;
+				float tz1 = actor2->spr.pos.Z - actor->spr.pos.Z;
 				if (cansee(pos, actor->sector(), pos2, actor2->sector()))
 				{
 					nClosest = nDist2;
@@ -140,7 +140,7 @@ void cerberusBurnSeqCallback2(int, DBloodActor* actor)
 {
 	if (!actor->ValidateTarget(__FUNCTION__)) return;
 	DUDEINFO* pDudeInfo = getDudeInfo(actor->spr.type);
-	double height = pDudeInfo->eyeHeight * actor->spr.scale.Y * 0.25;
+	float height = pDudeInfo->eyeHeight * actor->spr.scale.Y * 0.25;
 
 	DVector3 pos(actor->spr.pos.XY(), height);
 	//auto pos = actor->spr.pos.plusZ(height); //  what it probably should be
@@ -148,7 +148,7 @@ void cerberusBurnSeqCallback2(int, DBloodActor* actor)
 	DVector3 Aim(actor->spr.Angles.Yaw.ToVector(), actor->dudeSlope);
 	DVector3 Aim2(Aim.XY(), 0);
 
-	double nClosest = 0x7fffffff;
+	float nClosest = 0x7fffffff;
 
 	BloodStatIterator it(kStatDude);
 	while (auto actor2 = it.Next())
@@ -157,7 +157,7 @@ void cerberusBurnSeqCallback2(int, DBloodActor* actor)
 			continue;
 
 		auto pos2 = actor2->spr.pos;
-		double nDist = (pos2 - pos).Length();
+		float nDist = (pos2 - pos).Length();
 		if (nDist == 0 || nDist > 0x280)
 			continue;
 
@@ -167,13 +167,13 @@ void cerberusBurnSeqCallback2(int, DBloodActor* actor)
 		tvec.XY() += actor->spr.Angles.Yaw.ToVector() * nDist;
 		tvec.Z += actor->dudeSlope * nDist;
 
-		double tsr = nDist * 9.23828125;
-		double top, bottom;
+		float tsr = nDist * 9.23828125;
+		float top, bottom;
 		GetActorExtents(actor2, &top, &bottom);
 		if (tvec.Z - tsr > bottom || tvec.Z + tsr < top)
 			continue;
 
-		double nDist2 = (tvec - pos2).Length();
+		float nDist2 = (tvec - pos2).Length();
 		if (nDist2 < nClosest)
 		{
 			DAngle nAngle = (pos2.XY() - pos.XY()).Angle();
@@ -181,8 +181,8 @@ void cerberusBurnSeqCallback2(int, DBloodActor* actor)
 			if (nDeltaAngle <= DAngle45)
 			{
 				DUDEINFO* pDudeInfo2 = getDudeInfo(actor2->spr.type);
-				double height1 = (pDudeInfo2->aimHeight * actor2->spr.scale.Y);
-				double tz1 = actor2->spr.pos.Z - height - actor->spr.pos.Z;
+				float height1 = (pDudeInfo2->aimHeight * actor2->spr.scale.Y);
+				float tz1 = actor2->spr.pos.Z - height - actor->spr.pos.Z;
 
 				if (cansee(pos, actor->sector(), pos2, actor2->sector()))
 				{
@@ -243,10 +243,10 @@ static void cerberusThinkTarget(DBloodActor* actor)
 			auto ppos = pPlayer->actor->spr.pos;
 			auto dvect = ppos.XY() - actor->spr.pos;
 			auto pSector = pPlayer->actor->sector();
-			double nDist = dvect.Length();
+			float nDist = dvect.Length();
 			if (nDist > pDudeInfo->SeeDist() && nDist > pDudeInfo->HearDist())
 				continue;
-			double height = (pDudeInfo->eyeHeight * actor->spr.scale.Y);
+			float height = (pDudeInfo->eyeHeight * actor->spr.scale.Y);
 			if (!cansee(ppos, pSector, actor->spr.pos.plusZ(-height), actor->sector()))
 				continue;
 			DAngle nDeltaAngle = absangle(actor->spr.Angles.Yaw, dvect.Angle());
@@ -278,7 +278,7 @@ static void cerberusThinkGoto(DBloodActor* actor)
 	DUDEINFO* pDudeInfo = getDudeInfo(actor->spr.type);
 	auto dvec = actor->xspr.TargetPos.XY() - actor->spr.pos.XY();
 	DAngle nAngle = dvec.Angle();
-	double nDist = dvec.Length();
+	float nDist = dvec.Length();
 	aiChooseDirection(actor, nAngle);
 	if (nDist < 32 && absangle(actor->spr.Angles.Yaw, nAngle) < pDudeInfo->Periphery())
 	{
@@ -321,7 +321,7 @@ static void cerberusThinkChase(DBloodActor* actor)
 
 	auto dvec = target->spr.pos.XY() - actor->spr.pos.XY();
 	DAngle nAngle = dvec.Angle();
-	double nDist = dvec.Length();
+	float nDist = dvec.Length();
 	aiChooseDirection(actor, nAngle);
 
 	if (target->xspr.health == 0) {
@@ -352,7 +352,7 @@ static void cerberusThinkChase(DBloodActor* actor)
 	if (nDist <= pDudeInfo->SeeDist())
 	{
 		DAngle nDeltaAngle = absangle(actor->spr.Angles.Yaw, nAngle);
-		double height = (pDudeInfo->eyeHeight * actor->spr.scale.Y);
+		float height = (pDudeInfo->eyeHeight * actor->spr.scale.Y);
 		if (cansee(target->spr.pos, target->sector(), actor->spr.pos.plusZ(-height), actor->sector()))
 		{
 			if (nDist < pDudeInfo->SeeDist() && nDeltaAngle <= pDudeInfo->Periphery())

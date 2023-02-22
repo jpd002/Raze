@@ -17,10 +17,10 @@ extern user_defs ud;
 struct DukeGameInfo
 {
 	// Static constant global state
-	double playerfriction;
-	double gravity;
-	double playerheight;
-	double gutsscale;
+	float playerfriction;
+	float gravity;
+	float playerheight;
+	float gutsscale;
 
 	int respawnactortime;
 	int bouncemineblastradius;
@@ -91,8 +91,8 @@ struct animate
 	sectortype* sect;
 	int target;
 	int8_t type;
-	double goal;
-	double vel;
+	float goal;
+	float vel;
 
 };
 
@@ -118,10 +118,10 @@ extern int lastlevel;
 extern sectortype* geosectorwarp[MAXGEOSECTORS];
 extern sectortype* geosectorwarp2[MAXGEOSECTORS];
 extern sectortype* geosector[MAXGEOSECTORS];
-extern double geox[MAXGEOSECTORS];
-extern double geoy[MAXGEOSECTORS];
-extern double geox2[MAXGEOSECTORS];
-extern double geoy2[MAXGEOSECTORS];
+extern float geox[MAXGEOSECTORS];
+extern float geoy[MAXGEOSECTORS];
+extern float geox2[MAXGEOSECTORS];
+extern float geoy2[MAXGEOSECTORS];
 extern int geocnt;
 
 extern TArray<DVector2> mspos;

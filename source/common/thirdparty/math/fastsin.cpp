@@ -38,14 +38,14 @@
 
 
 #ifndef M_PI
-#define M_PI 3.14159265358979323846
+#define M_PI 3.14159265358979323846f
 #endif
 
 FFastTrig fasttrig;
 
 FFastTrig::FFastTrig()
 {
-	const double pimul = M_PI * 2 / TBLPERIOD;
+	const float pimul = M_PI * 2 / TBLPERIOD;
 
 	for (int i = 0; i < 2049; i++)
 	{
@@ -53,21 +53,21 @@ FFastTrig::FFastTrig()
 	}
 }
 
-__forceinline double FFastTrig::sinq1(unsigned bangle)
+__forceinline float FFastTrig::sinq1(unsigned bangle)
 {
 	unsigned int index = bangle >> BITSHIFT;
 
 	if ((bangle &= (REMAINDER)) == 0)	// This is to avoid precision problems at 180°
 	{
-		return double(sinetable[index]);
+		return float(sinetable[index]);
 	}
 	else
 	{
-		return (double(sinetable[index]) * (REMAINDER - bangle) + double(sinetable[index + 1]) * bangle) * (1. / REMAINDER);
+		return (float(sinetable[index]) * (REMAINDER - bangle) + float(sinetable[index + 1]) * bangle) * (1.f / REMAINDER);
 	}
 }
 
-double FFastTrig::sin(unsigned bangle)
+float FFastTrig::sin(unsigned bangle)
 {
 	switch (bangle & 0xc0000000)
 	{
@@ -86,7 +86,7 @@ double FFastTrig::sin(unsigned bangle)
 }
 
 
-double FFastTrig::cos(unsigned bangle)
+float FFastTrig::cos(unsigned bangle)
 {
 	switch (bangle & 0xc0000000)
 	{

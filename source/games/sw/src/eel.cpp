@@ -453,10 +453,10 @@ int DoEelMatchPlayerZ(DSWActor* actor)
 
     // actor does a sine wave about actor->user.sz - this is the z mid point
 
-    double zdiff = ActorZOfBottom(actor->user.targetActor) - 8 - actor->user.pos.Z;
+    float zdiff = ActorZOfBottom(actor->user.targetActor) - 8 - actor->user.pos.Z;
 
     // check z diff of the player and the sprite
-    double zdist = 20 + RandomRange(64); // put a random amount
+    float zdist = 20 + RandomRange(64); // put a random amount
     if (abs(zdiff) > zdist)
     {
         if (zdiff > 0)
@@ -469,18 +469,18 @@ int DoEelMatchPlayerZ(DSWActor* actor)
     const int EEL_BOB_AMT = 4;
 
     // save off lo and hi z
-    double loz = actor->user.loz;
-    double hiz = actor->user.hiz;
+    float loz = actor->user.loz;
+    float hiz = actor->user.hiz;
 
     // adjust loz/hiz for water depth
     if (actor->user.lo_sectp && actor->user.lo_sectp->hasU() && FixedToInt(actor->user.lo_sectp->depth_fixed))
         loz -= FixedToInt(actor->user.lo_sectp->depth_fixed) - 8;
 
     // lower bound
-    double bound;
+    float bound;
     if (actor->user.lowActor && actor->user.targetActor == actor->user.highActor) // this doesn't look right...
     {
-        double dist = (actor->spr.pos.XY() - actor->user.lowActor->spr.pos.XY()).Length();
+        float dist = (actor->spr.pos.XY() - actor->user.lowActor->spr.pos.XY()).Length();
         if (dist <= 18.75)
             bound = actor->user.pos.Z;
         else
@@ -497,7 +497,7 @@ int DoEelMatchPlayerZ(DSWActor* actor)
     // upper bound
     if (actor->user.highActor && actor->user.targetActor == actor->user.highActor)
     {
-        double dist = (actor->spr.pos.XY() - actor->user.highActor->spr.pos.XY()).Length();
+        float dist = (actor->spr.pos.XY() - actor->user.highActor->spr.pos.XY()).Length();
         if (dist <= 18.75)
             bound = actor->user.pos.Z;
         else

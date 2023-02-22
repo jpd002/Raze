@@ -109,10 +109,10 @@ int wupass;									// used to play the level entry sound only once.
 sectortype* geosectorwarp[MAXGEOSECTORS];			// geometry render hack (overlay a secondary scene)
 sectortype* geosectorwarp2[MAXGEOSECTORS];
 sectortype* geosector[MAXGEOSECTORS];
-double geox[MAXGEOSECTORS];
-double geoy[MAXGEOSECTORS];
-double geox2[MAXGEOSECTORS];
-double geoy2[MAXGEOSECTORS];
+float geox[MAXGEOSECTORS];
+float geoy[MAXGEOSECTORS];
+float geox2[MAXGEOSECTORS];
+float geoy2[MAXGEOSECTORS];
 int geocnt;
 
 

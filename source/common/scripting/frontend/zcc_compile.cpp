@@ -50,7 +50,7 @@ int GetIntConst(FxExpression *ex, FCompileContext &ctx)
 	return ex ? static_cast<FxConstant*>(ex)->GetValue().GetInt() : 0;
 }
 
-double GetFloatConst(FxExpression *ex, FCompileContext &ctx)
+float GetFloatConst(FxExpression *ex, FCompileContext &ctx)
 {
 	ex = new FxFloatCast(ex);
 	ex = ex->Resolve(ctx);

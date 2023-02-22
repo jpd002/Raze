@@ -102,11 +102,11 @@ extern STATE s_CarryFlag[];
 extern STATE s_CarryFlagNoDet[];
 
 // beware of mess... :(
-static double globhiz, globloz;
+static float globhiz, globloz;
 static Collision globhihit, globlohit;
 
 short wait_active_check_offset;
-double PlaxCeilGlobZadjust, PlaxFloorGlobZadjust;
+float PlaxCeilGlobZadjust, PlaxFloorGlobZadjust;
 void SetSectorWallBits(sectortype* sect, int bit_mask, bool set_sectwall, bool set_nextwall);
 int DoActorDebris(DSWActor* actor);
 void ActorWarpUpdatePos(DSWActor*,sectortype* sect);
@@ -906,7 +906,7 @@ void SpawnUser(DSWActor* actor, short id, STATE* state)
 //
 //---------------------------------------------------------------------------
 
-DSWActor* SpawnActor(int stat, int id, STATE* state, sectortype* sect, const DVector3& pos, DAngle init_ang, double vel)
+DSWActor* SpawnActor(int stat, int id, STATE* state, sectortype* sect, const DVector3& pos, DAngle init_ang, float vel)
 {
     if (sect == nullptr)
         return nullptr;
@@ -1533,7 +1533,7 @@ void PreMapCombineFloors(void)
 
 void SpriteSetupPost(void)
 {
-    double cz,fz;
+    float cz,fz;
 
     // Post processing of some sprites after gone through the main SpriteSetup()
     // routine
@@ -1579,7 +1579,7 @@ void SpriteSetupPost(void)
 void SpriteSetup(void)
 {
     short num;
-    double cz,fz;
+    float cz,fz;
 
     MinEnemySkill = EnemyCheckSkill();
 
@@ -2093,7 +2093,7 @@ void SpriteSetup(void)
                         actor->user.z_tgt = actor->spr.pos.Z;
                         if (start_on)
                         {
-                            double amt = actor->spr.pos.Z - sectp->floorz;
+                            float amt = actor->spr.pos.Z - sectp->floorz;
 
                             // start in the on position
                             sectp->setfloorz(actor->spr.pos.Z);
@@ -2113,7 +2113,7 @@ void SpriteSetup(void)
                         actor->user.z_tgt = actor->spr.pos.Z;
                         if (start_on)
                         {
-                            double amt = actor->spr.pos.Z - sectp->ceilingz;
+                            float amt = actor->spr.pos.Z - sectp->ceilingz;
 
                             // starting in the on position
                             sectp->setceilingz(actor->spr.pos.Z);
@@ -2245,7 +2245,7 @@ void SpriteSetup(void)
                 case SECT_SPIKE:
                 {
                     short speed,vel,time,type,start_on,floor_vator;
-                    double florz,ceilz;
+                    float florz,ceilz;
                     Collision trash;
                     SpawnUser(actor, 0, nullptr);
 
@@ -4321,18 +4321,18 @@ int NewStateGroup(DSWActor* actor, STATE* StateGroup[])
 bool SpriteOverlap(DSWActor* actor_a, DSWActor* actor_b)
 {
     if (!actor_a->hasU() || !actor_b->hasU()) return false;
-	double dist = (actor_a->spr.pos.XY() - actor_b->spr.pos.XY()).Length();
+	float dist = (actor_a->spr.pos.XY() - actor_b->spr.pos.XY()).Length();
     if (dist > (actor_a->user.fRadius() + actor_b->user.fRadius()))
     {
         return false;
     }
 
-    double spa_tos = ActorZOfTop(actor_a);
-    double spa_bos = ActorZOfBottom(actor_a);
-    double spb_tos = ActorZOfTop(actor_b);
-    double spb_bos = ActorZOfBottom(actor_b);
+    float spa_tos = ActorZOfTop(actor_a);
+    float spa_bos = ActorZOfBottom(actor_a);
+    float spb_tos = ActorZOfTop(actor_b);
+    float spb_bos = ActorZOfBottom(actor_b);
 
-    double overlap_z = actor_a->user.OverlapZ + actor_b->user.OverlapZ;
+    float overlap_z = actor_a->user.OverlapZ + actor_b->user.OverlapZ;
 
     // if the top of sprite a is below the bottom of b
     if (spa_tos - overlap_z > spb_bos)
@@ -4356,12 +4356,12 @@ bool SpriteOverlap(DSWActor* actor_a, DSWActor* actor_b)
 //
 //---------------------------------------------------------------------------
 
-bool SpriteOverlapZ(DSWActor* actor_a, DSWActor* actor_b, double z_overlap)
+bool SpriteOverlapZ(DSWActor* actor_a, DSWActor* actor_b, float z_overlap)
 {
-    double spa_tos = ActorZOfTop(actor_a);
-    double spa_bos = ActorZOfBottom(actor_a);
-    double spb_tos = ActorZOfTop(actor_b);
-    double spb_bos = ActorZOfBottom(actor_b);
+    float spa_tos = ActorZOfTop(actor_a);
+    float spa_bos = ActorZOfBottom(actor_a);
+    float spb_tos = ActorZOfTop(actor_b);
+    float spb_bos = ActorZOfBottom(actor_b);
 
 
     // if the top of sprite a is below the bottom of b
@@ -4387,7 +4387,7 @@ bool SpriteOverlapZ(DSWActor* actor_a, DSWActor* actor_b, double z_overlap)
 //---------------------------------------------------------------------------
 
 void getzrangepoint(const DVector3& pos, sectortype* sect,
-               double* ceil_z, Collision* ceilhit, double* flor_z, Collision* florhit)
+               float* ceil_z, Collision* ceilhit, float* flor_z, Collision* florhit)
 {
     short cstat;
 
@@ -4413,7 +4413,7 @@ void getzrangepoint(const DVector3& pos, sectortype* sect,
         if ((cstat & (CSTAT_SPRITE_ALIGNMENT_MASK | CSTAT_SPRITE_BLOCK)) != (CSTAT_SPRITE_ALIGNMENT_FLOOR|CSTAT_SPRITE_BLOCK))
             continue;                   // Only check blocking floor sprites
 
-        double fdaz = spriteGetZOfSlopef(&itActor->spr, pos.XY(), spriteGetSlope(itActor));
+        float fdaz = spriteGetZOfSlopef(&itActor->spr, pos.XY(), spriteGetSlope(itActor));
 
         // Only check if sprite's 2-sided or your on the 1-sided side
         if (((cstat & CSTAT_SPRITE_ONE_SIDE) != 0) && ((pos.Z > fdaz) == ((cstat & CSTAT_SPRITE_YFLIP) == 0)))
@@ -4537,9 +4537,9 @@ int DoActorGlobZ(DSWActor* actor)
 //
 //---------------------------------------------------------------------------
 
-bool ActorDrop(DSWActor* actor, const DVector3& pos, sectortype* new_sector, double min_height)
+bool ActorDrop(DSWActor* actor, const DVector3& pos, sectortype* new_sector, float min_height)
 {
-    double hiz, loz;
+    float hiz, loz;
     Collision ceilhit, florhit;
 
     // look only at the center point for a floor sprite
@@ -4592,7 +4592,7 @@ bool ActorDrop(DSWActor* actor, const DVector3& pos, sectortype* new_sector, dou
 //
 //---------------------------------------------------------------------------
 
-bool DropAhead(DSWActor* actor, double min_height)
+bool DropAhead(DSWActor* actor, float min_height)
 {
     auto vect = actor->spr.pos + actor->spr.Angles.Yaw.ToVector() * 16;
 
@@ -4692,7 +4692,7 @@ int move_actor(DSWActor* actor, const DVector3& change)
     if (actor->user.coll.type == kHitNone)
     {
         // Keep track of how far sprite has moved
-        double dist = (apos.XY() - actor->spr.pos.XY()).Length();
+        float dist = (apos.XY() - actor->spr.pos.XY()).Length();
         actor->user.TargetDist -= dist;
         actor->user.Dist += dist;
         actor->user.DistCheck += dist;
@@ -4727,7 +4727,7 @@ int DoGrating(DSWActor* actor)
 {
     int dir;
     const int GRATE_FACTORI = 3;
-    const double GRATE_FACTOR = GRATE_FACTORI * maptoworld;
+    const float GRATE_FACTOR = GRATE_FACTORI * maptoworld;
 
     // reduce to 0 to 3 value
     dir = int(actor->spr.Angles.Yaw.Normalized360().Degrees()) / 90;
@@ -5103,7 +5103,7 @@ int DoGet(DSWActor* actor)
         if (pp->Flags & (PF_DEAD))
             continue;
 
-        double dist = (pp->actor->spr.pos.XY() - actor->spr.pos).Length();
+        float dist = (pp->actor->spr.pos.XY() - actor->spr.pos).Length();
         if ((unsigned)dist > (plActor->user.fRadius() + actor->user.fRadius()))
         {
             continue;
@@ -5489,7 +5489,7 @@ KeyMain:
 
             if (pp->WpnFlags & (BIT(WPN_UZI)) && (pp->Flags & PF_TWO_UZI))
                 break;
-            // flag to help with double uzi powerup - simpler but kludgy
+            // flag to help with float uzi powerup - simpler but kludgy
             pp->Flags |= (PF_PICKED_UP_AN_UZI);
             if (pp->WpnFlags & (BIT(WPN_UZI)))
             {
@@ -5963,7 +5963,7 @@ void ProcessActiveVars(DSWActor* actor)
 //
 //---------------------------------------------------------------------------
 
-void AdjustActiveRange(PLAYER* pp, DSWActor* actor, double dist)
+void AdjustActiveRange(PLAYER* pp, DSWActor* actor, float dist)
 {
     DSWActor* plActor = pp->actor;
 
@@ -6150,7 +6150,7 @@ void SpriteControl(void)
                 pp = &Player[pnum];
 
                 // Only update the ones closest
-				double dist = (pp->actor->spr.pos.XY() - actor->spr.pos.XY()).Length();
+				float dist = (pp->actor->spr.pos.XY() - actor->spr.pos.XY()).Length();
 
                 AdjustActiveRange(pp, actor, dist);
 
@@ -6306,10 +6306,10 @@ void SpriteControl(void)
 
 */
 
-Collision move_sprite(DSWActor* actor, const DVector3& change, double ceildist, double flordist, uint32_t cliptype, int numtics)
+Collision move_sprite(DSWActor* actor, const DVector3& change, float ceildist, float flordist, uint32_t cliptype, int numtics)
 {
     Collision retval{};
-    double zH;
+    float zH;
 	short tempshort;
 
     ASSERT(actor->hasU());
@@ -6527,10 +6527,10 @@ int MissileZrange(DSWActor* actor)
 //
 //---------------------------------------------------------------------------
 
-Collision move_missile(DSWActor* actor, const DVector3& change, double ceil_dist, double flor_dist, uint32_t cliptype, int numtics)
+Collision move_missile(DSWActor* actor, const DVector3& change, float ceil_dist, float flor_dist, uint32_t cliptype, int numtics)
 {
     Collision retval{};
-    double zH;
+    float zH;
 
     ASSERT(actor->hasU());
 
@@ -6655,7 +6655,7 @@ Collision move_missile(DSWActor* actor, const DVector3& change, double ceil_dist
 //
 //---------------------------------------------------------------------------
 
-Collision move_ground_missile(DSWActor* actor, const DVector2& change, double ceildist, double flordist, uint32_t cliptype, int numtics)
+Collision move_ground_missile(DSWActor* actor, const DVector2& change, float ceildist, float flordist, uint32_t cliptype, int numtics)
 {
     Collision retval{};
     int ox,oy;
@@ -6668,7 +6668,7 @@ Collision move_ground_missile(DSWActor* actor, const DVector2& change, double ce
     auto lastsect = dasect;
 
     auto opos = actor->spr.pos;
-    double daz = actor->spr.pos.Z;
+    float daz = actor->spr.pos.Z;
 
     // climbing a wall
     if (actor->user.z_tgt)

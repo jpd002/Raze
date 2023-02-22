@@ -925,7 +925,7 @@ void DoPlayer(bool bSet, int lVar1, int lLabelID, int lVar2, DDukeActor* sActor,
 
 	case PLAYER_RETURN_TO_CENTER:
 		if (bSet) ps[iPlayer].sync.actions |= SB_CENTERVIEW;
-		else SetGameVarID(lVar2, ps[iPlayer].sync.actions & SB_CENTERVIEW ? int(abs((ps[iPlayer].GetActor()->spr.Angles.Pitch * (DAngle::fromDeg(9.) / GetMaxPitch())).Degrees())) : 0, sActor, sPlayer);
+		else SetGameVarID(lVar2, ps[iPlayer].sync.actions & SB_CENTERVIEW ? int(abs((ps[iPlayer].GetActor()->spr.Angles.Pitch * (DAngle::fromDeg(9.f) / GetMaxPitch())).Degrees())) : 0, sActor, sPlayer);
 		break;
 
 	default:
@@ -1408,7 +1408,7 @@ static int ifcanshoottarget(DDukeActor *actor, int g_p, int g_x)
 {
 	if (g_x > 1024)
 	{
-		double sclip;
+		float sclip;
 		DAngle angdif;
 
 		if (badguy(actor) && actor->spr.scale.X > 0.875)
@@ -1423,7 +1423,7 @@ static int ifcanshoottarget(DDukeActor *actor, int g_p, int g_x)
 		}
 
 		DDukeActor* hit;
-		double hs = hitasprite(actor, &hit);
+		float hs = hitasprite(actor, &hit);
 		if (hs == INT_MAX)
 		{
 			return 1;
@@ -1742,8 +1742,8 @@ int ParseState::parse(void)
 		// 1.4, so instead of patching the CONs I'll surruptitiously patch the code here
 		//if (!isPlutoPak() && *insptr == 0) *insptr = 4;
 
-		double siz = ((*insptr) * REPEAT_SCALE - g_ac->spr.scale.X);
-		g_ac->spr.scale.X = (clamp(g_ac->spr.scale.X + Sgn(siz) * REPEAT_SCALE, 0., 4.));
+		float siz = ((*insptr) * REPEAT_SCALE - g_ac->spr.scale.X);
+		g_ac->spr.scale.X = (clamp(g_ac->spr.scale.X + Sgn(siz) * REPEAT_SCALE, 0.f, 4.f));
 
 		insptr++;
 
@@ -1752,7 +1752,7 @@ int ParseState::parse(void)
 		if ((g_ac->isPlayer() && scale < 0.5626) || *insptr * REPEAT_SCALE < scale || (scale * (tex->GetDisplayHeight() + 8)) < g_ac->floorz - g_ac->ceilingz)
 		{
 			siz = ((*insptr) * REPEAT_SCALE - g_ac->spr.scale.Y);
-			g_ac->spr.scale.Y = (clamp(g_ac->spr.scale.Y + Sgn(siz) * REPEAT_SCALE, 0., 4.));
+			g_ac->spr.scale.Y = (clamp(g_ac->spr.scale.Y + Sgn(siz) * REPEAT_SCALE, 0.f, 4.f));
 		}
 
 		insptr++;
@@ -2406,7 +2406,7 @@ int ParseState::parse(void)
 			l = *insptr;
 			j = 0;
 
-			double vel = g_ac->vel.X;
+			float vel = g_ac->vel.X;
 
 			// sigh.. this was yet another place where number literals were used as bit masks for every single value, making the code totally unreadable.
 			if( (l& pducking) && ps[g_p].on_ground && PlayerInput(g_p, SB_CROUCH))
@@ -2933,8 +2933,8 @@ int ParseState::parse(void)
 		int lType;
 		int lMaxDist;
 		int lVarID;
-		double lTemp;
-		double lDist;
+		float lTemp;
+		float lDist;
 
 		insptr++;
 
@@ -2976,8 +2976,8 @@ int ParseState::parse(void)
 		int lMaxDistVar;
 		int lMaxDist;
 		int lVarID;
-		double lTemp;
-		double lDist;
+		float lTemp;
+		float lDist;
 
 		insptr++;
 
@@ -3726,7 +3726,7 @@ void LoadActor(DDukeActor *actor, int p, int x)
 //
 //---------------------------------------------------------------------------
 
-bool execute(DDukeActor *actor,int p,double xx)
+bool execute(DDukeActor *actor,int p,float xx)
 {
 	if (gs.actorinfo[actor->spr.picnum].scriptaddress == 0) return false;
 

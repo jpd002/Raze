@@ -148,20 +148,20 @@ VSMatrix VREyeInfo::GetProjection(float fov, float aspectRatio, float fovRatio) 
 	}
 	else
 	{
-		double zNear = screen->GetZNear();
-		double zFar = screen->GetZFar();
+		float zNear = screen->GetZNear();
+		float zFar = screen->GetZFar();
 
 		// For stereo 3D, use asymmetric frustum shift in projection matrix
 		// Q: shouldn't shift vary with roll angle, at least for desktop display?
 		// A: No. (lab) roll is not measured on desktop display (yet)
-		double frustumShift = zNear * getShift() / vr_screendist; // meters cancel, leaving doom units
-																  // double frustumShift = 0; // Turning off shift for debugging
-		double fH = zNear * tan(DEG2RAD(fov) / 2) / fovRatio;
-		double fW = fH * aspectRatio * mScaleFactor;
-		double left = -fW - frustumShift;
-		double right = fW - frustumShift;
-		double bottom = -fH;
-		double top = fH;
+		float frustumShift = zNear * getShift() / vr_screendist; // meters cancel, leaving doom units
+																  // float frustumShift = 0; // Turning off shift for debugging
+		float fH = zNear * tan(DEG2RAD(fov) / 2) / fovRatio;
+		float fW = fH * aspectRatio * mScaleFactor;
+		float left = -fW - frustumShift;
+		float right = fW - frustumShift;
+		float bottom = -fH;
+		float top = fH;
 
 		VSMatrix fmat(1);
 		fmat.frustum((float)left, (float)right, (float)bottom, (float)top, (float)zNear, (float)zFar);
@@ -181,8 +181,8 @@ DVector3 VREyeInfo::GetViewShift(float yaw) const
 	}
 	else
 	{
-		double dx = -cos(DEG2RAD(yaw)) * vr_hunits_per_meter * getShift();
-		double dy = sin(DEG2RAD(yaw)) * vr_hunits_per_meter * getShift();
+		float dx = -cos(DEG2RAD(yaw)) * vr_hunits_per_meter * getShift();
+		float dy = sin(DEG2RAD(yaw)) * vr_hunits_per_meter * getShift();
 		return { dx, dy, 0 };
 	}
 }

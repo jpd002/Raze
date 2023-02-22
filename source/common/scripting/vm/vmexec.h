@@ -51,7 +51,7 @@ static int ExecScriptFunc(VMFrameStack *stack, VMReturn *ret, int numret)
 	VMFrame *f = stack->TopFrame();
 	VMScriptFunction *sfunc = static_cast<VMScriptFunction *>(f->Func);
 	const int *konstd = sfunc->KonstD;
-	const double *konstf = sfunc->KonstF;
+	const float *konstf = sfunc->KonstF;
 	const FString *konsts = sfunc->KonstS;
 	const FVoidObj *konsta = sfunc->KonstA;
 	const VMOP *pc = sfunc->Code;
@@ -61,8 +61,8 @@ static int ExecScriptFunc(VMFrameStack *stack, VMReturn *ret, int numret)
 	const VMRegisters reg(f);
 
 	void *ptr;
-	double fb, fc;
-	const double *fbp, *fcp;
+	float fb, fc;
+	const float *fbp, *fcp;
 	int a, b, c;
 
 //begin:
@@ -215,12 +215,12 @@ static int ExecScriptFunc(VMFrameStack *stack, VMReturn *ret, int numret)
 	OP(LDP):
 		ASSERTF(a); ASSERTA(B); ASSERTKD(C);
 		GETADDR(PB,KC,X_READ_NIL);
-		reg.f[a] = *(double *)ptr;
+		reg.f[a] = *(float *)ptr;
 		NEXTOP;
 	OP(LDP_R):
 		ASSERTF(a); ASSERTA(B); ASSERTD(C);
 		GETADDR(PB,RC,X_READ_NIL);
-		reg.f[a] = *(double *)ptr;
+		reg.f[a] = *(float *)ptr;
 		NEXTOP;
 
 	OP(LS):
@@ -267,7 +267,7 @@ static int ExecScriptFunc(VMFrameStack *stack, VMReturn *ret, int numret)
 		ASSERTF(a + 1); ASSERTA(B); ASSERTKD(C);
 		GETADDR(PB, KC, X_READ_NIL);
 		{
-			auto v = (double*)ptr;
+			auto v = (float*)ptr;
 			reg.f[a] = v[0];
 			reg.f[a + 1] = v[1];
 		}
@@ -276,7 +276,7 @@ static int ExecScriptFunc(VMFrameStack *stack, VMReturn *ret, int numret)
 		ASSERTF(a + 1); ASSERTA(B); ASSERTD(C);
 		GETADDR(PB, RC, X_READ_NIL);
 		{
-			auto v = (double*)ptr;
+			auto v = (float*)ptr;
 			reg.f[a] = v[0];
 			reg.f[a + 1] = v[1];
 		}
@@ -285,7 +285,7 @@ static int ExecScriptFunc(VMFrameStack *stack, VMReturn *ret, int numret)
 		ASSERTF(a + 2); ASSERTA(B); ASSERTKD(C);
 		GETADDR(PB, KC, X_READ_NIL);
 		{
-			auto v = (double*)ptr;
+			auto v = (float*)ptr;
 			reg.f[a] = v[0];
 			reg.f[a+1] = v[1];
 			reg.f[a+2] = v[2];
@@ -295,7 +295,7 @@ static int ExecScriptFunc(VMFrameStack *stack, VMReturn *ret, int numret)
 		ASSERTF(a + 2); ASSERTA(B); ASSERTD(C);
 		GETADDR(PB, RC, X_READ_NIL);
 		{
-			auto v = (double*)ptr;
+			auto v = (float*)ptr;
 			reg.f[a] = v[0];
 			reg.f[a+1] = v[1];
 			reg.f[a+2] = v[2];
@@ -305,7 +305,7 @@ static int ExecScriptFunc(VMFrameStack *stack, VMReturn *ret, int numret)
 		ASSERTF(a + 3); ASSERTA(B); ASSERTKD(C);
 		GETADDR(PB, KC, X_READ_NIL);
 		{
-			auto v = (double*)ptr;
+			auto v = (float*)ptr;
 			reg.f[a] = v[0];
 			reg.f[a + 1] = v[1];
 			reg.f[a + 2] = v[2];
@@ -316,7 +316,7 @@ static int ExecScriptFunc(VMFrameStack *stack, VMReturn *ret, int numret)
 		ASSERTF(a + 3); ASSERTA(B); ASSERTD(C);
 		GETADDR(PB, RC, X_READ_NIL);
 		{
-			auto v = (double*)ptr;
+			auto v = (float*)ptr;
 			reg.f[a] = v[0];
 			reg.f[a + 1] = v[1];
 			reg.f[a + 2] = v[2];
@@ -432,12 +432,12 @@ static int ExecScriptFunc(VMFrameStack *stack, VMReturn *ret, int numret)
 	OP(SDP):
 		ASSERTA(a); ASSERTF(B); ASSERTKD(C);
 		GETADDR(PA,KC,X_WRITE_NIL);
-		*(double *)ptr = reg.f[B];
+		*(float *)ptr = reg.f[B];
 		NEXTOP;
 	OP(SDP_R):
 		ASSERTA(a); ASSERTF(B); ASSERTD(C);
 		GETADDR(PA,RC,X_WRITE_NIL);
-		*(double *)ptr = reg.f[B];
+		*(float *)ptr = reg.f[B];
 		NEXTOP;
 	OP(SS):
 		ASSERTA(a); ASSERTS(B); ASSERTKD(C);
@@ -478,7 +478,7 @@ static int ExecScriptFunc(VMFrameStack *stack, VMReturn *ret, int numret)
 		ASSERTA(a); ASSERTF(B+1); ASSERTKD(C);
 		GETADDR(PA,KC,X_WRITE_NIL);
 		{
-			auto v = (double *)ptr;
+			auto v = (float *)ptr;
 			v[0] = reg.f[B];
 			v[1] = reg.f[B+1];
 		}
@@ -487,7 +487,7 @@ static int ExecScriptFunc(VMFrameStack *stack, VMReturn *ret, int numret)
 		ASSERTA(a); ASSERTF(B+1); ASSERTD(C);
 		GETADDR(PA,RC,X_WRITE_NIL);
 		{
-			auto v = (double *)ptr;
+			auto v = (float *)ptr;
 			v[0] = reg.f[B];
 			v[1] = reg.f[B+1];
 		}
@@ -496,7 +496,7 @@ static int ExecScriptFunc(VMFrameStack *stack, VMReturn *ret, int numret)
 		ASSERTA(a); ASSERTF(B+2); ASSERTKD(C);
 		GETADDR(PA,KC,X_WRITE_NIL);
 		{
-			auto v = (double *)ptr;
+			auto v = (float *)ptr;
 			v[0] = reg.f[B];
 			v[1] = reg.f[B+1];
 			v[2] = reg.f[B+2];
@@ -506,7 +506,7 @@ static int ExecScriptFunc(VMFrameStack *stack, VMReturn *ret, int numret)
 		ASSERTA(a); ASSERTF(B+2); ASSERTD(C);
 		GETADDR(PA,RC,X_WRITE_NIL);
 		{
-			auto v = (double *)ptr;
+			auto v = (float *)ptr;
 			v[0] = reg.f[B];
 			v[1] = reg.f[B+1];
 			v[2] = reg.f[B+2];
@@ -516,7 +516,7 @@ static int ExecScriptFunc(VMFrameStack *stack, VMReturn *ret, int numret)
 		ASSERTA(a); ASSERTF(B+3); ASSERTKD(C);
 		GETADDR(PA,KC,X_WRITE_NIL);
 		{
-			auto v = (double *)ptr;
+			auto v = (float *)ptr;
 			v[0] = reg.f[B];
 			v[1] = reg.f[B+1];
 			v[2] = reg.f[B+2];
@@ -527,7 +527,7 @@ static int ExecScriptFunc(VMFrameStack *stack, VMReturn *ret, int numret)
 		ASSERTA(a); ASSERTF(B+3); ASSERTD(C);
 		GETADDR(PA,RC,X_WRITE_NIL);
 		{
-			auto v = (double *)ptr;
+			auto v = (float *)ptr;
 			v[0] = reg.f[B];
 			v[1] = reg.f[B+1];
 			v[2] = reg.f[B+2];
@@ -1739,7 +1739,7 @@ static int ExecScriptFunc(VMFrameStack *stack, VMReturn *ret, int numret)
 		fbp = &reg.f[B];
 		fcp = &reg.f[C];
 		{
-			double t[3];
+			float t[3];
 			t[2] = fbp[0] * fcp[1] - fbp[1] * fcp[0];
 			t[1] = fbp[2] * fcp[0] - fbp[0] * fcp[2];
 			t[0] = fbp[1] * fcp[2] - fbp[2] * fcp[1];
@@ -2006,7 +2006,7 @@ static int ExecScriptFunc(VMFrameStack *stack, VMReturn *ret, int numret)
 	}
 }
 
-static double DoFLOP(int flop, double v)
+static float DoFLOP(int flop, float v)
 {
 	switch(flop)
 	{
@@ -2248,19 +2248,19 @@ static void SetReturn(const VMRegisters &reg, VMFrame *frame, VMReturn *ret, VM_
 		}
 		if (regtype & REGT_MULTIREG4)
 		{
-			ret->SetVector4((double*)src);
+			ret->SetVector4((float*)src);
 		}
 		else if (regtype & REGT_MULTIREG3)
 		{
-			ret->SetVector((double *)src);
+			ret->SetVector((float *)src);
 		}
 		else if (regtype & REGT_MULTIREG2)
 		{
-			ret->SetVector2((double *)src);
+			ret->SetVector2((float *)src);
 		}
 		else
 		{
-			ret->SetFloat(*(double *)src);
+			ret->SetFloat(*(float *)src);
 		}
 		break;
 

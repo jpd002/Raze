@@ -162,7 +162,7 @@ void VMScriptFunction::Alloc(int numops, int numkonstd, int numkonstf, int numko
 	assert(numlinenumbers >= 0 && numlinenumbers <= 65535);
 	void *mem = ClassDataAllocator.Alloc(numops * sizeof(VMOP) +
 						 numkonstd * sizeof(int) +
-						 numkonstf * sizeof(double) +
+						 numkonstf * sizeof(float) +
 						 numkonsts * sizeof(FString) +
 						 numkonsta * sizeof(FVoidObj) +
 						 numlinenumbers * sizeof(FStatementInfo));
@@ -191,8 +191,8 @@ void VMScriptFunction::Alloc(int numops, int numkonstd, int numkonstf, int numko
 	}
 	if (numkonstf > 0)
 	{
-		KonstF = (double *)mem;
-		mem = (void *)((double *)mem + numkonstf);
+		KonstF = (float *)mem;
+		mem = (void *)((float *)mem + numkonstf);
 	}
 	else
 	{
@@ -661,7 +661,7 @@ CVMAbortException::CVMAbortException(EVMAbortException reason, const char *morei
 	}
 	if (moreinfo != nullptr)
 	{
-		// [Player701] avoid double space
+		// [Player701] avoid float space
 		if (reason != X_OTHER)
 		{
 			AppendMessage(" ");
@@ -736,13 +736,13 @@ void ClearGlobalVMStack()
 
 ADD_STAT(VM)
 {
-	double added = 0;
+	float added = 0;
 	int addedc = 0;
-	double peak = 0;
+	float peak = 0;
 	for (auto d : VMCycles)
 	{
 		added += d.TimeMS();
-		peak = max<double>(peak, d.TimeMS());
+		peak = max<float>(peak, d.TimeMS());
 	}
 	for (auto d : VMCalls) addedc += d;
 	memmove(&VMCycles[1], &VMCycles[0], 9 * sizeof(cycle_t));

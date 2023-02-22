@@ -205,7 +205,7 @@ void checkhitdefault_d(DDukeActor* targ, DDukeActor* proj)
 				if ((targ->spr.cstat & CSTAT_SPRITE_ALIGNMENT_MASK) == 0)
 					targ->spr.Angles.Yaw = proj->spr.Angles.Yaw + DAngle180;
 
-				targ->vel.X = -proj->spr.extra * 0.25;
+				targ->vel.X = -proj->spr.extra * 0.25f;
 				auto sp = targ->sector();
 				pushmove(targ->spr.pos, &sp, 8, 4, 4, CLIPMASK0);
 				if (sp != targ->sector() && sp != nullptr)

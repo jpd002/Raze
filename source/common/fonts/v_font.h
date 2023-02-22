@@ -146,7 +146,7 @@ public:
 
 	int GetDisplacement() const { return Displacement; }
 
-	static int GetLuminosity(uint32_t* colorsused, TArray<double>& Luminosity, int* minlum = nullptr, int* maxlum = nullptr);
+	static int GetLuminosity(uint32_t* colorsused, TArray<float>& Luminosity, int* minlum = nullptr, int* maxlum = nullptr);
 	EFontType GetType() const { return Type; }
 
 	friend void V_InitCustomFonts();

@@ -2625,7 +2625,7 @@ sectdone:
 
                 if (PlayerList[nPlayer].pActor->spr.Angles.Pitch.Degrees() <= 38)
                 {
-                    PlayerList[nPlayer].pActor->spr.Angles.Pitch = DAngle::fromDeg(-37.72);
+                    PlayerList[nPlayer].pActor->spr.Angles.Pitch = DAngle::fromDeg(-37.72f);
                 }
                 else if (PlayerList[nPlayer].pActor->spr.Angles.Pitch.Sgn() >= 0)
                 {

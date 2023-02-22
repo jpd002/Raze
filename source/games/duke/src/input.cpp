@@ -555,9 +555,9 @@ static void processInputBits(player_struct *p, ControlInfo* const hidInput)
 //
 //---------------------------------------------------------------------------
 
-static FAngle motoApplyTurn(player_struct* p, ControlInfo* const hidInput, bool const kbdLeft, bool const kbdRight, double const factor)
+static FAngle motoApplyTurn(player_struct* p, ControlInfo* const hidInput, bool const kbdLeft, bool const kbdRight, float const factor)
 {
-	double turnvel = 0;
+	float turnvel = 0;
 	p->oTiltStatus = p->TiltStatus;
 
 	if (p->MotoSpeed == 0 || !p->on_ground)
@@ -581,7 +581,7 @@ static FAngle motoApplyTurn(player_struct* p, ControlInfo* const hidInput, bool 
 	{
 		if (kbdLeft || kbdRight || p->moto_drink || hidInput->mouseturnx || hidInput->dyaw)
 		{
-			double const velScale = 3. / 10;
+			float const velScale = 3. / 10;
 			auto const baseVel = (buttonMap.ButtonDown(gamefunc_Move_Backward) || hidInput->dz < 0) && p->MotoSpeed <= 0 ? -VEHICLETURN : VEHICLETURN;
 
 			if (kbdLeft || p->moto_drink < 0 || hidInput->mouseturnx < 0 || hidInput->dyaw < 0)
@@ -645,16 +645,16 @@ static FAngle motoApplyTurn(player_struct* p, ControlInfo* const hidInput, bool 
 //
 //---------------------------------------------------------------------------
 
-static FAngle boatApplyTurn(player_struct *p, ControlInfo* const hidInput, bool const kbdLeft, bool const kbdRight, double const factor)
+static FAngle boatApplyTurn(player_struct *p, ControlInfo* const hidInput, bool const kbdLeft, bool const kbdRight, float const factor)
 {
-	double turnvel = 0;
+	float turnvel = 0;
 	p->oTiltStatus = p->TiltStatus;
 
 	if (p->MotoSpeed)
 	{
 		if (kbdLeft || kbdRight || p->moto_drink || hidInput->mouseturnx || hidInput->dyaw)
 		{
-			double const velScale = !p->NotOnWater? 1. : 6. / 19.;
+			float const velScale = !p->NotOnWater? 1. : 6. / 19.;
 			auto const baseVel = +VEHICLETURN * velScale;
 
 			if (kbdLeft || p->moto_drink < 0 || hidInput->mouseturnx < 0 || hidInput->dyaw < 0)
@@ -731,7 +731,7 @@ static FAngle boatApplyTurn(player_struct *p, ControlInfo* const hidInput, bool 
 //
 //---------------------------------------------------------------------------
 
-static void processVehicleInput(player_struct *p, ControlInfo* const hidInput, InputPacket& input, double const scaleAdjust)
+static void processVehicleInput(player_struct *p, ControlInfo* const hidInput, InputPacket& input, float const scaleAdjust)
 {
 	bool const kbdLeft = buttonMap.ButtonDown(gamefunc_Turn_Left) || buttonMap.ButtonDown(gamefunc_Strafe_Left);
 	bool const kbdRight = buttonMap.ButtonDown(gamefunc_Turn_Right) || buttonMap.ButtonDown(gamefunc_Strafe_Right);
@@ -805,7 +805,7 @@ static void FinalizeInput(player_struct *p, InputPacket& input)
 //
 //---------------------------------------------------------------------------
 
-void GameInterface::GetInput(ControlInfo* const hidInput, double const scaleAdjust, InputPacket* packet)
+void GameInterface::GetInput(ControlInfo* const hidInput, float const scaleAdjust, InputPacket* packet)
 {
 	if (paused || gamestate != GS_LEVEL)
 	{

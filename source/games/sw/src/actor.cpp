@@ -304,7 +304,7 @@ void DoDebrisCurrent(DSWActor* actor)
     int nx, ny;
     auto sectp = actor->sector();
 
-	double spd = sectp->speed / 64.0;
+	float spd = sectp->speed / 64.0;
 
 	auto vect = sectp->angle.ToVector() * spd;
 
@@ -592,7 +592,7 @@ void KeepActorOnFloor(DSWActor* actor)
     }
     else
     {
-        double ceilz, florz;
+        float ceilz, florz;
         Collision ctrash, ftrash;
         FAFgetzrangepoint(actor->spr.pos, actor->sector(),&ceilz, &ctrash, &florz, &ftrash);
 
@@ -607,7 +607,7 @@ void KeepActorOnFloor(DSWActor* actor)
 //
 //---------------------------------------------------------------------------
 
-int DoActorBeginSlide(DSWActor* actor, DAngle ang, double vel)
+int DoActorBeginSlide(DSWActor* actor, DAngle ang, float vel)
 {
     actor->user.Flags |= (SPR_SLIDING);
 
@@ -706,7 +706,7 @@ int DoActorJump(DSWActor* actor)
 
     // if player gets to close the ceiling while jumping
     auto tex = TexMan.GetGameTexture(actor->spr.spritetexture());
-    double minh = actor->user.hiz + tex->GetDisplayHeight();
+    float minh = actor->user.hiz + tex->GetDisplayHeight();
     if (actor->spr.pos.Z < minh)
     {
         // put player at the ceiling
@@ -901,7 +901,7 @@ int DoJump(DSWActor* actor)
 
     // if player gets to close the ceiling while jumping
     auto tex = TexMan.GetGameTexture(actor->spr.spritetexture());
-    double minh = actor->user.hiz + tex->GetDisplayHeight();
+    float minh = actor->user.hiz + tex->GetDisplayHeight();
     if (actor->spr.pos.Z < minh)
     {
         // put player at the ceiling

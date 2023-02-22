@@ -170,7 +170,7 @@ void addweapon_r(player_struct* p, int weapon, bool wswitch)
 
 void hitradius_r(DDukeActor* actor, int  r, int  hp1, int  hp2, int  hp3, int  hp4)
 {
-	double radius = r * inttoworld;
+	float radius = r * inttoworld;
 	static const uint8_t statlist[] = { STAT_DEFAULT, STAT_ACTOR, STAT_STANDABLE, STAT_PLAYER, STAT_FALLER, STAT_ZOMBIEACTOR, STAT_MISC };
 
 	if (actor->spr.scale.X >= 0.17675 || !(actor->spr.picnum == RTILE_RPG || ((isRRRA()) && actor->spr.picnum == RTILE_RPG2)))
@@ -182,7 +182,7 @@ void hitradius_r(DDukeActor* actor, int  r, int  hp1, int  hp2, int  hp3, int  h
 			if ((dasectp->ceilingz- actor->spr.pos.Z) < radius * 16) // what value range is this supposed to be? The check that was here did not multiply correctly
 			{
 				auto wal = dasectp->walls.Data();
-				double d = (wal->pos - actor->spr.pos.XY()).Sum();
+				float d = (wal->pos - actor->spr.pos.XY()).Sum();
 				if (d < radius)
 					checkhitceiling(dasectp);
 				else
@@ -213,7 +213,7 @@ void hitradius_r(DDukeActor* actor, int  r, int  hp1, int  hp2, int  hp3, int  h
 		}
 	}
 
-	double q = zrand(32) - 24;
+	float q = zrand(32) - 24;
 
 	auto Owner = actor->GetOwner();
 	for (int x = 0; x < 7; x++)
@@ -243,7 +243,7 @@ void hitradius_r(DDukeActor* actor, int  r, int  hp1, int  hp2, int  hp3, int  h
 					continue;
 				}
 
-				double dist = (act2->getPosWithOffsetZ() - actor->spr.pos).Length();
+				float dist = (act2->getPosWithOffsetZ() - actor->spr.pos).Length();
 
 				if (dist < radius && cansee(act2->spr.pos.plusZ(-8), act2->sector(), actor->spr.pos.plusZ(-12), actor->sector()))
 				{
@@ -280,7 +280,7 @@ void hitradius_r(DDukeActor* actor, int  r, int  hp1, int  hp2, int  hp3, int  h
 					if (!actorflag(act2, SFLAG2_NORADIUSPUSH) && !bossguy(act2))
 					{
 						if (act2->vel.X < 0) act2->vel.X = 0;
-						act2->vel.X += ((actor->spr.extra / 4.));
+						act2->vel.X += ((actor->spr.extra / 4.f));
 					}
 
 					if (actorflag(act2, SFLAG_HITRADIUSCHECK))
@@ -327,7 +327,7 @@ int movesprite_ex_r(DDukeActor* actor, const DVector3& change, unsigned int clip
 
 	auto ppos = actor->spr.pos;
 	auto tex = TexMan.GetGameTexture(actor->spr.spritetexture());
-	ppos.Z -= tex->GetDisplayHeight() * actor->spr.scale.Y * 0.5;
+	ppos.Z -= tex->GetDisplayHeight() * actor->spr.scale.Y * 0.5f;
 
 	if (bg)
 	{
@@ -362,7 +362,7 @@ int movesprite_ex_r(DDukeActor* actor, const DVector3& change, unsigned int clip
 	if (dasectp)
 		if ((dasectp != actor->sector()))
 			ChangeActorSect(actor, dasectp);
-	double daz = actor->spr.pos.Z + change.Z * 0.5;
+	float daz = actor->spr.pos.Z + change.Z * 0.5f;
 	if (daz > actor->ceilingz && daz <= actor->floorz)
 		actor->spr.pos.Z = daz;
 	else if (result.type == kHitNone)
@@ -522,7 +522,7 @@ void movefallers_r(void)
 					ssp(act, CLIPMASK0);
 				}
 
-				double grav;
+				float grav;
 				if (floorspace(act->sector())) grav = 0;
 				else
 				{
@@ -561,7 +561,7 @@ void movetransports_r(void)
 	uint8_t warpdir = 0, warpspriteto;
 	int k, p, sectlotag;
 	int onfloorz;
-	double ll, ll2 = 0;
+	float ll, ll2 = 0;
 	Collision coll;
 
 	 //Transporters
@@ -812,7 +812,7 @@ void movetransports_r(void)
 								auto spawned = spawn(act2, RTILE_WATERSPLASH2);
 								if (spawned && sectlotag == 1 && act2->spr.statnum == 4)
 								{
-									spawned->vel.X = act2->vel.X * 0.5;
+									spawned->vel.X = act2->vel.X * 0.5f;
 									spawned->spr.Angles.Yaw = act2->spr.Angles.Yaw;
 									ssp(spawned, CLIPMASK0);
 								}
@@ -932,7 +932,7 @@ static void rrra_specialstats()
 			if (act->spr.extra <= -20)
 				act->spr.hitag = 0;
 		}
-		movesprite_ex(act, DVector3(0, 0, act->spr.extra / 256.), CLIPMASK0, coll);
+		movesprite_ex(act, DVector3(0, 0, act->spr.extra / 256.f), CLIPMASK0, coll);
 	}
 
 	if (ps[screenpeek].MamaEnd > 0)
@@ -1049,15 +1049,15 @@ void handle_se06_r(DDukeActor *actor)
 	{
 		actor->temp_data[4]--;
 		if (actor->temp_data[4] >= (k - (k >> 3)))
-			actor->vel.X -= (k >> 5) / 16.;
+			actor->vel.X -= (k >> 5) / 16.f;
 		if (actor->temp_data[4] > ((k >> 1) - 1) && actor->temp_data[4] < (k - (k >> 3)))
 			actor->vel.X = 0;
 		if (actor->temp_data[4] < (k >> 1))
-			actor->vel.X += (k >> 5) / 16.;
+			actor->vel.X += (k >> 5) / 16.f;
 		if (actor->temp_data[4] < ((k >> 1) - (k >> 3)))
 		{
 			actor->temp_data[4] = 0;
-			actor->vel.X = k / 16.;
+			actor->vel.X = k / 16.f;
 			if ((!isRRRA() || lastlevel) && hulkspawn)
 			{
 				hulkspawn--;
@@ -1069,7 +1069,7 @@ void handle_se06_r(DDukeActor *actor)
 				}
 				if (!hulkspawn)
 				{
-					ns = CreateActor(actor->sector(), DVector3(actor->spr.pos.XY(), actor->sector()->ceilingz + 466.5), RTILE_UFOLIGHT, -8, DVector2(0.25, 0.25), nullAngle, 0., 0., actor, 5);
+					ns = CreateActor(actor->sector(), DVector3(actor->spr.pos.XY(), actor->sector()->ceilingz + 466.5f), RTILE_UFOLIGHT, -8, DVector2(0.25f, 0.25f), nullAngle, 0., 0., actor, 5);
 					if (ns)
 					{
 						ns->spr.cstat = CSTAT_SPRITE_TRANS_FLIP | CSTAT_SPRITE_TRANSLUCENT;
@@ -1091,7 +1091,7 @@ void handle_se06_r(DDukeActor *actor)
 	}
 	else
 	{
-		actor->vel.X = k / 16.;
+		actor->vel.X = k / 16.f;
 		DukeSectIterator it(actor->sector());
 		while (auto a2 = it.Next())
 		{
@@ -1138,7 +1138,7 @@ void handle_se06_r(DDukeActor *actor)
 					act2->temp_pos.X = (act2->spr.pos - actor->spr.pos).LengthSquared();
 				int x = Sgn((act2->spr.pos - actor->spr.pos).LengthSquared() - act2->temp_pos.X);
 				if (act2->spr.extra) x = -x;
-				actor->vel.X += x / 16.;
+				actor->vel.X += x / 16.f;
 			}
 			act2->temp_data[4] = actor->temp_data[4];
 		}
@@ -1352,7 +1352,7 @@ void moveeffectors_r(void)   //STATNUM 3
 //
 //---------------------------------------------------------------------------
 
-double adjustfall(DDukeActor *actor, double c)
+float adjustfall(DDukeActor *actor, float c)
 {
 	if ((actor->spr.picnum == RTILE_BIKERB || actor->spr.picnum == RTILE_CHEERB) && c == gs.gravity)
 		c = gs.gravity * 0.25;
@@ -1370,7 +1370,7 @@ double adjustfall(DDukeActor *actor, double c)
 void move_r(DDukeActor *actor, int pnum, int xvel)
 {
 	DAngle goalang, angdif;
-	double daxvel;
+	float daxvel;
 
 	int a = actor->spr.hitag;
 
@@ -1453,7 +1453,7 @@ void move_r(DDukeActor *actor, int pnum, int xvel)
 		if (a & windang)
 		{
 			if (actor->temp_data[0] < 8)
-				actor->vel.Z -= BobVal(512 + (actor->temp_data[0] << 4) * 2.667);
+				actor->vel.Z -= BobVal(512 + (actor->temp_data[0] << 4) * 2.667f);
 		}
 	}
 	else if ((a & jumptoplayer) == jumptoplayer)
@@ -1523,15 +1523,15 @@ void move_r(DDukeActor *actor, int pnum, int xvel)
 			{
 				if (actor->vel.Z > 0)
 				{
-					double dist = isRRRA() ? 28 : 30;
-					double f = getflorzofslopeptr(actor->sector(), actor->spr.pos.X, actor->spr.pos.Y);
+					float dist = isRRRA() ? 28 : 30;
+					float f = getflorzofslopeptr(actor->sector(), actor->spr.pos.X, actor->spr.pos.Y);
 					actor->floorz = f;
 					if (actor->spr.pos.Z > f - dist)
 						actor->spr.pos.Z = f - dist;
 				}
 				else
 				{
-					double c = getceilzofslopeptr(actor->sector(), actor->spr.pos.X, actor->spr.pos.Y);
+					float c = getceilzofslopeptr(actor->sector(), actor->spr.pos.X, actor->spr.pos.Y);
 					actor->ceilingz = c;
 					if (actor->spr.pos.Z < c + 50)
 					{
@@ -1544,7 +1544,7 @@ void move_r(DDukeActor *actor, int pnum, int xvel)
 				actor->spr.pos.Z = actor->floorz;
 			if (actor->vel.Z < 0)
 			{
-				double c = getceilzofslopeptr(actor->sector(), actor->spr.pos.X, actor->spr.pos.Y);
+				float c = getceilzofslopeptr(actor->sector(), actor->spr.pos.X, actor->spr.pos.Y);
 				if (actor->spr.pos.Z < c + 66)
 				{
 					actor->spr.pos.Z = c + 66;

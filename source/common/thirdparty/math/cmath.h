@@ -39,47 +39,47 @@ struct FFastTrig
 	static const int REMAINDER = (1 << BITSHIFT) - 1;
 	float sinetable[2049];
 
-	double sinq1(unsigned);
+	float sinq1(unsigned);
 	
 public:
 	FFastTrig();
-	double sin(unsigned);
-	double cos(unsigned);
+	float sin(unsigned);
+	float cos(unsigned);
 };
 
 extern FFastTrig fasttrig;
 
 // This must use xs_Float to guarantee proper integer wraparound.
-#define DEG2BAM(f)		((unsigned)xs_CRoundToInt((f) * (0x40000000/90.)))
-#define RAD2BAM(f)		((unsigned)xs_CRoundToInt((f) * (0x80000000/3.14159265358979323846)))
+#define DEG2BAM(f)		((unsigned)xs_CRoundToInt((f) * (0x40000000/90.f)))
+#define RAD2BAM(f)		((unsigned)xs_CRoundToInt((f) * (0x80000000/3.14159265358979323846f)))
 
 
-inline double fastcosbam(unsigned int v)
+inline float fastcosbam(unsigned int v)
 {
 	return fasttrig.cos(v);
 }
 
-inline double fastsinbam(unsigned int v)
+inline float fastsinbam(unsigned int v)
 {
 	return fasttrig.sin(v);
 }
 
-inline double fastcosdeg(double v)
+inline float fastcosdeg(float v)
 {
 	return fasttrig.cos(DEG2BAM(v));
 }
 
-inline double fastsindeg(double v)
+inline float fastsindeg(float v)
 {
 	return fasttrig.sin(DEG2BAM(v));
 }
 
-inline double fastcos(double v)
+inline float fastcos(float v)
 {
 	return fasttrig.cos(RAD2BAM(v));
 }
 
-inline double fastsin(double v)
+inline float fastsin(float v)
 {
 	return fasttrig.sin(RAD2BAM(v));
 }
@@ -127,10 +127,10 @@ inline double cosdeg(double v)
 #define g_log10 log10
 #define g_pow	pow
 #else
-#define g_asin  c_asin
-#define g_acos  c_acos
-#define g_atan  c_atan
-#define g_atan2 c_atan2
+#define g_asin  asinf//c_asin
+#define g_acos  acosf//c_acos
+#define g_atan  atanf//c_atan
+#define g_atan2 atan2f//c_atan2
 #ifndef USE_FAST_MATH
 #define g_sindeg	sindeg
 #define g_cosdeg	cosdeg
@@ -144,16 +144,16 @@ inline double cosdeg(double v)
 #define g_sin	fastsin
 #define g_cos	fastcos
 #endif
-#define g_tan	c_tan
+#define g_tan	tanf//c_tan
 #define g_cot	c_cot
-#define g_sqrt  c_sqrt
-#define g_sinh  c_sinh
-#define g_cosh  c_cosh
-#define g_tanh  c_tanh
-#define g_exp	c_exp
-#define g_log	c_log
-#define g_log10 c_log10
-#define g_pow	c_pow
+#define g_sqrt  sqrtf//c_sqrt
+#define g_sinh  sinhf//c_sinh
+#define g_cosh  coshf//c_cosh
+#define g_tanh  tanhf//c_tanh
+#define g_exp	expf//c_exp
+#define g_log	logf//c_log
+#define g_log10 log10f//c_log10
+#define g_pow	powf//c_pow
 #endif
 
 

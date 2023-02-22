@@ -31,7 +31,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 BEGIN_BLD_NS
 
-void GameInterface::WarpToCoords(double x, double y, double z, DAngle ang)
+void GameInterface::WarpToCoords(float x, float y, float z, DAngle ang)
 {
 	PLAYER* pPlayer = &gPlayer[myconnectindex];
 

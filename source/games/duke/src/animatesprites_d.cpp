@@ -45,7 +45,7 @@ EXTERN_CVAR(Bool, wt_commentary)
 
 BEGIN_DUKE_NS
 
-void animatesprites_d(tspriteArray& tsprites, const DVector2& viewVec, DAngle viewang, double interpfrac)
+void animatesprites_d(tspriteArray& tsprites, const DVector2& viewVec, DAngle viewang, float interpfrac)
 {
 	int k, p;
 	int t1, t3, t4;
@@ -241,7 +241,7 @@ void animatesprites_d(tspriteArray& tsprites, const DVector2& viewVec, DAngle vi
 
 			if (ps[p].on_crane == nullptr && (h->sector()->lotag & 0x7ff) != 1)
 			{
-				double v = h->spr.pos.Z - ps[p].GetActor()->floorz + 3;
+				float v = h->spr.pos.Z - ps[p].GetActor()->floorz + 3;
 				if (v > 4 && h->spr.scale.Y > 0.5 && h->spr.extra > 0)
 					h->spr.yoffset = (int8_t)(v / h->spr.scale.Y);
 				else h->spr.yoffset = 0;

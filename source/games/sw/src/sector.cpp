@@ -488,7 +488,7 @@ void SectorSetup(void)
             SINE_WAVE_FLOOR *swf;
             uint16_t swf_ndx = 0;
             short cnt = 0, sector_cnt;
-            double Range;
+            float Range;
             int range_diff = 0;
             int wave_diff = 0;
             short peak_dist = 0;
@@ -901,7 +901,7 @@ int AnimateSwitch(DSWActor* actor, int tgt_value)
 //
 //---------------------------------------------------------------------------
 
-void SectorExp(DSWActor* actor, sectortype* sectp, double zh)
+void SectorExp(DSWActor* actor, sectortype* sectp, float zh)
 {
     actor->spr.cstat &= ~(CSTAT_SPRITE_ALIGNMENT_WALL|CSTAT_SPRITE_ALIGNMENT_FLOOR);
     auto mid = SectorMidPoint(sectp);
@@ -956,7 +956,7 @@ void DoExplodeSector(short match)
             sectp->setceilingslope(SP_TAG6(actor));
         }
 
-        for (double zh = sectp->ceilingz; zh < sectp->floorz; zh += 60)
+        for (float zh = sectp->ceilingz; zh < sectp->floorz; zh += 60)
         {
             SectorExp(actor, actor->sector(), zh + RANDOM_P2(64) - 32);
         }
@@ -1261,12 +1261,12 @@ void WeaponExplodeSectorInRange(DSWActor* wActor)
     while (auto actor = it.Next())
     {
         // test to see if explosion is close to crack sprite
-        double dist = (wActor->spr.pos - actor->spr.pos).Length();
+        float dist = (wActor->spr.pos - actor->spr.pos).Length();
 
         if (actor->clipdist == 0)
             continue;
 
-        double radius = actor->clipdist * 8;
+        float radius = actor->clipdist * 8;
 
 		if (dist > (wActor->user.fRadius()/2) + radius)
             continue;
@@ -2013,7 +2013,7 @@ void OperateTripTrigger(PLAYER* pp)
 
     case TAG_TRIGGER_ACTORS:
     {
-        double dist = sectp->hitag * maptoworld;
+        float dist = sectp->hitag * maptoworld;
 
         SWStatIterator it(STAT_ENEMY);
         while (auto actor = it.Next())
@@ -2208,7 +2208,7 @@ bool NearThings(PLAYER* pp)
 
 static int nti_cnt;
 
-void NearTagList(NEAR_TAG_INFO* ntip, PLAYER* pp, double z, double dist, int type, int count)
+void NearTagList(NEAR_TAG_INFO* ntip, PLAYER* pp, float z, float dist, int type, int count)
 {
     short save_lotag, save_hitag;
     HitInfo near;
@@ -2316,7 +2316,7 @@ void NearTagList(NEAR_TAG_INFO* ntip, PLAYER* pp, double z, double dist, int typ
 //
 //---------------------------------------------------------------------------
 
-void BuildNearTagList(NEAR_TAG_INFO* ntip, int size, PLAYER* pp, double z, double dist, int type, int count)
+void BuildNearTagList(NEAR_TAG_INFO* ntip, int size, PLAYER* pp, float z, float dist, int type, int count)
 {
     memset(ntip, -1, size);
     nti_cnt = 0;
@@ -2417,7 +2417,7 @@ void PlayerOperateEnv(PLAYER* pp)
             // if not found look at different z positions
             if (!found)
             {
-                double z[3];
+                float z[3];
                 DSWActor* plActor = pp->actor;
 
                 z[0] = plActor->spr.pos.Z - ActorSizeZ(plActor) - 10;
@@ -2443,7 +2443,7 @@ void PlayerOperateEnv(PLAYER* pp)
             }
 
             {
-                double neartaghitdist;
+                float neartaghitdist;
                 sectortype* neartagsector;
 
                 neartaghitdist = nti[0].Dist;
@@ -2565,13 +2565,13 @@ void DoSineWaveFloor(void)
 
             if ((flags & SINE_FLOOR))
             {
-                double newz = swf->floorOrigz + swf->Range * BobVal(swf->sintable_ndx);
+                float newz = swf->floorOrigz + swf->Range * BobVal(swf->sintable_ndx);
                 swf->sectp->setfloorz(newz);
             }
 
             if ((flags & SINE_CEILING))
             {
-                double newz = swf->ceilingOrigz + swf->Range * BobVal(swf->sintable_ndx);
+                float newz = swf->ceilingOrigz + swf->Range * BobVal(swf->sintable_ndx);
                 swf->sectp->setceilingz(newz);
             }
 
@@ -2654,7 +2654,7 @@ void DoAnim(int numtics)
 
     for (i = AnimCnt - 1; i >= 0; i--)
     {
-        double animval = Anim[i].getValue();
+        float animval = Anim[i].getValue();
 
         // if LESS THAN goal
         if (animval < Anim[i].goal)
@@ -2771,7 +2771,7 @@ void AnimDelete(int animtype, int animindex, DSWActor* animactor)
 //
 //---------------------------------------------------------------------------
 
-int AnimSet(int animtype, int animindex, DSWActor* animactor, double thegoal, double thevel)
+int AnimSet(int animtype, int animindex, DSWActor* animactor, float thegoal, float thevel)
 {
     int i, j;
 
@@ -2830,7 +2830,7 @@ short AnimSetCallback(short anim_ndx, ANIM_CALLBACKp call, SECTOR_OBJECT* data)
 //
 //---------------------------------------------------------------------------
 
-short AnimSetVelAdj(short anim_ndx, double vel_adj)
+short AnimSetVelAdj(short anim_ndx, float vel_adj)
 {
     ASSERT(anim_ndx < AnimCnt);
 
@@ -2914,7 +2914,7 @@ void DoSector(void)
 
 
         riding = false;
-        double min_dist = 999999;
+        float min_dist = 999999;
 
         TRAVERSE_CONNECT(pnum)
         {
@@ -2928,7 +2928,7 @@ void DoSector(void)
             }
             else
             {
-				double dist = (pp->actor->spr.pos.XY() - sop->pmid.XY()).Length();
+				float dist = (pp->actor->spr.pos.XY() - sop->pmid.XY()).Length();
                 if (dist < min_dist)
                     min_dist = dist;
             }

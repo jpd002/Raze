@@ -221,7 +221,7 @@ void FAFhitscan(const DVector3& start, sectortype* sect, const DVector3& vect, H
             }
         }
 
-        double loz, hiz;
+        float loz, hiz;
         calcSlope(hit.hitSector, hit.hitpos, &hiz, &loz);
         if (abs(hit.hitpos.Z - loz) < 4)
         {
@@ -278,7 +278,7 @@ bool FAFcansee(const DVector3& start, sectortype* sects, const DVector3& end, se
     DAngle ang = diff.Angle();
     DVector3 vect; 
     vect.XY() = ang.ToVector() * 1024;
-    double dist = diff.XY().Length();
+    float dist = diff.XY().Length();
 
     // get x,y,z, vectors
     if (dist != 0)
@@ -302,7 +302,7 @@ bool FAFcansee(const DVector3& start, sectortype* sects, const DVector3& end, se
     // make sure it hit JUST a sector before doing a check
     if (hit.hitWall == nullptr && hit.actor() == nullptr)
     {
-        double loz, hiz;
+        float loz, hiz;
         calcSlope(hit.hitSector, hit.hitpos.X, hit.hitpos.Y, &hiz, &loz);
         if (abs(hit.hitpos.Z - loz) < 4)
         {
@@ -338,7 +338,7 @@ bool FAFcansee(const DVector3& start, sectortype* sects, const DVector3& end, se
 //
 //---------------------------------------------------------------------------
 
-double GetZadjustment(sectortype* sect, short hitag)
+float GetZadjustment(sectortype* sect, short hitag)
 {
     if (sect == nullptr || !(sect->extra & SECTFX_Z_ADJUST))
         return 0;
@@ -361,9 +361,9 @@ double GetZadjustment(sectortype* sect, short hitag)
 //
 //---------------------------------------------------------------------------
 
-bool SectorZadjust(const Collision& ceilhit, double* hiz, const Collision& florhit, double* loz)
+bool SectorZadjust(const Collision& ceilhit, float* hiz, const Collision& florhit, float* loz)
 {
-    double z_amt = 0;
+    float z_amt = 0;
 
     bool SkipFAFcheck = false;
 
@@ -480,7 +480,7 @@ bool SectorZadjust(const Collision& ceilhit, double* hiz, const Collision& florh
 //
 //---------------------------------------------------------------------------
 
-void WaterAdjust(const Collision& florhit, double* loz)
+void WaterAdjust(const Collision& florhit, float* loz)
 {
     if (florhit.type == kHitSector)
     {
@@ -498,9 +498,9 @@ void WaterAdjust(const Collision& florhit, double* loz)
 //
 //---------------------------------------------------------------------------
 
-void FAFgetzrange(const DVector3& pos, sectortype* sect, double* hiz, Collision* ceilhit, double* loz, Collision* florhit, double clipdist, int32_t clipmask)
+void FAFgetzrange(const DVector3& pos, sectortype* sect, float* hiz, Collision* ceilhit, float* loz, Collision* florhit, float clipdist, int32_t clipmask)
 {
-    double foo1;
+    float foo1;
     Collision foo2;
     bool SkipFAFcheck;
     Collision trash; trash.invalidate();
@@ -562,9 +562,9 @@ void FAFgetzrange(const DVector3& pos, sectortype* sect, double* hiz, Collision*
 //
 //---------------------------------------------------------------------------
 
-void FAFgetzrangepoint(const DVector3& pos, sectortype* sect, double* hiz, Collision* ceilhit, double* loz, Collision* florhit)
+void FAFgetzrangepoint(const DVector3& pos, sectortype* sect, float* hiz, Collision* ceilhit, float* loz, Collision* florhit)
 {
-    double foo1;
+    float foo1;
     Collision foo2;
     bool SkipFAFcheck;
     Collision trash; trash.invalidate();
@@ -654,7 +654,7 @@ void SetupMirrorTiles(void)
 //
 //---------------------------------------------------------------------------
 
-void GetUpperLowerSector(int match, double x, double y, sectortype** upper, sectortype** lower)
+void GetUpperLowerSector(int match, float x, float y, sectortype** upper, sectortype** lower)
 {
     int i;
     sectortype* sectorlist[16];
@@ -728,10 +728,10 @@ void GetUpperLowerSector(int match, double x, double y, sectortype** upper, sect
 //
 //---------------------------------------------------------------------------
 
-bool FindCeilingView(int match, double* x, double * y, double z, sectortype** sect)
+bool FindCeilingView(int match, float* x, float * y, float z, sectortype** sect)
 {
-    double xoff = 0;
-    double yoff = 0;
+    float xoff = 0;
+    float yoff = 0;
 
     save.zcount = 0;
     DSWActor* actor = nullptr;
@@ -789,10 +789,10 @@ bool FindCeilingView(int match, double* x, double * y, double z, sectortype** se
 //
 //---------------------------------------------------------------------------
 
-bool FindFloorView(int match, double* x, double* y, double z, sectortype** sect)
+bool FindFloorView(int match, float* x, float* y, float z, sectortype** sect)
 {
-    double xoff = 0;
-    double yoff = 0;
+    float xoff = 0;
+    float yoff = 0;
 
     save.zcount = 0;
     DSWActor* actor = nullptr;

@@ -14,12 +14,12 @@ __forceinline constexpr int64_t DivScaleL(int64_t a, int64_t b, int shift) { ret
 #include "xs_Float.h"
 
 template<int b = 16>
-constexpr fixed_t FloatToFixed(double f)
+constexpr fixed_t FloatToFixed(float f)
 {
 	return int(f * (1 << b));
 }
 
-constexpr fixed_t FloatToFixed(double f, int b)
+constexpr fixed_t FloatToFixed(float f, int b)
 {
 	return int(f * (1 << b));
 }
@@ -31,14 +31,14 @@ inline constexpr fixed_t IntToFixed(int32_t f)
 }
 
 template<int b = 16>
-inline constexpr double FixedToFloat(fixed_t f)
+inline constexpr float FixedToFloat(fixed_t f)
 {
 	return f * (1. / (1 << b));
 }
 
-inline constexpr double FixedToFloat(fixed_t f, int b)
+inline constexpr float FixedToFloat(fixed_t f, int b)
 {
-	return f * (1. / (1 << b));
+	return f * (1.f / (1 << b));
 }
 
 template<int b = 16>
@@ -47,9 +47,9 @@ inline constexpr int32_t FixedToInt(fixed_t f)
 	return (f + (1 << (b-1))) >> b;
 }
 
-inline unsigned FloatToAngle(double f)
+inline unsigned FloatToAngle(float f)
 {
-	return xs_CRoundToInt((f)* (0x40000000 / 90.));
+	return xs_CRoundToInt((f)* (0x40000000 / 90.f));
 }
 
 #define FLOAT2FIXED(f)		FloatToFixed(f)

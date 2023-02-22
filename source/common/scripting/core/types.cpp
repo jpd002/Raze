@@ -110,16 +110,16 @@ void DumpTypeTable()
 		}
 		Printf("\n");
 	}
-	Printf("Used buckets: %d/%lu (%.2f%%) for %d entries\n", used, countof(TypeTable.TypeHash), double(used)/countof(TypeTable.TypeHash)*100, all);
+	Printf("Used buckets: %d/%lu (%.2f%%) for %d entries\n", used, countof(TypeTable.TypeHash), float(used)/countof(TypeTable.TypeHash)*100, all);
 	Printf("Min bucket size: %d\n", min);
 	Printf("Max bucket size: %d\n", max);
-	Printf("Avg bucket size: %.2f\n", double(all) / used);
+	Printf("Avg bucket size: %.2f\n", float(all) / used);
 	int j,k;
 	for (k = countof(lens)-1; k > 0; --k)
 		if (lens[k])
 			break;
 	for (j = 0; j <= k; ++j)
-		Printf("Buckets of len %d: %d (%.2f%%)\n", j, lens[j], j!=0?double(lens[j])/used*100:-1.0);
+		Printf("Buckets of len %d: %d (%.2f%%)\n", j, lens[j], j!=0?float(lens[j])/used*100:-1.0);
 }
 
 /* PType ******************************************************************/
@@ -233,7 +233,7 @@ void PType::SetValue(void *addr, int val)
 	assert(0 && "Cannot set int value for this type");
 }
 
-void PType::SetValue(void *addr, double val)
+void PType::SetValue(void *addr, float val)
 {
 	assert(0 && "Cannot set float value for this type");
 }
@@ -250,7 +250,7 @@ int PType::GetValueInt(void *addr) const
 	return 0;
 }
 
-double PType::GetValueFloat(void *addr) const
+float PType::GetValueFloat(void *addr) const
 {
 	assert(0 && "Cannot get value for this type");
 	return 0;
@@ -339,8 +339,8 @@ void PType::StaticInit()
 #endif
 
 	TypeVector2 = new PStruct(NAME_Vector2, nullptr);
-	TypeVector2->AddField(NAME_X, TypeFloat64);
-	TypeVector2->AddField(NAME_Y, TypeFloat64);
+	TypeVector2->AddField(NAME_X, TypeFloat32);
+	TypeVector2->AddField(NAME_Y, TypeFloat32);
 	TypeTable.AddType(TypeVector2, NAME_Struct);
 	TypeVector2->loadOp = OP_LV2;
 	TypeVector2->storeOp = OP_SV2;
@@ -350,9 +350,9 @@ void PType::StaticInit()
 	TypeVector2->isOrdered = true;
 
 	TypeVector3 = new PStruct(NAME_Vector3, nullptr);
-	TypeVector3->AddField(NAME_X, TypeFloat64);
-	TypeVector3->AddField(NAME_Y, TypeFloat64);
-	TypeVector3->AddField(NAME_Z, TypeFloat64);
+	TypeVector3->AddField(NAME_X, TypeFloat32);
+	TypeVector3->AddField(NAME_Y, TypeFloat32);
+	TypeVector3->AddField(NAME_Z, TypeFloat32);
 	// allow accessing xy as a vector2. This is not supposed to be serialized so it's marked transient
 	TypeVector3->Symbols.AddSymbol(Create<PField>(NAME_XY, TypeVector2, VARF_Transient, 0));
 	TypeTable.AddType(TypeVector3, NAME_Struct);
@@ -364,10 +364,10 @@ void PType::StaticInit()
 	TypeVector3->isOrdered = true;
 
 	TypeVector4 = new PStruct(NAME_Vector4, nullptr);
-	TypeVector4->AddField(NAME_X, TypeFloat64);
-	TypeVector4->AddField(NAME_Y, TypeFloat64);
-	TypeVector4->AddField(NAME_Z, TypeFloat64);
-	TypeVector4->AddField(NAME_W, TypeFloat64);
+	TypeVector4->AddField(NAME_X, TypeFloat32);
+	TypeVector4->AddField(NAME_Y, TypeFloat32);
+	TypeVector4->AddField(NAME_Z, TypeFloat32);
+	TypeVector4->AddField(NAME_W, TypeFloat32);
 	// allow accessing xyz as a vector3. This is not supposed to be serialized so it's marked transient
 	TypeVector4->Symbols.AddSymbol(Create<PField>(NAME_XYZ, TypeVector3, VARF_Transient, 0));
 	TypeVector4->Symbols.AddSymbol(Create<PField>(NAME_XY, TypeVector2, VARF_Transient, 0));
@@ -708,7 +708,7 @@ void PInt::SetValue(void *addr, int val)
 	}
 }
 
-void PInt::SetValue(void *addr, double val)
+void PInt::SetValue(void *addr, float val)
 {
 	SetValue(addr, (int)val);
 }
@@ -751,7 +751,7 @@ int PInt::GetValueInt(void *addr) const
 //
 //==========================================================================
 
-double PInt::GetValueFloat(void *addr) const
+float PInt::GetValueFloat(void *addr) const
 {
 	return GetValueInt(addr);
 }
@@ -775,7 +775,7 @@ void PBool::SetValue(void *addr, int val)
 	*(bool*)addr = !!val;
 }
 
-void PBool::SetValue(void *addr, double val)
+void PBool::SetValue(void *addr, float val)
 {
 	*(bool*)addr = val != 0.;
 }
@@ -785,7 +785,7 @@ int PBool::GetValueInt(void *addr) const
 	return *(bool *)addr;
 }
 
-double PBool::GetValueFloat(void *addr) const
+float PBool::GetValueFloat(void *addr) const
 {
 	return *(bool *)addr;
 }
@@ -821,9 +821,9 @@ PFloat::PFloat(unsigned int size)
 	{
 		if (sizeof(void*) == 4)
 		{
-			// Some ABIs for 32-bit platforms define alignment of double type as 4 bytes
+			// Some ABIs for 32-bit platforms define alignment of float type as 4 bytes
 			// Intel POSIX (System V ABI) and PowerPC Macs are examples of those
-			struct AlignmentCheck { uint8_t i; double d; };
+			struct AlignmentCheck { uint8_t i; float d; };
 			Align = static_cast<unsigned int>(offsetof(AlignmentCheck, d));
 		}
 
@@ -853,9 +853,9 @@ void PFloat::SetDoubleSymbols()
 		{ NAME_Min_Normal,		DBL_MIN },
 		{ NAME_Max,				DBL_MAX },
 		{ NAME_Epsilon,			DBL_EPSILON },
-		{ NAME_NaN,				std::numeric_limits<double>::quiet_NaN() },
-		{ NAME_Infinity,		std::numeric_limits<double>::infinity() },
-		{ NAME_Min_Denormal,	std::numeric_limits<double>::denorm_min() }
+		{ NAME_NaN,				std::numeric_limits<float>::quiet_NaN() },
+		{ NAME_Infinity,		std::numeric_limits<float>::infinity() },
+		{ NAME_Min_Denormal,	std::numeric_limits<float>::denorm_min() }
 	};
 	static const SymbolInitI symi[] =
 	{
@@ -934,7 +934,7 @@ void PFloat::WriteValue(FSerializer &ar, const char *key,const void *addr) const
 {
 	if (Size == 8)
 	{
-		ar(key, *(double*)addr);
+		ar(key, *(float*)addr);
 	}
 	else
 	{
@@ -954,12 +954,12 @@ bool PFloat::ReadValue(FSerializer &ar, const char *key, void *addr) const
 
 	ar(key, val);
 	if (val.type == NumericValue::NM_invalid) return false;	// not found or usable
-	else if (val.type == NumericValue::NM_signed) val.floatval = (double)val.signedval;
-	else if (val.type == NumericValue::NM_unsigned) val.floatval = (double)val.unsignedval;
+	else if (val.type == NumericValue::NM_signed) val.floatval = (float)val.signedval;
+	else if (val.type == NumericValue::NM_unsigned) val.floatval = (float)val.unsignedval;
 
 	if (Size == 8)
 	{
-		*(double*)addr = val.floatval;
+		*(float*)addr = val.floatval;
 	}
 	else
 	{
@@ -976,10 +976,10 @@ bool PFloat::ReadValue(FSerializer &ar, const char *key, void *addr) const
 
 void PFloat::SetValue(void *addr, int val)
 {
-	return SetValue(addr, (double)val);
+	return SetValue(addr, (float)val);
 }
 
-void PFloat::SetValue(void *addr, double val)
+void PFloat::SetValue(void *addr, float val)
 {
 	assert(((intptr_t)addr & (Align - 1)) == 0 && "unaligned address");
 	if (Size == 4)
@@ -989,7 +989,7 @@ void PFloat::SetValue(void *addr, double val)
 	else
 	{
 		assert(Size == 8);
-		*(double *)addr = val;
+		*(float *)addr = val;
 	}
 }
 
@@ -1010,7 +1010,7 @@ int PFloat::GetValueInt(void *addr) const
 //
 //==========================================================================
 
-double PFloat::GetValueFloat(void *addr) const
+float PFloat::GetValueFloat(void *addr) const
 {
 	assert(((intptr_t)addr & (Align - 1)) == 0 && "unaligned address");
 	if (Size == 4)
@@ -1020,7 +1020,7 @@ double PFloat::GetValueFloat(void *addr) const
 	else
 	{
 		assert(Size == 8);
-		return *(double *)addr;
+		return *(float *)addr;
 	}
 }
 
@@ -2391,7 +2391,7 @@ void PMap::Construct(void * addr) const {
 		new(addr) ZSMap<uint32_t, float>();
 		break;
 	case MAP_I32_F64:
-		new(addr) ZSMap<uint32_t, double>();
+		new(addr) ZSMap<uint32_t, float>();
 		break;
 	case MAP_I32_OBJ:
 		new(addr) ZSMap<uint32_t, DObject*>();
@@ -2415,7 +2415,7 @@ void PMap::Construct(void * addr) const {
 		new(addr) ZSMap<FString, float>();
 		break;
 	case MAP_STR_F64:
-		new(addr) ZSMap<FString, double>();
+		new(addr) ZSMap<FString, float>();
 		break;
 	case MAP_STR_OBJ:
 		new(addr) ZSMap<FString, DObject*>();
@@ -2457,7 +2457,7 @@ void PMap::DestroyValue(void *addr) const
 		static_cast<ZSMap<uint32_t, float>*>(addr)->~ZSMap();
 		break;
 	case MAP_I32_F64:
-		static_cast<ZSMap<uint32_t, double>*>(addr)->~ZSMap();
+		static_cast<ZSMap<uint32_t, float>*>(addr)->~ZSMap();
 		break;
 	case MAP_I32_OBJ:
 		static_cast<ZSMap<uint32_t, DObject*>*>(addr)->~ZSMap();
@@ -2481,7 +2481,7 @@ void PMap::DestroyValue(void *addr) const
 		static_cast<ZSMap<FString, float>*>(addr)->~ZSMap();
 		break;
 	case MAP_STR_F64:
-		static_cast<ZSMap<FString, double>*>(addr)->~ZSMap();
+		static_cast<ZSMap<FString, float>*>(addr)->~ZSMap();
 		break;
 	case MAP_STR_OBJ:
 		static_cast<ZSMap<FString, DObject*>*>(addr)->~ZSMap();
@@ -2506,7 +2506,7 @@ void PMap::SetDefaultValue(void *base, unsigned offset, TArray<FTypeAndOffset> *
 	if (base != nullptr)
 	{
 		Construct(((uint8_t*)base)+offset); // is this needed? string/dynarray do this initialization if base != nullptr, but their initialization doesn't need to allocate
-											// it might lead to double allocations (and memory leakage) for Map if both base and special != nullptr
+											// it might lead to float allocations (and memory leakage) for Map if both base and special != nullptr
 	}
 	if (special != nullptr)
 	{
@@ -2579,7 +2579,7 @@ void PMap::WriteValue(FSerializer &ar, const char *key, const void *addr) const
 			PMapValueWriter(ar, static_cast<const ZSMap<uint32_t, float>*>(addr), this);
 			break;
 		case MAP_I32_F64:
-			PMapValueWriter(ar, static_cast<const ZSMap<uint32_t, double>*>(addr), this);
+			PMapValueWriter(ar, static_cast<const ZSMap<uint32_t, float>*>(addr), this);
 			break;
 		case MAP_I32_OBJ:
 			PMapValueWriter(ar, static_cast<const ZSMap<uint32_t, DObject*>*>(addr), this);
@@ -2603,7 +2603,7 @@ void PMap::WriteValue(FSerializer &ar, const char *key, const void *addr) const
 			PMapValueWriter(ar, static_cast<const ZSMap<FString, float>*>(addr), this);
 			break;
 		case MAP_STR_F64:
-			PMapValueWriter(ar, static_cast<const ZSMap<FString, double>*>(addr), this);
+			PMapValueWriter(ar, static_cast<const ZSMap<FString, float>*>(addr), this);
 			break;
 		case MAP_STR_OBJ:
 			PMapValueWriter(ar, static_cast<const ZSMap<FString, DObject*>*>(addr), this);
@@ -2675,7 +2675,7 @@ bool PMap::ReadValue(FSerializer &ar, const char *key, void *addr) const
 		case MAP_I32_F32:
 			return PMapValueReader(ar, static_cast<ZSMap<uint32_t, float>*>(addr), this);
 		case MAP_I32_F64:
-			return PMapValueReader(ar, static_cast<ZSMap<uint32_t, double>*>(addr), this);
+			return PMapValueReader(ar, static_cast<ZSMap<uint32_t, float>*>(addr), this);
 		case MAP_I32_OBJ:
 			return PMapValueReader(ar, static_cast<ZSMap<uint32_t, DObject*>*>(addr), this);
 		case MAP_I32_PTR:
@@ -2691,7 +2691,7 @@ bool PMap::ReadValue(FSerializer &ar, const char *key, void *addr) const
 		case MAP_STR_F32:
 			return PMapValueReader(ar, static_cast<ZSMap<FString, float>*>(addr), this);
 		case MAP_STR_F64:
-			return PMapValueReader(ar, static_cast<ZSMap<FString, double>*>(addr), this);
+			return PMapValueReader(ar, static_cast<ZSMap<FString, float>*>(addr), this);
 		case MAP_STR_OBJ:
 			return PMapValueReader(ar, static_cast<ZSMap<FString, DObject*>*>(addr), this);
 		case MAP_STR_PTR:
@@ -2855,7 +2855,7 @@ void PMapIterator::Construct(void * addr) const {
 		new(addr) ZSMapIterator<uint32_t, float>();
 		break;
 	case PMap::MAP_I32_F64:
-		new(addr) ZSMapIterator<uint32_t, double>();
+		new(addr) ZSMapIterator<uint32_t, float>();
 		break;
 	case PMap::MAP_I32_OBJ:
 		new(addr) ZSMapIterator<uint32_t, DObject*>();
@@ -2879,7 +2879,7 @@ void PMapIterator::Construct(void * addr) const {
 		new(addr) ZSMapIterator<FString, float>();
 		break;
 	case PMap::MAP_STR_F64:
-		new(addr) ZSMapIterator<FString, double>();
+		new(addr) ZSMapIterator<FString, float>();
 		break;
 	case PMap::MAP_STR_OBJ:
 		new(addr) ZSMapIterator<FString, DObject*>();
@@ -2921,7 +2921,7 @@ void PMapIterator::DestroyValue(void *addr) const
 		static_cast<ZSMapIterator<uint32_t, float>*>(addr)->~ZSMapIterator();
 		break;
 	case PMap::MAP_I32_F64:
-		static_cast<ZSMapIterator<uint32_t, double>*>(addr)->~ZSMapIterator();
+		static_cast<ZSMapIterator<uint32_t, float>*>(addr)->~ZSMapIterator();
 		break;
 	case PMap::MAP_I32_OBJ:
 		static_cast<ZSMapIterator<uint32_t, DObject*>*>(addr)->~ZSMapIterator();
@@ -2945,7 +2945,7 @@ void PMapIterator::DestroyValue(void *addr) const
 		static_cast<ZSMapIterator<FString, float>*>(addr)->~ZSMapIterator();
 		break;
 	case PMap::MAP_STR_F64:
-		static_cast<ZSMapIterator<FString, double>*>(addr)->~ZSMapIterator();
+		static_cast<ZSMapIterator<FString, float>*>(addr)->~ZSMapIterator();
 		break;
 	case PMap::MAP_STR_OBJ:
 		static_cast<ZSMapIterator<FString, DObject*>*>(addr)->~ZSMapIterator();

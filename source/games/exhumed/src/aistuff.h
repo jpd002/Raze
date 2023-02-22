@@ -29,7 +29,7 @@ BEGIN_PS_NS
 
 void InitAnims();
 void DestroyAnim(DExhumedActor* nAnim);
-DExhumedActor* BuildAnim(DExhumedActor* actor, int val, int val2, const DVector3& pos, sectortype* pSector, double nScale, int nFlag);
+DExhumedActor* BuildAnim(DExhumedActor* actor, int val, int val2, const DVector3& pos, sectortype* pSector, float nScale, int nFlag);
 
 void FuncAnim(int, int, int, int);
 void BuildExplosion(DExhumedActor* actor);
@@ -76,7 +76,7 @@ int GrabBullet();
 void DestroyBullet(int nRun);
 int MoveBullet(int nBullet);
 void SetBulletEnemy(int nBullet, DExhumedActor* nEnemy);
-DExhumedActor* BuildBullet(DExhumedActor* pActor, int nType, double zofs, DAngle nAngle, DExhumedActor* pTarget, int val3, int horiz = 0);
+DExhumedActor* BuildBullet(DExhumedActor* pActor, int nType, float zofs, DAngle nAngle, DExhumedActor* pTarget, int val3, int horiz = 0);
 
 void IgniteSprite(DExhumedActor* nSprite);
 void FuncBullet(int, int, int, int);
@@ -92,7 +92,7 @@ void FuncFishLimb(int a, int b, int c);
 enum { kMaxGrenades = 50 };
 
 void BuildGrenade(int nPlayer);
-void ThrowGrenade(int nPlayer, double ecx, double push1);
+void ThrowGrenade(int nPlayer, float ecx, float push1);
 void FuncGrenade(int, int, int, int);
 
 // gun
@@ -136,7 +136,7 @@ void StopFiringWeapon(int nPlayer);
 void FireWeapon(int nPlayer);
 void CheckClip(int nPlayer);
 void MoveWeapons(int nPlayer);
-void DrawWeapons(double interpfrac);
+void DrawWeapons(float interpfrac);
 
 // items
 
@@ -166,7 +166,7 @@ void DoRegenerates();
 // lavadude
 
 void BuildLava(DExhumedActor* nSprite, const DVector3& pos, sectortype* pSector, DAngle nAngle, int nChannel);
-DExhumedActor* BuildLavaLimb(DExhumedActor* nSprite, int edx, double ebx);
+DExhumedActor* BuildLavaLimb(DExhumedActor* nSprite, int edx, float ebx);
 void FuncLavaLimb(int, int, int, int);
 void FuncLava(int, int, int, int);
 
@@ -197,7 +197,7 @@ struct BlockInfo
 {
     TObjPtr<DExhumedActor*> pActor;
     DVector2 pos;
-    double mindist;
+    float mindist;
 };
 extern BlockInfo sBlockInfo[];
 
@@ -213,7 +213,7 @@ DExhumedActor* UpdateEnemy(DExhumedActor** ppEnemy);
 Collision MoveCreature(DExhumedActor* nSprite);
 Collision MoveCreatureWithCaution(DExhumedActor* actor);
 DVector3 WheresMyMouth(int nPlayer, sectortype** sectnum);
-double GetActorHeight(DExhumedActor* nSprite);
+float GetActorHeight(DExhumedActor* nSprite);
 DExhumedActor* insertActor(sectortype* s, int st);
 DExhumedActor* GrabBody();
 DExhumedActor* GrabBodyGunSprite();
@@ -221,8 +221,8 @@ void FuncCreatureChunk(int a, int, int nRun);
 DExhumedActor* FindPlayer(DExhumedActor* nSprite, int nDistance, bool dontengage = false);
 
 DExhumedActor* BuildCreatureChunk(DExhumedActor* pSrc, int nPic, bool bSpecial = false);
-double PlotCourseToSprite(DExhumedActor* nSprite1, DExhumedActor* nSprite2);
-void CheckSectorFloor(sectortype* pSector, double z, DVector2& xy);
+float PlotCourseToSprite(DExhumedActor* nSprite1, DExhumedActor* nSprite2);
+void CheckSectorFloor(sectortype* pSector, float z, DVector2& xy);
 DAngle GetAngleToSprite(DExhumedActor* nSprite1, DExhumedActor* nSprite2);
 DAngle GetWallNormal(walltype* nWall);
 void MoveSector(sectortype* pSector, DAngle nAngle, DVector2& vel);
@@ -370,7 +370,7 @@ struct RunListEvent
     int nDamage, nRun;
 
     int nRadialDamage;          // Radial damage needs a bit more info.
-    double nDamageRadius;
+    float nDamageRadius;
     DExhumedActor* pRadialActor;
 
     bool isRadialEvent() const { return nMessage == 1; }
@@ -725,7 +725,7 @@ extern FreeListArray<Snake, kMaxSnakes> SnakeList;
 
 void InitSnakes();
 int GrabSnake();
-void BuildSnake(int nPlayer, double zVal);
+void BuildSnake(int nPlayer, float zVal);
 void FuncSnake(int, int, int, int);
 
 // spider

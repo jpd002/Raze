@@ -221,22 +221,22 @@ struct FRAMEINFO
 
 struct QAV
 {
-	double ticrate; // 0
+	float ticrate; // 0
 	int nFrames; // 8
 	int ticksPerFrame; // C
 	int duration; // 10
-	double x; // 14
-	double y; // 18
+	float x; // 14
+	float y; // 18
 	uint16_t res_id;
 	FRAMEINFO frames[1]; // 24
-	void Draw(int ticks, int stat, int shade, int palnum, bool to3dview, double const interpfrac, DAngle angle = nullAngle);
+	void Draw(int ticks, int stat, int shade, int palnum, bool to3dview, float const interpfrac, DAngle angle = nullAngle);
 	void Play(int, int, int, PLAYER*);
 	void Precache(int palette = 0);
 };
 
 QAV* getQAV(int res_id);
 void qavProcessTicker(QAV* const pQAV, int* duration, int* lastTick);
-void qavProcessTimer(PLAYER* const pPlayer, QAV* const pQAV, int* duration, double* interpfrac, bool const fixedduration = false, bool const ignoreWeaponTimer = false);
+void qavProcessTimer(PLAYER* const pPlayer, QAV* const pQAV, int* duration, float* interpfrac, bool const fixedduration = false, bool const ignoreWeaponTimer = false);
 
 inline bool qavIsOriginal(const int res_id)
 {

@@ -49,7 +49,7 @@ This file is a combination of code from the following sources:
 
 BEGIN_DUKE_NS
 
-double adjustfall(DDukeActor* actor, double c);
+float adjustfall(DDukeActor* actor, float c);
 
 
 //---------------------------------------------------------------------------
@@ -63,7 +63,7 @@ void TickActor(DDukeActor* self)
 {
 	if (self->spr.statnum == STAT_ACTOR || actorflag(self, SFLAG3_FORCERUNCON))
 	{
-		double xx;
+		float xx;
 		int p = findplayer(self, &xx);
 		if (!execute(self, p, xx))
 		{
@@ -112,7 +112,7 @@ void RANDOMSCRAP(DDukeActor* origin)
 	offset.Y = krandf(16) - 8;
 	offset.Z = krandf(16) - 8;
 
-	double v = isRR() ? 0.125 : 0.375;
+	float v = isRR() ? 0.125 : 0.375;
 
 	auto a = randomAngle();
 	auto vel = krandf(4) + 4;
@@ -306,7 +306,7 @@ void lotsofstuff(DDukeActor* actor, int n, int spawntype)
 	for (int i = n; i > 0; i--)
 	{
 		DAngle r1 = randomAngle();
-		double r2 = zrand(47);
+		float r2 = zrand(47);
 		auto j = CreateActor(actor->sector(), actor->spr.pos.plusZ(-r2), spawntype, -32, DVector2(0.125, 0.125), r1, 0., 0., actor, 5);
 		if (j) j->spr.cstat = randomFlip();
 	}
@@ -433,7 +433,7 @@ void movedummyplayers(void)
 
 void moveplayers(void)
 {
-	double other;
+	float other;
 
 	DukeStatIterator iti(STAT_PLAYER);
 	while (auto act = iti.Next())
@@ -658,14 +658,14 @@ void detonate(DDukeActor *actor, int explosion)
 
 void gutsdir(DDukeActor* actor, int gtype, int n, int p)
 {
-	double scale;
+	float scale;
 
 	if (badguy(actor) && actor->spr.scale.X < 0.25)
 		scale = 0.125;
 	else scale = 0.5;
 
-	double gutz = actor->spr.pos.Z - 8;
-	double floorz = getflorzofslopeptr(actor->sector(), actor->spr.pos);
+	float gutz = actor->spr.pos.Z - 8;
+	float floorz = getflorzofslopeptr(actor->sector(), actor->spr.pos);
 
 	if (gutz > floorz - 8)
 		gutz = floorz - 8;
@@ -697,7 +697,7 @@ void handle_se00(DDukeActor* actor)
 {
 	sectortype *sect = actor->sector();
 
-	double zchange = 0;
+	float zchange = 0;
 
 	auto Owner = actor->GetOwner();
 
@@ -708,7 +708,7 @@ void handle_se00(DDukeActor* actor)
 	}
 
 	DAngle ang_amount = DAngle::fromQ16(sect->extra << 2);
-	double direction = 0;
+	float direction = 0;
 
 	if (sect->lotag == 30)
 	{
@@ -754,7 +754,7 @@ void handle_se00(DDukeActor* actor)
 			}
 			else actor->tempval = 0;
 
-			double checkz = actor->temp_pos.Z;
+			float checkz = actor->temp_pos.Z;
 			if (sect->floorz > checkz) //z's are touching
 			{
 				sect->addfloorz(-2);
@@ -889,7 +889,7 @@ void handle_se14(DDukeActor* actor, bool checkstat, int RPG, int JIBS6)
 	}
 
 	auto Owner = actor->GetOwner();
-	double dist = (Owner->spr.pos.XY() - actor->spr.pos.XY()).LengthSquared();
+	float dist = (Owner->spr.pos.XY() - actor->spr.pos.XY()).LengthSquared();
 
 	if (dist < 64*64)
 	{
@@ -925,7 +925,7 @@ void handle_se14(DDukeActor* actor, bool checkstat, int RPG, int JIBS6)
 			}
 			if ((!checkstat || !statstate) && (ud.monsters_off == 0 && sc->floorpal == 0 && (sc->floorstat & CSTAT_SECTOR_SKY) && rnd(8)))
 			{
-				double dist2;
+				float dist2;
 				int p = findplayer(actor, &dist2);
 				if (dist2 < 1280)//20480)
 				{
@@ -1300,7 +1300,7 @@ void handle_se03(DDukeActor *actor)
 	int sh = actor->spr.hitag;
 
 	if (actor->temp_data[4] == 0) return;
-	double xx;
+	float xx;
 
 	findplayer(actor, &xx);
 
@@ -1411,7 +1411,7 @@ void handle_se05(DDukeActor* actor)
 	auto sc = actor->sector();
 	int j;
 
-	double x;
+	float x;
 	int p = findplayer(actor, &x);
 	if (x < 512)
 	{
@@ -1425,13 +1425,13 @@ void handle_se05(DDukeActor* actor)
 	if (Owner == nullptr) //Start search
 	{
 		actor->temp_data[4] = 0;
-		double maxdist = 0x7fffffff;
+		float maxdist = 0x7fffffff;
 		while (1) //Find the shortest dist
 		{
 			auto NewOwner = LocateTheLocator(actor->temp_data[4], nullptr);
 			if (NewOwner == nullptr) break;
 
-			double dist = (ps[p].GetActor()->spr.pos.XY() - NewOwner->spr.pos.XY()).LengthSquared();
+			float dist = (ps[p].GetActor()->spr.pos.XY() - NewOwner->spr.pos.XY()).LengthSquared();
 
 			if (maxdist > dist)
 			{
@@ -1765,7 +1765,7 @@ void handle_se13(DDukeActor* actor)
 	auto sc = actor->sector();
 	if (actor->temp_data[2])
 	{
-		double amt = ((actor->spr.yint << 5) | 1) * zmaptoworld;
+		float amt = ((actor->spr.yint << 5) | 1) * zmaptoworld;
 
 		if (actor->spr.intangle == 512)
 		{
@@ -1918,9 +1918,9 @@ void handle_se17(DDukeActor* actor)
 {
 	auto sc = actor->sector();
 	int sh = actor->spr.hitag;
-	double refheight = actor->spr.yint * zmaptoworld;
+	float refheight = actor->spr.yint * zmaptoworld;
 
-	double q = actor->temp_data[0] * refheight * 4;
+	float q = actor->temp_data[0] * refheight * 4;
 
 	sc->addceilingz(q);
 	sc->addfloorz(q);
@@ -2029,8 +2029,8 @@ void handle_se18(DDukeActor *actor, bool morecheck)
 {
 	auto sc = actor->sector();
 
-	double extra = sc->extra * zmaptoworld;
-	double goal = FixedToFloat<8>(actor->temp_data[1]);
+	float extra = sc->extra * zmaptoworld;
+	float goal = FixedToFloat<8>(actor->temp_data[1]);
 	if (actor->temp_data[0])
 	{
 		if (actor->spr.pal)
@@ -2303,7 +2303,7 @@ void handle_se20(DDukeActor* actor)
 void handle_se21(DDukeActor* actor)
 {
 	auto sc = actor->sector();
-	double lp;
+	float lp;
 
 	if (actor->temp_data[0] == 0) return;
 
@@ -2363,7 +2363,7 @@ void handle_se22(DDukeActor* actor)
 void handle_se26(DDukeActor* actor)
 {
 	auto sc = actor->sector();
-	double zvel = actor->vel.Z;
+	float zvel = actor->vel.Z;
 
 	actor->vel.X = 2;
 	DVector2 vect = 2 * actor->spr.Angles.Yaw.ToVector(); // was: (32 * b sin) >> 14
@@ -2410,7 +2410,7 @@ void handle_se27(DDukeActor* actor)
 {
 	int sh = actor->spr.hitag;
 	int p;
-	double xx;
+	float xx;
 
 	if (ud.recstat == 0) return;
 
@@ -2467,7 +2467,7 @@ void handle_se27(DDukeActor* actor)
 //
 //---------------------------------------------------------------------------
 
-void handle_se24(DDukeActor *actor, bool scroll, double mult)
+void handle_se24(DDukeActor *actor, bool scroll, float mult)
 {
 	if (actor->temp_data[4]) return;
 
@@ -2573,7 +2573,7 @@ void handle_se32(DDukeActor *actor)
 	{
 		// Choose dir
 
-		double targetval = actor->spr.yint * zmaptoworld;
+		float targetval = actor->spr.yint * zmaptoworld;
 
 		if (actor->temp_data[2] == 1) // Retract
 		{
@@ -2653,7 +2653,7 @@ void handle_se35(DDukeActor *actor, int SMALLSMOKE, int EXPLOSION2)
 		}
 
 
-	double targetval = actor->spr.yint * zmaptoworld;
+	float targetval = actor->spr.yint * zmaptoworld;
 	switch (actor->temp_data[0])
 	{
 	case 0:
@@ -2731,14 +2731,14 @@ void handle_se130(DDukeActor *actor, int countmax, int EXPLOSION2)
 	}
 	else actor->temp_data[0]++;
 
-	double x = sc->floorz - sc->ceilingz;
+	float x = sc->floorz - sc->ceilingz;
 
 	if (rnd(64))
 	{
 		auto k = spawn(actor, EXPLOSION2);
 		if (k)
 		{
-			double s = 0.03125 + (krand() & 7) * REPEAT_SCALE;
+			float s = 0.03125 + (krand() & 7) * REPEAT_SCALE;
 			k->spr.scale = DVector2(s, s);
 			k->spr.pos.Z = sc->floorz + krandf(x);
 			k->spr.Angles.Yaw += DAngle45 - randomAngle(90);
@@ -2758,7 +2758,7 @@ void handle_se29(DDukeActor* actor)
 {
 	auto sc = actor->sector();
 	actor->spr.hitag += 64;
-	double val = actor->spr.yint * BobVal(actor->spr.hitag) / 64.;
+	float val = actor->spr.yint * BobVal(actor->spr.hitag) / 64.;
 	sc->setfloorz(actor->spr.pos.Z + val);
 }
 
@@ -2796,7 +2796,7 @@ void handle_se31(DDukeActor* actor, bool choosedir)
 				}
 				else
 				{
-					double l = Sgn(actor->spr.pos.Z - sec->floorz) * actor->temp_pos.Z;
+					float l = Sgn(actor->spr.pos.Z - sec->floorz) * actor->temp_pos.Z;
 					sec->addfloorz(l);
 
 					DukeSectIterator it(actor->sector());
@@ -2825,7 +2825,7 @@ void handle_se31(DDukeActor* actor, bool choosedir)
 				}
 				else
 				{
-					double l = Sgn(actor->temp_pos.Y - sec->floorz) * actor->temp_pos.Z;
+					float l = Sgn(actor->temp_pos.Y - sec->floorz) * actor->temp_pos.Z;
 					sec->addfloorz(l);
 
 					DukeSectIterator it(actor->sector());
@@ -2856,7 +2856,7 @@ void handle_se31(DDukeActor* actor, bool choosedir)
 			}
 			else
 			{
-				double l = Sgn(actor->spr.pos.Z - sec->floorz) * actor->temp_pos.Z;
+				float l = Sgn(actor->spr.pos.Z - sec->floorz) * actor->temp_pos.Z;
 				sec->addfloorz(l);
 
 				DukeSectIterator it(actor->sector());
@@ -2884,7 +2884,7 @@ void handle_se31(DDukeActor* actor, bool choosedir)
 			}
 			else
 			{
-				double l = Sgn(actor->spr.pos.Z - actor->temp_pos.Y) * actor->temp_pos.Z;
+				float l = Sgn(actor->spr.pos.Z - actor->temp_pos.Y) * actor->temp_pos.Z;
 				sec->addfloorz(-l);
 
 				DukeSectIterator it(actor->sector());
@@ -2912,7 +2912,7 @@ void handle_se31(DDukeActor* actor, bool choosedir)
 
 void getglobalz(DDukeActor* actor)
 {
-	double zr;
+	float zr;
 	Collision hz, lz;
 
 	if( actor->spr.statnum == STAT_PLAYER || actor->spr.statnum == STAT_STANDABLE || actor->spr.statnum == STAT_ZOMBIEACTOR || actor->spr.statnum == STAT_ACTOR || actor->spr.statnum == STAT_PROJECTILE)
@@ -2968,7 +2968,7 @@ void makeitfall(DDukeActor* actor)
 {
 	if (actorflag(actor, SFLAG3_NOGRAVITY)) return;
 
-	double grav;
+	float grav;
 
 	if( floorspace(actor->sector()) )
 		grav = 0;
@@ -3034,7 +3034,7 @@ int dodge(DDukeActor* actor)
 		{
 			if (bvect.dot(delta) < 0)
 			{
-				double d = bvect.X * delta.Y - bvect.Y * delta.X;
+				float d = bvect.X * delta.Y - bvect.Y * delta.X;
 				if (abs(d) < 256 * 64)
 				{
 					actor->spr.Angles.Yaw -= DAngle90 + randomAngle(180);
@@ -3054,7 +3054,7 @@ int dodge(DDukeActor* actor)
 
 DAngle furthestangle(DDukeActor *actor, int angs)
 {
-	double d, greatestd;
+	float d, greatestd;
 	DAngle furthest_angle = DAngle360;
 	HitInfo hit{};
 
@@ -3100,8 +3100,8 @@ int furthestcanseepoint(DDukeActor *actor, DDukeActor* tosee, DVector2& pos)
 	{
 		hitscan(tosee->spr.pos.plusZ(-16), tosee->sector(), DVector3(j.ToVector() * 1024, 64 - krandf(128)), hit, CLIPMASK1);
 
-		double d = (hit.hitpos.XY() - tosee->spr.pos.XY()).Sum();
-		double da = (hit.hitpos.XY() - actor->spr.pos.XY()).Sum();
+		float d = (hit.hitpos.XY() - tosee->spr.pos.XY()).Sum();
+		float da = (hit.hitpos.XY() - actor->spr.pos.XY()).Sum();
 
 		if (d < da && hit.hitSector)
 			if (cansee(hit.hitpos, hit.hitSector, actor->spr.pos.plusZ(-16), actor->sector()))
@@ -3208,7 +3208,7 @@ void fall_common(DDukeActor *actor, int playernum, int JIBS6, int DRONE, int BLO
 	actor->spr.yoffset = 0;
 	//			  if(!gotz)
 	{
-		double grav;
+		float grav;
 
 		int sphit = fallspecial? fallspecial(actor, playernum) : 0;
 		if (floorspace(actor->sector()))
@@ -3310,7 +3310,7 @@ DDukeActor *LocateTheLocator(int n, sectortype* sect)
 
 void movefta(void)
 {
-	double xx;
+	float xx;
 	int canseeme, p;
 	sectortype* psect, * ssect;
 
@@ -3342,16 +3342,16 @@ void movefta(void)
 				{
 					if (badguy(act))
 					{
-						auto xyrand = []() -> double { return (64 - (krand() & 127)) * maptoworld; };
-						double px = ps[p].GetActor()->opos.X - xyrand();
-						double py = ps[p].GetActor()->opos.Y - xyrand();
+						auto xyrand = []() -> float { return (64 - (krand() & 127)) * maptoworld; };
+						float px = ps[p].GetActor()->opos.X - xyrand();
+						float py = ps[p].GetActor()->opos.Y - xyrand();
 						updatesector(DVector3(px, py, 0), &psect);
 						if (psect == nullptr)
 						{
 							continue;
 						}
-						double sx = act->spr.pos.X - xyrand();
-						double sy = act->spr.pos.Y - xyrand();
+						float sx = act->spr.pos.X - xyrand();
+						float sy = act->spr.pos.Y - xyrand();
 						// The second updatesector call here used px and py again and was redundant as coded.
 
 						// SFLAG_MOVEFTA_CHECKSEE is set for all actors in Duke.
@@ -3359,8 +3359,8 @@ void movefta(void)
 							(actorflag(act, SFLAG_MOVEFTA_CHECKSEEWITHPAL8) && act->spr.pal == 8) ||
 							(act->spr.Angles.Yaw.Cos() * (px - sx) + act->spr.Angles.Yaw.Sin() * (py - sy) >= 0))
 						{
-							double r1 = zrand(32);
-							double r2 = zrand(52);
+							float r1 = zrand(32);
+							float r2 = zrand(52);
 							canseeme = cansee({ sx, sy, act->spr.pos.Z - r2 }, act->sector(), { px, py, ps[p].GetActor()->getPrevOffsetZ() - r1 }, ps[p].cursector);
 						}
 					}

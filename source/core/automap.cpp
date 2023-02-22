@@ -57,11 +57,11 @@ CVAR(Bool, am_textfont, false, CVAR_ARCHIVE)
 CVAR(Bool, am_showlabel, false, CVAR_ARCHIVE)
 CVAR(Bool, am_nameontop, false, CVAR_ARCHIVE)
 
-static DVector2 min_bounds = { INT_MAX, 0 };;
+static DVector2 min_bounds = { (float)INT_MAX, 0 };;
 static DVector2 max_bounds = { 0, 0 };
-static DVector2 follow = { INT_MAX, INT_MAX };
+static DVector2 follow = { (float)INT_MAX, (float)INT_MAX };
 static DAngle follow_a = DAngle::fromDeg(INT_MAX);
-static double gZoom = 0.75;
+static float gZoom = 0.75;
 static float am_zoomdir;
 int automapMode;
 bool automapping;
@@ -107,7 +107,7 @@ CCMD(togglefollow)
 	auto msg = quoteMgr.GetQuote(am_followplayer ? 84 : 83);
 	if (!msg || !*msg) msg = am_followplayer ? GStrings("FOLLOW MODE ON") : GStrings("FOLLOW MODE Off");
 	Printf(PRINT_NOTIFY, "%s\n", msg);
-	if (am_followplayer) follow.X = INT_MAX;
+	if (am_followplayer) follow.X = (float)INT_MAX;
 }
 
 CCMD(togglerotate)
@@ -164,8 +164,8 @@ bool AM_Responder(event_t* ev, bool last)
 
 static void CalcMapBounds()
 {
-	min_bounds = { INT_MAX, INT_MAX };
-	max_bounds = { INT_MIN, INT_MIN };
+	min_bounds = { (float)INT_MAX, (float)INT_MAX };
+	max_bounds = { (float)INT_MIN, (float)INT_MIN };
 
 	for(auto& wal : wall)
 	{
@@ -185,9 +185,9 @@ static void CalcMapBounds()
 
 static void AutomapControl(const DVector2& cangvect)
 {
-	static double nonsharedtimer;
-	double ms = (double)screen->FrameTime;
-	double interval;
+	static float nonsharedtimer;
+	float ms = (float)screen->FrameTime;
+	float interval;
 
 	if (nonsharedtimer > 0 || ms < nonsharedtimer)
 	{
@@ -214,13 +214,13 @@ static void AutomapControl(const DVector2& cangvect)
 		}
 		am_zoomdir = 0;
 
-		double j = interval * (35. / 65536.) / gZoom;
-		gZoom += (buttonMap.ButtonDown(gamefunc_Enlarge_Screen) - buttonMap.ButtonDown(gamefunc_Shrink_Screen)) * j * max(gZoom, 0.25);
-		gZoom = clamp(gZoom, 0.05, 2.);
+		float j = interval * (35.f / 65536.f) / gZoom;
+		gZoom += (buttonMap.ButtonDown(gamefunc_Enlarge_Screen) - buttonMap.ButtonDown(gamefunc_Shrink_Screen)) * j * max(gZoom, 0.25f);
+		gZoom = clamp(gZoom, 0.05f, 2.f);
 
 		if (!am_followplayer)
 		{
-			const double zoomspeed = j * 512.;
+			const float zoomspeed = j * 512.f;
 			const auto panhorz = buttonMap.ButtonDown(gamefunc_AM_PanRight) - buttonMap.ButtonDown(gamefunc_AM_PanLeft);
 			const auto panvert = buttonMap.ButtonDown(gamefunc_AM_PanUp) - buttonMap.ButtonDown(gamefunc_AM_PanDown);
 
@@ -394,8 +394,8 @@ static void drawredlines(const DVector2& cpos, const DVector2& cangvect, const D
 	{
 		if (!gFullMap && !show2dsector[i]) continue;
 
-		double z1 = sector[i].ceilingz;
-		double z2 = sector[i].floorz;
+		float z1 = sector[i].ceilingz;
+		float z2 = sector[i].floorz;
 
 		for (auto& wal : sector[i].walls)
 		{
@@ -449,7 +449,7 @@ static void drawwhitelines(const DVector2& cpos, const DVector2& cangvect, const
 //
 //---------------------------------------------------------------------------
 
-static void DrawPlayerArrow(const DVector2& cpos, const DAngle cang, const double czoom, const DAngle pl_angle)
+static void DrawPlayerArrow(const DVector2& cpos, const DAngle cang, const float czoom, const DAngle pl_angle)
 {
 #if 0
 	static constexpr int arrow[] =
@@ -459,11 +459,11 @@ static void DrawPlayerArrow(const DVector2& cpos, const DAngle cang, const doubl
 		0, 65536, 32768, 32878,
 	};
 
-	double xvect = -cang.Sin() * czoom;
-	double yvect = -cang.Cos() * czoom;
+	float xvect = -cang.Sin() * czoom;
+	float yvect = -cang.Cos() * czoom;
 
-	double pxvect = -pl_angle.Sin();
-	double pyvect = -pl_angle.Cos();
+	float pxvect = -pl_angle.Sin();
+	float pyvect = -pl_angle.Cos();
 
 	int width = screen->GetWidth();
 	int height = screen->GetHeight();
@@ -472,18 +472,18 @@ static void DrawPlayerArrow(const DVector2& cpos, const DAngle cang, const doubl
 	{
 		// FIXME: This has been broken since before the floatification refactor.
 		// Needs repair and changing out to backended vector function.
-		double px1 = (arrow[i] * pxvect) - (arrow[i+1] * pyvect);
-		double py1 = (arrow[i+1] * pxvect) + (arrow[i] * pyvect) + (height * 0.5);
-		double px2 = (arrow[i+2] * pxvect) - (arrow[i+3] * pyvect);
-		double py2 = (arrow[i+3] * pxvect) + (arrow[i+2] * pyvect) + (height * 0.5);
+		float px1 = (arrow[i] * pxvect) - (arrow[i+1] * pyvect);
+		float py1 = (arrow[i+1] * pxvect) + (arrow[i] * pyvect) + (height * 0.5);
+		float px2 = (arrow[i+2] * pxvect) - (arrow[i+3] * pyvect);
+		float py2 = (arrow[i+3] * pxvect) + (arrow[i+2] * pyvect) + (height * 0.5);
 
 		auto oxy1 = DVector2(px1, py1) - cpos;
 		auto oxy2 = DVector2(px2, py2) - cpos;
 
-		double sx1 = (oxy1.X * xvect) - (oxy1.Y * yvect) + (width * 0.5);
-		double sy1 = (oxy1.Y * xvect) + (oxy1.X * yvect) + (height * 0.5);
-		double sx2 = (oxy2.X * xvect) - (oxy2.Y * yvect) + (width * 0.5);
-		double sy2 = (oxy2.Y * xvect) + (oxy2.X * yvect) + (height * 0.5);
+		float sx1 = (oxy1.X * xvect) - (oxy1.Y * yvect) + (width * 0.5);
+		float sy1 = (oxy1.Y * xvect) + (oxy1.X * yvect) + (height * 0.5);
+		float sx2 = (oxy2.X * xvect) - (oxy2.Y * yvect) + (width * 0.5);
+		float sy2 = (oxy2.Y * xvect) + (oxy2.X * yvect) + (height * 0.5);
 
 		drawlinergb(sx1, sy1, sx2, sy2, WhiteLineColor());
 	}
@@ -592,7 +592,7 @@ static void renderDrawMapView(const DVector2& cpos, const DVector2& cangvect, co
 //
 //---------------------------------------------------------------------------
 
-void DrawOverheadMap(const DVector2& plxy, const DAngle pl_angle, double const interpfrac)
+void DrawOverheadMap(const DVector2& plxy, const DAngle pl_angle, float const interpfrac)
 {
 	if (am_followplayer || follow.X == INT_MAX)
 	{
@@ -600,7 +600,7 @@ void DrawOverheadMap(const DVector2& plxy, const DAngle pl_angle, double const i
 	}
 
 	follow_a = am_rotate ? pl_angle : DAngle270;
-	const DVector2 xydim = DVector2(screen->GetWidth(), screen->GetHeight()) * 0.5;
+	const DVector2 xydim = DVector2(screen->GetWidth(), screen->GetHeight()) * 0.5f;
 	const DVector2 avect = follow_a.ToVector();
 
 	AutomapControl(avect);
@@ -624,7 +624,7 @@ void DrawOverheadMap(const DVector2& plxy, const DAngle pl_angle, double const i
 //
 //---------------------------------------------------------------------------
 
-void DrawAutomapAlignmentFacing(const spritetype& spr, const DVector2& bpos, const DVector2& cangvect, const double czoom, const DVector2& xydim, const PalEntry& col)
+void DrawAutomapAlignmentFacing(const spritetype& spr, const DVector2& bpos, const DVector2& cangvect, const float czoom, const DVector2& xydim, const PalEntry& col)
 {
 	auto v1 = OutAutomapVector(bpos, cangvect, czoom, xydim);
 	auto v2 = OutAutomapVector(spr.Angles.Yaw.ToVector() * 8., cangvect, czoom);
@@ -642,7 +642,7 @@ void DrawAutomapAlignmentFacing(const spritetype& spr, const DVector2& bpos, con
 //
 //---------------------------------------------------------------------------
 
-void DrawAutomapAlignmentWall(const spritetype& spr, const DVector2& bpos, const DVector2& cangvect, const double czoom, const DVector2& xydim, const PalEntry& col)
+void DrawAutomapAlignmentWall(const spritetype& spr, const DVector2& bpos, const DVector2& cangvect, const float czoom, const DVector2& xydim, const PalEntry& col)
 {
 	auto tex = TexMan.GetGameTexture(spr.spritetexture());
 	auto xrep = spr.scale.X;
@@ -653,7 +653,7 @@ void DrawAutomapAlignmentWall(const spritetype& spr, const DVector2& bpos, const
 
 	auto sprvec = spr.Angles.Yaw.ToVector().Rotated90CW() * xrep;
 	
-	auto b1 = bpos - sprvec * ((xspan * 0.5) + xoff);
+	auto b1 = bpos - sprvec * ((xspan * 0.5f) + xoff);
 	auto b2 = b1 + sprvec * xspan;
 
 	auto v1 = OutAutomapVector(b1, cangvect, czoom, xydim);
@@ -669,7 +669,7 @@ void DrawAutomapAlignmentWall(const spritetype& spr, const DVector2& bpos, const
 //
 //---------------------------------------------------------------------------
 
-void DrawAutomapAlignmentFloor(const spritetype& spr, const DVector2& bpos, const DVector2& cangvect, const double czoom, const DVector2& xydim, const PalEntry& col)
+void DrawAutomapAlignmentFloor(const spritetype& spr, const DVector2& bpos, const DVector2& cangvect, const float czoom, const DVector2& xydim, const PalEntry& col)
 {
 	auto tex = TexMan.GetGameTexture(spr.spritetexture());
 
@@ -692,7 +692,7 @@ void DrawAutomapAlignmentFloor(const spritetype& spr, const DVector2& bpos, cons
 	auto sprvec = spr.Angles.Yaw.ToVector();
 	auto xscale = sprvec.Rotated90CW() * xspan * xrep;
 	auto yscale = sprvec * yspan * yrep;
-	auto xybase = DVector2(((xspan * 0.5) + xoff) * xrep, ((yspan * 0.5) + yoff) * yrep);
+	auto xybase = DVector2(((xspan * 0.5f) + xoff) * xrep, ((yspan * 0.5f) + yoff) * yrep);
 
 	auto b1 = bpos + (xybase * sprvec.Y) + (xybase.Rotated90CW() * sprvec.X);
 	auto b2 = b1 - xscale;

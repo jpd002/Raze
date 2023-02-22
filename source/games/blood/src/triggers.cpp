@@ -38,18 +38,18 @@ BEGIN_BLD_NS
 //
 //---------------------------------------------------------------------------
 
-double GetWaveValue(unsigned int nPhase, int nType)
+float GetWaveValue(unsigned int nPhase, int nType)
 {
 	switch (nType)
 	{
 	case 0:
-		return 0.5 - 0.5 * BobVal((nPhase / 64.) + 512);
+		return 0.5 - 0.5 * BobVal((nPhase / 64.f) + 512);
 	case 1:
 		return FixedToFloat(nPhase);
 	case 2:
-		return 1.0 - BobVal((nPhase / 128.) + 512);
+		return 1.0 - BobVal((nPhase / 128.f) + 512);
 	case 3:
-		return BobVal(nPhase / 128.);
+		return BobVal(nPhase / 128.f);
 	}
 	return nPhase;
 }
@@ -263,7 +263,7 @@ void LifeLeechOperate(DBloodActor* actor, EVENT event)
 			{
 				if (target->spr.statnum == kStatDude && !(target->spr.flags & 32) && target->hasX())
 				{
-					double top, bottom;
+					float top, bottom;
 					GetActorExtents(actor, &top, &bottom);
 					DUDEINFO* pDudeInfo = getDudeInfo(target->spr.type);
 					auto pos = target->spr.pos;
@@ -273,7 +273,7 @@ void LifeLeechOperate(DBloodActor* actor, EVENT event)
 						pos.XY() += target->vel.XY() * nDist * (65536. / 0x1aaaaa);
 						auto angBak = actor->spr.Angles.Yaw;
 						actor->spr.Angles.Yaw = (pos.XY() - actor->spr.pos.XY()).Angle();
-						double tz = target->spr.pos.Z - (target->spr.scale.Y * pDudeInfo->aimHeight);
+						float tz = target->spr.pos.Z - (target->spr.scale.Y * pDudeInfo->aimHeight);
 						auto dvec = DVector3(actor->spr.Angles.Yaw.ToVector(), ((tz - top - 1) / nDist) * (1. / 16.));
 						int nMissileType = kMissileLifeLeechAltNormal + (actor->xspr.data3 ? 1 : 0);
 						if (auto missile = actFireMissile(actor, 0, (top - actor->spr.pos.Z) - 1, dvec, nMissileType))
@@ -826,7 +826,7 @@ void PathSound(sectortype* pSector, int nSound)
 //
 //---------------------------------------------------------------------------
 
-void TranslateSector(sectortype* pSector, double wave1, double wave2, const DVector2& pivot, const DVector2& pt1, DAngle ang1, const DVector2& pt2, DAngle ang2, bool bAllWalls)
+void TranslateSector(sectortype* pSector, float wave1, float wave2, const DVector2& pivot, const DVector2& pt1, DAngle ang1, const DVector2& pt2, DAngle ang2, bool bAllWalls)
 {
 	auto pt_w1 = interpolatedvalue(pt1, pt2, wave1);
 	auto pt_w2 = interpolatedvalue(pt1, pt2, wave2);
@@ -924,9 +924,9 @@ void TranslateSector(sectortype* pSector, double wave1, double wave2, const DVec
 		}
 		else if (pXSector->Drag)
 		{
-			double top, bottom;
+			float top, bottom;
 			GetActorExtents(actor, &top, &bottom);
-			double floorZ = getflorzofslopeptr(pSector, actor->spr.pos);
+			float floorZ = getflorzofslopeptr(pSector, actor->spr.pos);
 			if (!(actor->spr.cstat & CSTAT_SPRITE_ALIGNMENT_MASK) && floorZ <= bottom)
 			{
 				viewBackupSpriteLoc(actor);
@@ -988,8 +988,8 @@ void ZTranslateSector(sectortype* pSector, XSECTOR* pXSector, int a3, int a4)
 {
 	viewInterpolateSector(pSector);
 
-	double dfz = pXSector->onFloorZ - pXSector->offFloorZ;
-	double dcz = pXSector->onCeilZ - pXSector->offCeilZ;
+	float dfz = pXSector->onFloorZ - pXSector->offFloorZ;
+	float dcz = pXSector->onCeilZ - pXSector->offCeilZ;
 
 #ifdef NOONE_EXTENSIONS
 	// get pointer to sprites near outside walls before translation
@@ -999,7 +999,7 @@ void ZTranslateSector(sectortype* pSector, XSECTOR* pXSector, int a3, int a4)
 
 	if (dfz != 0)
 	{
-		double old_Z = pSector->floorz;
+		float old_Z = pSector->floorz;
 		pSector->setfloorz(pXSector->offFloorZ + dfz * GetWaveValue(a3, a4));
 		pSector->baseFloor = pSector->floorz;
 		pSector->velFloor += (pSector->floorz - old_Z);
@@ -1009,7 +1009,7 @@ void ZTranslateSector(sectortype* pSector, XSECTOR* pXSector, int a3, int a4)
 		{
 			if (actor->spr.statnum == kStatMarker || actor->spr.statnum == kStatPathMarker)
 				continue;
-			double top, bottom;
+			float top, bottom;
 			GetActorExtents(actor, &top, &bottom);
 			if (actor->spr.cstat & CSTAT_SPRITE_MOVE_FORWARD)
 			{
@@ -1047,7 +1047,7 @@ void ZTranslateSector(sectortype* pSector, XSECTOR* pXSector, int a3, int a4)
 
 	if (dcz != 0)
 	{
-		double old_Z = pSector->ceilingz;
+		float old_Z = pSector->ceilingz;
 		pSector->setceilingz(pXSector->offCeilZ + dcz * GetWaveValue(a3, a4));
 		pSector->baseCeil = pSector->ceilingz;
 		pSector->velCeil += pSector->ceilingz - old_Z;
@@ -1092,7 +1092,7 @@ void ZTranslateSector(sectortype* pSector, XSECTOR* pXSector, int a3, int a4)
 //
 //---------------------------------------------------------------------------
 
-DBloodActor* GetHighestSprite(sectortype* pSector, int nStatus, double* z)
+DBloodActor* GetHighestSprite(sectortype* pSector, int nStatus, float* z)
 {
 	*z = pSector->floorz;
 	DBloodActor* found = nullptr;
@@ -1102,7 +1102,7 @@ DBloodActor* GetHighestSprite(sectortype* pSector, int nStatus, double* z)
 	{
 		if (actor->spr.statnum == nStatus || nStatus == kStatFree)
 		{
-			double top, bottom;
+			float top, bottom;
 			GetActorExtents(actor, &top, &bottom);
 			if (actor->spr.pos.Z - top > *z)
 			{
@@ -1120,19 +1120,19 @@ DBloodActor* GetHighestSprite(sectortype* pSector, int nStatus, double* z)
 //
 //---------------------------------------------------------------------------
 
-DBloodActor* GetCrushedSpriteExtents(sectortype* pSector, double* pzTop, double* pzBot)
+DBloodActor* GetCrushedSpriteExtents(sectortype* pSector, float* pzTop, float* pzBot)
 {
 	assert(pzTop != NULL && pzBot != NULL);
 	assert(pSector);
 	DBloodActor* found = nullptr;
-	double foundz = pSector->ceilingz;
+	float foundz = pSector->ceilingz;
 
 	BloodSectIterator it(pSector);
 	while (auto actor = it.Next())
 	{
 		if (actor->spr.statnum == kStatDude || actor->spr.statnum == kStatThing)
 		{
-			double top, bottom;
+			float top, bottom;
 			GetActorExtents(actor, &top, &bottom);
 			if (foundz > top)
 			{
@@ -1161,17 +1161,17 @@ int VCrushBusy(sectortype* pSector, unsigned int a2, DBloodActor* initiator)
 		nWave = pXSector->busyWaveA;
 	else
 		nWave = pXSector->busyWaveB;
-	double dz1 = pXSector->onCeilZ - pXSector->offCeilZ;
-	double z1 = pXSector->offCeilZ;
+	float dz1 = pXSector->onCeilZ - pXSector->offCeilZ;
+	float z1 = pXSector->offCeilZ;
 	if (dz1 != 0)
 		z1 += dz1 * GetWaveValue(a2, nWave);
 
-	double dz2 = pXSector->onFloorZ - pXSector->offFloorZ;
-	double z2 = pXSector->offFloorZ;
+	float dz2 = pXSector->onFloorZ - pXSector->offFloorZ;
+	float z2 = pXSector->offFloorZ;
 	if (dz2 != 0)
 		z2 += dz2 * GetWaveValue(a2, nWave);
 
-	double highZ;
+	float highZ;
 	if (GetHighestSprite(pSector, 6, &highZ) && z1 >= highZ)
 		return 1;
 	viewInterpolateSector(pSector);
@@ -1208,7 +1208,7 @@ int VSpriteBusy(sectortype* pSector, unsigned int a2, DBloodActor* initiator)
 		nWave = pXSector->busyWaveA;
 	else
 		nWave = pXSector->busyWaveB;
-	double dz1 = pXSector->onFloorZ - pXSector->offFloorZ;
+	float dz1 = pXSector->onFloorZ - pXSector->offFloorZ;
 	if (dz1 != 0)
 	{
 		BloodSectIterator it(pSector);
@@ -1221,7 +1221,7 @@ int VSpriteBusy(sectortype* pSector, unsigned int a2, DBloodActor* initiator)
 			}
 		}
 	}
-	double dz2 = pXSector->onCeilZ - pXSector->offCeilZ;
+	float dz2 = pXSector->onCeilZ - pXSector->offCeilZ;
 	if (dz2 != 0)
 	{
 		BloodSectIterator it(pSector);
@@ -1262,7 +1262,7 @@ int VDoorBusy(sectortype* pSector, unsigned int a2, DBloodActor* initiator)
 	else
 		vbp = -65536 / ClipLow((120 * pXSector->busyTimeB) / 10, 1);
 
-	double top, bottom;
+	float top, bottom;
 	auto actor = GetCrushedSpriteExtents(pSector, &top, &bottom);
 	if (actor && a2 > pXSector->busy)
 	{
@@ -2093,7 +2093,7 @@ void ProcessMotion(void)
 				continue;
 			else
 				pXSector->bobTheta += MulScale(pXSector->bobSpeed, pXSector->busy, 16);
-			double zoff = BobVal(pXSector->bobTheta) * pXSector->bobZRange;
+			float zoff = BobVal(pXSector->bobTheta) * pXSector->bobZRange;
 
 			BloodSectIterator it(pSector);
 			while (auto actor = it.Next())
@@ -2106,7 +2106,7 @@ void ProcessMotion(void)
 			}
 			if (pXSector->bobFloor)
 			{
-				double floorZ = pSector->floorz;
+				float floorZ = pSector->floorz;
 				viewInterpolateSector(pSector);
 				pSector->setfloorz(pSector->baseFloor + zoff);
 
@@ -2117,7 +2117,7 @@ void ProcessMotion(void)
 						actor->spr.flags |= 4;
 					else
 					{
-						double top, bottom;
+						float top, bottom;
 						GetActorExtents(actor, &top, &bottom);
 						if (bottom >= floorZ && (actor->spr.cstat & CSTAT_SPRITE_ALIGNMENT_MASK) == 0)
 						{
@@ -2129,14 +2129,14 @@ void ProcessMotion(void)
 			}
 			if (pXSector->bobCeiling)
 			{
-				double ceilZ = pSector->ceilingz;
+				float ceilZ = pSector->ceilingz;
 				viewInterpolateSector(pSector);
 				pSector->setceilingz(pSector->baseCeil + zoff);
 
 				BloodSectIterator itr(pSector);
 				while (auto actor = itr.Next())
 				{
-					double top, bottom;
+					float top, bottom;
 					GetActorExtents(actor, &top, &bottom);
 					if (top <= ceilZ && (actor->spr.cstat & CSTAT_SPRITE_ALIGNMENT_MASK) == 0)
 					{
@@ -2471,7 +2471,7 @@ void ActivateGenerator(DBloodActor* actor)
 	switch (actor->spr.type) {
 	case kGenDripWater:
 	case kGenDripBlood: {
-		double top, bottom;
+		float top, bottom;
 		GetActorExtents(actor, &top, &bottom);
 		actSpawnThing(actor->sector(), DVector3(actor->spr.pos.XY(), bottom), (actor->spr.type == kGenDripWater) ? kThingDripWater : kThingDripBlood);
 		break;
@@ -2496,7 +2496,7 @@ void ActivateGenerator(DBloodActor* actor)
 		break;
 	case kGenBubble:
 	case kGenBubbleMulti: {
-		double top, bottom;
+		float top, bottom;
 		GetActorExtents(actor, &top, &bottom);
 		gFX.fxSpawnActor((actor->spr.type == kGenBubble) ? FX_23 : FX_26, actor->sector(), DVector3(actor->spr.pos.XY(), top));
 		break;

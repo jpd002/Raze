@@ -26,11 +26,11 @@ extern TObjPtr<DExhumedActor*> bestTarget;
 extern bool bCamera;
 
 void DrawStatusBar();
-void DrawView(double interpfrac, bool sceneonly = false);
+void DrawView(float interpfrac, bool sceneonly = false);
 void ResetView();
 
 extern int16_t dVertPan[];
-extern double nQuake[];
+extern float nQuake[];
 extern DVector3 nCamerapos;
 extern bool bTouchFloor;
 extern int nChunkTotal;

@@ -358,10 +358,10 @@ int DoHornetMatchPlayerZ(DSWActor* actor)
 
     // actor does a sine wave about actor->user.sz - this is the z mid point
 
-    double zdiff = (ActorZOfMiddle(actor->user.targetActor)) - actor->user.pos.Z;
+    float zdiff = (ActorZOfMiddle(actor->user.targetActor)) - actor->user.pos.Z;
 
     // check z diff of the player and the sprite
-    double zdist = 20 + RandomRange(200); // put a random amount
+    float zdist = 20 + RandomRange(200); // put a random amount
     if (abs(zdiff) > zdist)
     {
         if (zdiff > 0)
@@ -373,14 +373,14 @@ int DoHornetMatchPlayerZ(DSWActor* actor)
     }
 
     // save off lo and hi z
-    double loz = actor->user.loz;
-    double hiz = actor->user.hiz;
+    float loz = actor->user.loz;
+    float hiz = actor->user.hiz;
 
     // adjust loz/hiz for water depth
     if (actor->user.lo_sectp && actor->user.lo_sectp->hasU() && FixedToInt(actor->user.lo_sectp->depth_fixed))
         loz -= FixedToInt(actor->user.lo_sectp->depth_fixed) - 8;
 
-    double bound;
+    float bound;
     // lower bound
     if (actor->user.lowActor)
         bound = loz - actor->user.floor_dist;
@@ -463,7 +463,7 @@ int InitHornetCircle(DSWActor* actor)
 
 int DoHornetCircle(DSWActor* actor)
 {
-    double bound;
+    float bound;
 
     actor->spr.Angles.Yaw += mapangle(actor->user.Counter2);
 
@@ -558,7 +558,7 @@ int DoHornetDeath(DSWActor* actor)
 
 int DoCheckSwarm(DSWActor* actor)
 {
-    double dist, pdist;
+    float dist, pdist;
     PLAYER* pp;
 
     if (!MoveSkip8) return 0;     // Don't over check

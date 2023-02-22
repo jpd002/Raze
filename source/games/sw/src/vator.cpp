@@ -265,7 +265,7 @@ void InterpSectorSprites(sectortype* sect, bool state)
     }
 }
 
-void MoveSpritesWithSector(sectortype* sect, double z_amt, bool type)
+void MoveSpritesWithSector(sectortype* sect, float z_amt, bool type)
 {
     bool both = false;
     if ( sect->hasU())
@@ -325,9 +325,9 @@ void MoveSpritesWithSector(sectortype* sect, double z_amt, bool type)
     }
 }
 
-double DoVatorMove(DSWActor* actor, double *lptr)
+float DoVatorMove(DSWActor* actor, float *lptr)
 {
-    double zval = *lptr;
+    float zval = *lptr;
 
     // if LESS THAN goal
     if (zval < actor->user.z_tgt)
@@ -364,8 +364,8 @@ double DoVatorMove(DSWActor* actor, double *lptr)
 int DoVator(DSWActor* actor)
 {
     sectortype* sectp = actor->sector();
-    double zval;
-    double amt;
+    float zval;
+    float amt;
 
     // actor->user.sz        - where the sector z started
     // actor->user.z_tgt     - current target z
@@ -523,8 +523,8 @@ int DoVator(DSWActor* actor)
 int DoVatorAuto(DSWActor* actor)
 {
     sectortype* sectp = actor->sector();
-    double zval;
-    double amt;
+    float zval;
+    float amt;
 
     if (actor->spr.cstat & (CSTAT_SPRITE_YFLIP))
     {

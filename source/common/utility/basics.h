@@ -80,37 +80,43 @@ using BITFIELD = uint32_t;
 #undef M_PI
 #endif
 
-const double M_PI = 3.14159265358979323846;	// matches value in gcc v2 math.h
+const float M_PI = 3.14159265358979323846f;	// matches value in gcc v2 math.h
 
 inline float DEG2RAD(float deg)
 {
 	return deg * float(M_PI / 180.0);
 }
 
-inline double DEG2RAD(double deg)
+#if 0
+inline float DEG2RAD(float deg)
 {
 	return deg * (M_PI / 180.0);
 }
+#endif
 
 inline float RAD2DEG(float rad)
 {
 	return rad * float(180. / M_PI);
 }
 
-inline double RAD2DEG(double rad)
+#if 0
+inline float RAD2DEG(float rad)
 {
 	return rad * (180. / M_PI);
 }
+#endif
 
 inline angle_t RAD2BAM(float rad)
 {
 	return angle_t(xs_RoundToUInt(rad * float(0x80000000u / M_PI)));
 }
 
-inline angle_t RAD2BAM(double rad)
+#if 0
+inline angle_t RAD2BAM(float rad)
 {
 	return angle_t(xs_RoundToUInt(rad * (0x80000000u / M_PI)));
 }
+#endif
 
 #ifdef __PS2__
 inline char* strdup(const char* s)

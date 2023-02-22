@@ -90,7 +90,7 @@ void incur_damage_d(player_struct* p)
 static void shootfireball(DDukeActor *actor, int p, DVector3 pos, DAngle ang)
 {
 	// World Tour's values for angles and velocities are quite arbitrary...
-	double vel, zvel;
+	float vel, zvel;
 
 	if (actor->spr.extra >= 0)
 		actor->spr.shade = -96;
@@ -106,9 +106,9 @@ static void shootfireball(DDukeActor *actor, int p, DVector3 pos, DAngle ang)
 	if (p < 0)
 	{
 		ang += DAngle22_5 / 8 - randomAngle(22.5 / 4);
-		double scratch;
+		float scratch;
 		int j = findplayer(actor, &scratch);
-		double dist = (ps[j].GetActor()->spr.pos.XY() - actor->spr.pos.XY()).Length();
+		float dist = (ps[j].GetActor()->spr.pos.XY() - actor->spr.pos.XY()).Length();
 		zvel = ((ps[j].GetActor()->getPrevOffsetZ() - pos.Z + 3) * vel) / dist;
 	}
 	else
@@ -118,7 +118,7 @@ static void shootfireball(DDukeActor *actor, int p, DVector3 pos, DAngle ang)
 		pos.Z += 3;
 	}
 
-	double scale = p >= 0? 0.109375 : 0.28125;
+	float scale = p >= 0? 0.109375 : 0.28125;
 
 	auto spawned = CreateActor(actor->sector(), pos, DTILE_FIREBALL, -127, DVector2(scale, scale), ang, vel, zvel, actor, (short)4);
 	if (spawned)
@@ -143,7 +143,7 @@ static void shootfireball(DDukeActor *actor, int p, DVector3 pos, DAngle ang)
 static void shootknee(DDukeActor* actor, int p, DVector3 pos, DAngle ang)
 {
 	auto sectp = actor->sector();
-	double vel = 1024., zvel;
+	float vel = 1024., zvel;
 	HitInfo hit{};
 
 	if (p >= 0)
@@ -154,7 +154,7 @@ static void shootknee(DDukeActor* actor, int p, DVector3 pos, DAngle ang)
 	}
 	else
 	{
-		double x;
+		float x;
 		auto pactor = ps[findplayer(actor, &x)].GetActor();
 		zvel = ((pactor->spr.pos.Z - pos.Z) * 16) / (x + 1/16.);
 		ang = (pactor->spr.pos.XY() - pos.XY()).Angle();
@@ -228,7 +228,7 @@ static void shootknee(DDukeActor* actor, int p, DVector3 pos, DAngle ang)
 static void shootweapon(DDukeActor *actor, int p, DVector3 pos, DAngle ang, int atwith)
 {
 	auto sectp = actor->sector();
-	double vel = 1024, zvel = 0;
+	float vel = 1024, zvel = 0;
 	HitInfo hit{};
 
 	if (actor->spr.extra >= 0) actor->spr.shade = -96;
@@ -247,7 +247,7 @@ static void shootweapon(DDukeActor *actor, int p, DVector3 pos, DAngle ang, int 
 		if (aimed)
 		{
 			auto tex = TexMan.GetGameTexture(aimed->spr.spritetexture());
-			double dal = ((aimed->spr.scale.X * tex->GetDisplayHeight()) * 0.5) + 5;
+			float dal = ((aimed->spr.scale.X * tex->GetDisplayHeight()) * 0.5) + 5;
 			switch (aimed->spr.picnum)
 			{
 			case DTILE_GREENSLIME:
@@ -255,7 +255,7 @@ static void shootweapon(DDukeActor *actor, int p, DVector3 pos, DAngle ang, int 
 				dal -= 8;
 				break;
 			}
-			double dist = (ps[p].GetActor()->spr.pos.XY() - aimed->spr.pos.XY()).Length();
+			float dist = (ps[p].GetActor()->spr.pos.XY() - aimed->spr.pos.XY()).Length();
 			zvel = ((aimed->spr.pos.Z - pos.Z - dal) * 16) / dist;
 			ang = (aimed->spr.pos - pos).Angle();
 		}
@@ -263,7 +263,7 @@ static void shootweapon(DDukeActor *actor, int p, DVector3 pos, DAngle ang, int 
 		if (isWW2GI())
 		{
 			int angRange = 32;
-			double zRange = 1;
+			float zRange = 1;
 			SetGameVarID(g_iAngRangeVarID, 32, actor, p);
 			SetGameVarID(g_iZRangeVarID, 256, actor, p);
 			OnEvent(EVENT_GETSHOTRANGE, p, ps[p].GetActor(), -1);
@@ -289,10 +289,10 @@ static void shootweapon(DDukeActor *actor, int p, DVector3 pos, DAngle ang, int 
 	}
 	else
 	{
-		double x;
+		float x;
 		int j = findplayer(actor, &x);
 		pos.Z -= 4;
-		double dist = (ps[j].GetActor()->spr.pos.XY() - actor->spr.pos.XY()).Length();
+		float dist = (ps[j].GetActor()->spr.pos.XY() - actor->spr.pos.XY()).Length();
 		zvel = ((ps[j].GetActor()->getOffsetZ() - pos.Z) * 16) / dist;
 		zvel += 0.5 - krandf(1);
 		if (actor->spr.picnum != DTILE_BOSS1)
@@ -456,7 +456,7 @@ static void shootweapon(DDukeActor *actor, int p, DVector3 pos, DAngle ang, int 
 static void shootstuff(DDukeActor* actor, int p, DVector3 pos, DAngle ang, int atwith)
 {
 	sectortype* sect = actor->sector();
-	double vel, zvel;
+	float vel, zvel;
 	int scount;
 
 	if (actor->spr.extra >= 0) actor->spr.shade = -96;
@@ -485,8 +485,8 @@ static void shootstuff(DDukeActor* actor, int p, DVector3 pos, DAngle ang, int a
 		if (aimed)
 		{
 			auto tex = TexMan.GetGameTexture(aimed->spr.spritetexture());
-			double dal = ((aimed->spr.scale.X * tex->GetDisplayHeight()) * 0.5) - 12;
-			double dist = (ps[p].GetActor()->spr.pos.XY() - aimed->spr.pos.XY()).Length();
+			float dal = ((aimed->spr.scale.X * tex->GetDisplayHeight()) * 0.5) - 12;
+			float dist = (ps[p].GetActor()->spr.pos.XY() - aimed->spr.pos.XY()).Length();
 
 			zvel = ((aimed->spr.pos.Z - pos.Z - dal) * vel) / dist;
 			ang = (aimed->spr.pos.XY() - pos.XY()).Angle();
@@ -496,11 +496,11 @@ static void shootstuff(DDukeActor* actor, int p, DVector3 pos, DAngle ang, int a
 	}
 	else
 	{
-		double x;
+		float x;
 		int j = findplayer(actor, &x);
 		ang += DAngle22_5 / 8 - randomAngle(22.5 / 4);
 #if 1
-		double dist = (ps[j].GetActor()->spr.pos.XY() - actor->spr.pos.XY()).Length();
+		float dist = (ps[j].GetActor()->spr.pos.XY() - actor->spr.pos.XY()).Length();
 		zvel = ((ps[j].GetActor()->getPrevOffsetZ() - pos.Z + 3) * vel) / dist;
 #else
 		// this is for pitch corrected velocity
@@ -510,8 +510,8 @@ static void shootstuff(DDukeActor* actor, int p, DVector3 pos, DAngle ang, int a
 #endif
 	}
 
-	double oldzvel = zvel;
-	double scale = p >= 0? 0.109375 : 0.28125;
+	float oldzvel = zvel;
+	float scale = p >= 0? 0.109375 : 0.28125;
 	if (atwith == DTILE_SPIT)
 	{
 		pos.Z -= 10;
@@ -557,7 +557,7 @@ static void shootstuff(DDukeActor* actor, int p, DVector3 pos, DAngle ang, int a
 static void shootrpg(DDukeActor *actor, int p, DVector3 pos, DAngle ang, int atwith)
 {
 	auto sect = actor->sector();
-	double vel, zvel;
+	float vel, zvel;
 	int scount;
 
 	if (actor->spr.extra >= 0) actor->spr.shade = -96;
@@ -573,8 +573,8 @@ static void shootrpg(DDukeActor *actor, int p, DVector3 pos, DAngle ang, int atw
 		if (aimed)
 		{
 			auto tex = TexMan.GetGameTexture(aimed->spr.spritetexture());
-			double dal = ((aimed->spr.scale.X * tex->GetDisplayHeight()) * 0.5) + 8;
-			double dist = (ps[p].GetActor()->spr.pos.XY() - aimed->spr.pos.XY()).Length();
+			float dal = ((aimed->spr.scale.X * tex->GetDisplayHeight()) * 0.5f) + 8;
+			float dist = (ps[p].GetActor()->spr.pos.XY() - aimed->spr.pos.XY()).Length();
 			zvel = ((aimed->spr.pos.Z - pos.Z - dal) * vel) / dist;
 			if (!actorflag(aimed, SFLAG2_SPECIALAUTOAIM))
 				ang = (aimed->spr.pos.XY() - pos.XY()).Angle();
@@ -584,26 +584,26 @@ static void shootrpg(DDukeActor *actor, int p, DVector3 pos, DAngle ang, int atw
 	}
 	else
 	{
-		double x;
+		float x;
 		int j = findplayer(actor, &x);
 		ang = (ps[j].GetActor()->opos.XY() - pos.XY()).Angle();
 		if (actor->spr.picnum == DTILE_BOSS3)
 		{
-			double zoffs = 32;
+			float zoffs = 32;
 			if (isWorldTour()) // Twentieth Anniversary World Tour
-				zoffs *= (actor->spr.scale.Y * 0.8);
+				zoffs *= (actor->spr.scale.Y * 0.8f);
 			pos.Z -= zoffs;
 		}
 		else if (actor->spr.picnum == DTILE_BOSS2)
 		{
 			vel += 8;
-			double zoffs = 24;
+			float zoffs = 24;
 			if (isWorldTour()) // Twentieth Anniversary World Tour
-				zoffs *= (actor->spr.scale.Y * 0.8);
+				zoffs *= (actor->spr.scale.Y * 0.8f);
 			pos.Z += zoffs;
 		}
 
-		double dist = (ps[j].GetActor()->spr.pos.XY() - actor->spr.pos.XY()).Length();
+		float dist = (ps[j].GetActor()->spr.pos.XY() - actor->spr.pos.XY()).Length();
 
 		zvel = ((ps[j].GetActor()->getPrevOffsetZ() - pos.Z) * vel) / dist;
 
@@ -649,7 +649,7 @@ static void shootrpg(DDukeActor *actor, int p, DVector3 pos, DAngle ang, int atw
 
 			if (isWorldTour()) // Twentieth Anniversary World Tour
 			{
-				double siz = actor->spr.scale.Y * 0.8;
+				float siz = actor->spr.scale.Y * 0.8f;
 				spawnofs *= siz;
 				aoffs *= siz;
 			}
@@ -661,11 +661,11 @@ static void shootrpg(DDukeActor *actor, int p, DVector3 pos, DAngle ang, int atw
 		}
 		else if (actor->spr.picnum == DTILE_BOSS2)
 		{
-			DVector2 spawnofs(ang.Sin() * (1024. / 56.), ang.Cos() * -(1024. / 56.));
+			DVector2 spawnofs(ang.Sin() * (1024.f / 56.f), ang.Cos() * -(1024.f / 56.f));
 			DAngle aoffs = DAngle22_5 / 16. - DAngle45 + randomAngle(90);
 
 			if (isWorldTour()) { // Twentieth Anniversary World Tour
-				double siz = actor->spr.scale.Y * 0.9143;
+				float siz = actor->spr.scale.Y * 0.9143;
 				spawnofs *= siz;
 				aoffs *= siz;
 			}
@@ -717,7 +717,7 @@ static void shootrpg(DDukeActor *actor, int p, DVector3 pos, DAngle ang, int atw
 static void shootlaser(DDukeActor* actor, int p, DVector3 pos, DAngle ang)
 {
 	auto sectp = actor->sector();
-	double vel = 1024., zvel;
+	float vel = 1024., zvel;
 	int j;
 	HitInfo hit{};
 
@@ -790,7 +790,7 @@ static void shootlaser(DDukeActor* actor, int p, DVector3 pos, DAngle ang)
 static void shootgrowspark(DDukeActor* actor, int p, DVector3 pos, DAngle ang)
 {
 	auto sect = actor->sector();
-	double vel = 1024., zvel;
+	float vel = 1024., zvel;
 	int k;
 	HitInfo hit{};
 
@@ -800,7 +800,7 @@ static void shootgrowspark(DDukeActor* actor, int p, DVector3 pos, DAngle ang)
 		if (aimed)
 		{
 			auto tex = TexMan.GetGameTexture(aimed->spr.spritetexture());
-			double dal = ((aimed->spr.scale.X * tex->GetDisplayHeight()) * 0.5) + 5;
+			float dal = ((aimed->spr.scale.X * tex->GetDisplayHeight()) * 0.5) + 5;
 			switch (aimed->spr.picnum)
 			{
 			case DTILE_GREENSLIME:
@@ -808,7 +808,7 @@ static void shootgrowspark(DDukeActor* actor, int p, DVector3 pos, DAngle ang)
 				dal -= 8;
 				break;
 			}
-			double dist = (ps[p].GetActor()->spr.pos.XY() - aimed->spr.pos.XY()).Length();
+			float dist = (ps[p].GetActor()->spr.pos.XY() - aimed->spr.pos.XY()).Length();
 			zvel = ((aimed->spr.pos.Z - pos.Z - dal) * 16) / dist;
 			ang = (aimed->spr.pos.XY() - pos.XY()).Angle();
 		}
@@ -823,10 +823,10 @@ static void shootgrowspark(DDukeActor* actor, int p, DVector3 pos, DAngle ang)
 	}
 	else
 	{
-		double x;
+		float x;
 		int j = findplayer(actor, &x);
 		pos.Z -= 4;
-		double dist = (ps[j].GetActor()->spr.pos.XY() - actor->spr.pos.XY()).Length();
+		float dist = (ps[j].GetActor()->spr.pos.XY() - actor->spr.pos.XY()).Length();
 		zvel = ((ps[j].GetActor()->getOffsetZ() - pos.Z) * 16) / dist;
 		zvel += 0.5 - krandf(1);
 		ang += DAngle22_5 / 4 - randomAngle(22.5 / 2);
@@ -874,15 +874,15 @@ static void shootmortar(DDukeActor* actor, int p, const DVector3& pos, DAngle an
 	auto sect = actor->sector();
 	if (actor->spr.extra >= 0) actor->spr.shade = -96;
 
-	double x;
+	float x;
 	auto plActor = ps[findplayer(actor, &x)].GetActor();
 	x = (plActor->spr.pos.XY() - actor->spr.pos.XY()).Length();
 
-	double zvel = -x * 0.5;
+	float zvel = -x * 0.5;
 
 	if (zvel < -8)
 		zvel = -4;
-	double vel = x / 16.;
+	float vel = x / 16.;
 
 	CreateActor(sect, pos.plusZ(-6) + ang.ToVector() * 4, atwith, -64, DVector2(0.5, 0.5), ang, vel, zvel, actor, 1);
 }
@@ -895,8 +895,8 @@ static void shootmortar(DDukeActor* actor, int p, const DVector3& pos, DAngle an
 
 static void shootshrinker(DDukeActor* actor, int p, const DVector3& pos, DAngle ang, int atwith)
 {
-	double vel = 48.;
-	double zvel;
+	float vel = 48.;
+	float zvel;
 	if (actor->spr.extra >= 0) actor->spr.shade = -96;
 	if (p >= 0)
 	{
@@ -904,8 +904,8 @@ static void shootshrinker(DDukeActor* actor, int p, const DVector3& pos, DAngle 
 		if (aimed)
 		{
 			auto tex = TexMan.GetGameTexture(aimed->spr.spritetexture());
-			double dal = ((aimed->spr.scale.X * tex->GetDisplayHeight()) * 0.5);
-			double dist = (ps[p].GetActor()->spr.pos.XY() - aimed->spr.pos.XY()).Length();
+			float dal = ((aimed->spr.scale.X * tex->GetDisplayHeight()) * 0.5);
+			float dist = (ps[p].GetActor()->spr.pos.XY() - aimed->spr.pos.XY()).Length();
 			zvel = ((aimed->spr.pos.Z - pos.Z - dal - 4) * 48) / dist;
 			ang = (aimed->spr.pos.XY() - pos.XY()).Angle();
 		}
@@ -914,9 +914,9 @@ static void shootshrinker(DDukeActor* actor, int p, const DVector3& pos, DAngle 
 	}
 	else if (actor->spr.statnum != 3)
 	{
-		double x;
+		float x;
 		int j = findplayer(actor, &x);
-		double dist = (ps[j].GetActor()->spr.pos.XY() - actor->spr.pos.XY()).Length();
+		float dist = (ps[j].GetActor()->spr.pos.XY() - actor->spr.pos.XY()).Length();
 		zvel = ((ps[j].GetActor()->getOffsetZ() - pos.Z) * 32) / dist;
 	}
 	else zvel = 0;
@@ -1546,7 +1546,7 @@ void checkweapons_d(player_struct* p)
 //
 //---------------------------------------------------------------------------
 
-static void operateJetpack(int snum, ESyncBits actions, int psectlotag, double floorz, double ceilingz, int shrunk)
+static void operateJetpack(int snum, ESyncBits actions, int psectlotag, float floorz, float ceilingz, int shrunk)
 {
 	auto p = &ps[snum];
 	auto pact = p->GetActor();
@@ -1567,7 +1567,7 @@ static void operateJetpack(int snum, ESyncBits actions, int psectlotag, double f
 	else if (p->jetpack_on == 11 && !S_CheckActorSoundPlaying(pact, DUKE_JETPACK_IDLE))
 		S_PlayActorSound(DUKE_JETPACK_IDLE, pact);
 
-	double dist;
+	float dist;
 	if (shrunk) dist = 2;
 	else dist = 8;
 
@@ -1615,7 +1615,7 @@ static void operateJetpack(int snum, ESyncBits actions, int psectlotag, double f
 //
 //---------------------------------------------------------------------------
 
-static void movement(int snum, ESyncBits actions, sectortype* psect, double floorz, double ceilingz, int shrunk, double truefdist, int psectlotag)
+static void movement(int snum, ESyncBits actions, sectortype* psect, float floorz, float ceilingz, int shrunk, float truefdist, int psectlotag)
 {
 	int j;
 	auto p = &ps[snum];
@@ -1627,7 +1627,7 @@ static void movement(int snum, ESyncBits actions, sectortype* psect, double floo
 	if (p->scuba_on == 1)
 		p->scuba_on = 0;
 
-	double i = gs.playerheight;
+	float i = gs.playerheight;
 	if (psectlotag == ST_1_ABOVE_WATER && p->spritebridge == 0)
 	{
 		if (shrunk == 0)
@@ -1721,7 +1721,7 @@ static void movement(int snum, ESyncBits actions, sectortype* psect, double floo
 		{
 			//Smooth on the ground
 
-			double k = (floorz - i - p->GetActor()->getOffsetZ()) * 0.5;
+			float k = (floorz - i - p->GetActor()->getOffsetZ()) * 0.5;
 			p->GetActor()->spr.pos.Z += k;
 			p->vel.Z -= 3;
 			if (p->vel.Z < 0) p->vel.Z = 0;
@@ -1800,7 +1800,7 @@ static void movement(int snum, ESyncBits actions, sectortype* psect, double floo
 //
 //---------------------------------------------------------------------------
 
-static void underwater(int snum, ESyncBits actions, double floorz, double ceilingz)
+static void underwater(int snum, ESyncBits actions, float floorz, float ceilingz)
 {
 	auto p = &ps[snum];
 	auto pact = p->GetActor();
@@ -1882,7 +1882,7 @@ int operateTripbomb(int snum)
 {
 	auto p = &ps[snum];
 	HitInfo hit{};
-	double vel = 1024, zvel = 0;
+	float vel = 1024, zvel = 0;
 	setFreeAimVelocity(vel, zvel, p->Angles.getPitchWithView(), 16.);
 
 	hitscan(p->GetActor()->getPosWithOffsetZ(), p->cursector, DVector3(p->GetActor()->spr.Angles.Yaw.ToVector() * vel, zvel), hit, CLIPMASK1);
@@ -2066,14 +2066,14 @@ static void operateweapon(int snum, ESyncBits actions)
 		p->kickback_pic++;
 		if (p->kickback_pic == 12)
 		{
-			double zvel, vel;
+			float zvel, vel;
 
 			p->ammo_amount[HANDBOMB_WEAPON]--;
 
 			if (p->on_ground && (actions & SB_CROUCH))
 			{
 				vel = 15/16.;
-				zvel = p->Angles.getPitchWithView().Sin() * 10.;
+				zvel = p->Angles.getPitchWithView().Sin() * 10.f;
 			}
 			else
 			{
@@ -2096,11 +2096,11 @@ static void operateweapon(int snum, ESyncBits actions)
 				spawned->spr.pos.Z += 8;
 			}
 
-			double hd = hits(pact);
+			float hd = hits(pact);
 			if (hd < 32)
 			{
 				spawned->spr.Angles.Yaw += DAngle180;
-				spawned->vel *= 1./3.;
+				spawned->vel *= 1.f/3.f;
 			}
 
 			p->hbomb_on = 1;
@@ -2589,7 +2589,7 @@ static void processweapon(int snum, ESyncBits actions)
 void processinput_d(int snum)
 {
 	int k, doubvel;
-	double floorz, ceilingz, truefdist;
+	float floorz, ceilingz, truefdist;
 	Collision chz, clz;
 	bool shrunk;
 	int psectlotag;
@@ -2724,7 +2724,7 @@ void processinput_d(int snum)
 	doubvel = TICSPERFRAME;
 
 	checklook(snum,actions);
-	double iif = 2.5;
+	float iif = 2.5;
 	auto oldpos = p->GetActor()->opos;
 
 	if (p->on_crane != nullptr)
@@ -2732,7 +2732,7 @@ void processinput_d(int snum)
 
 	p->playerweaponsway(pact->vel.X);
 
-	pact->vel.X = clamp((p->GetActor()->spr.pos.XY() - p->bobpos).Length(), 0., 32.);
+	pact->vel.X = clamp((p->GetActor()->spr.pos.XY() - p->bobpos).Length(), 0.f, 32.f);
 	if (p->on_ground) p->bobcounter += int(p->GetActor()->vel.X * 8);
 
 	p->backuppos(ud.clipping == 0 && ((p->insector() && p->cursector->floortexture == mirrortex) || !p->insector()));
@@ -2837,8 +2837,8 @@ void processinput_d(int snum)
 		if (p->jetpack_on == 0 && p->steroids_amount > 0 && p->steroids_amount < 400)
 			doubvel <<= 1;
 
-		p->vel.X += sb_fvel * doubvel * (5. / 16.);
-		p->vel.Y += sb_svel * doubvel * (5. / 16.);
+		p->vel.X += sb_fvel * doubvel * (5.f / 16.f);
+		p->vel.Y += sb_svel * doubvel * (5.f / 16.f);
 
 		bool check;
 
@@ -2846,7 +2846,7 @@ void processinput_d(int snum)
 		else check = ((aplWeaponWorksLike(p->curr_weapon, snum) == KNEE_WEAPON && p->kickback_pic > 10 && p->on_ground) || (p->on_ground && (actions & SB_CROUCH)));
 		if (check)
 		{
-			p->vel.XY() *= gs.playerfriction - 0.125;
+			p->vel.XY() *= gs.playerfriction - 0.125f;
 		}
 		else
 		{
@@ -2865,7 +2865,7 @@ void processinput_d(int snum)
 
 		if (shrunk)
 		{
-			p->vel.XY() *= gs.playerfriction * 0.75;
+			p->vel.XY() *= gs.playerfriction * 0.75f;
 		}
 	}
 
@@ -2885,7 +2885,7 @@ HORIZONLY:
 		ChangeActorSect(pact, p->cursector);
 	}
 	else
-		clipmove(p->GetActor()->spr.pos.XY(), p->GetActor()->getOffsetZ(), &p->cursector, p->vel, 10.25, 4., iif, CLIPMASK0, clip);
+		clipmove(p->GetActor()->spr.pos.XY(), p->GetActor()->getOffsetZ(), &p->cursector, p->vel, 10.25f, 4.f, iif, CLIPMASK0, clip);
 
 	if (p->jetpack_on == 0 && psectlotag != 2 && psectlotag != 1 && shrunk)
 		p->GetActor()->spr.pos.Z += 32;
@@ -2901,7 +2901,7 @@ HORIZONLY:
 			{
 				p->pycount += 52;
 				p->pycount &= 2047;
-				const double factor = 1024. / 1596; // What is 1596?
+				const float factor = 1024.f / 1596; // What is 1596?
 				p->pyoff = abs(pact->vel.X * BobVal(p->pycount)) * factor;
 			}
 		}

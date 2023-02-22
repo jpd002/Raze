@@ -179,7 +179,7 @@ public:
 		HWSkyInfo * sky;			// for normal sky
 		//HWHorizonInfo * horizon;	// for horizon information
 		PortalDesc * portal;			// stacked sector portals
-		const double * planemirror;	// for plane mirrors
+		const float * planemirror;	// for plane mirrors
 	};
 
 	unsigned int vertindex;

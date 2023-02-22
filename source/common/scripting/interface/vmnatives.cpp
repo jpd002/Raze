@@ -59,7 +59,7 @@
 //
 //==========================================================================
 
-static double StatusbarToRealCoords(DStatusBarCore* self, double x, double y, double w, double h, double* py, double* pw, double* ph)
+static float StatusbarToRealCoords(DStatusBarCore* self, float x, float y, float w, float h, float* py, float* pw, float* ph)
 {
 	self->StatusbarToRealCoords(x, y, w, h);
 	*py = y;
@@ -83,7 +83,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(DStatusBarCore, StatusbarToRealCoords, StatusbarTo
 	return min(4, numret);
 }
 
-void SBar_DrawTexture(DStatusBarCore* self, int texid, double x, double y, int flags, double alpha, double w, double h, double scaleX, double scaleY, int style, int color, int translation, double clipwidth)
+void SBar_DrawTexture(DStatusBarCore* self, int texid, float x, float y, int flags, float alpha, float w, float h, float scaleX, float scaleY, int style, int color, int translation, float clipwidth)
 {
 	if (!twod->HasBegun2D()) ThrowAbortException(X_OTHER, "Attempt to draw to screen outside a draw function");
 	self->DrawGraphic(FSetTextureID(texid), x, y, flags, alpha, w, h, scaleX, scaleY, ERenderStyle(style), color, translation, clipwidth);
@@ -109,7 +109,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(DStatusBarCore, DrawTexture, SBar_DrawTexture)
 	return 0;
 }
 
-void SBar_DrawImage(DStatusBarCore* self, const FString& texid, double x, double y, int flags, double alpha, double w, double h, double scaleX, double scaleY, int style, int color, int translation, double clipwidth)
+void SBar_DrawImage(DStatusBarCore* self, const FString& texid, float x, float y, int flags, float alpha, float w, float h, float scaleX, float scaleY, int style, int color, int translation, float clipwidth)
 {
 	if (!twod->HasBegun2D()) ThrowAbortException(X_OTHER, "Attempt to draw to screen outside a draw function");
 	self->DrawGraphic(TexMan.CheckForTexture(texid, ETextureType::Any), x, y, flags, alpha, w, h, scaleX, scaleY, ERenderStyle(style), color, translation, clipwidth);
@@ -135,7 +135,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(DStatusBarCore, DrawImage, SBar_DrawImage)
 	return 0;
 }
 
-void SBar_DrawImageRotated(DStatusBarCore* self, const FString& texid, double x, double y, int flags, double angle, double alpha, double scaleX, double scaleY, int style, int color, int translation)
+void SBar_DrawImageRotated(DStatusBarCore* self, const FString& texid, float x, float y, int flags, float angle, float alpha, float scaleX, float scaleY, int style, int color, int translation)
 {
 	if (!twod->HasBegun2D()) ThrowAbortException(X_OTHER, "Attempt to draw to screen outside a draw function");
 	self->DrawRotated(TexMan.CheckForTexture(texid, ETextureType::Any), x, y, flags, angle, alpha, scaleX, scaleY, color, translation, (ERenderStyle)style);
@@ -159,7 +159,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(DStatusBarCore, DrawImageRotated, SBar_DrawImageRo
 	return 0;
 }
 
-void SBar_DrawTextureRotated(DStatusBarCore* self, int texid, double x, double y, int flags, double angle, double alpha, double scaleX, double scaleY, int style, int color, int translation)
+void SBar_DrawTextureRotated(DStatusBarCore* self, int texid, float x, float y, int flags, float angle, float alpha, float scaleX, float scaleY, int style, int color, int translation)
 {
 	if (!twod->HasBegun2D()) ThrowAbortException(X_OTHER, "Attempt to draw to screen outside a draw function");
 	self->DrawRotated(FSetTextureID(texid), x, y, flags, angle, alpha, scaleX, scaleY, color, translation, (ERenderStyle)style);
@@ -184,7 +184,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(DStatusBarCore, DrawTextureRotated, SBar_DrawTextu
 }
 
 
-void SBar_DrawString(DStatusBarCore* self, DHUDFont* font, const FString& string, double x, double y, int flags, int trans, double alpha, int wrapwidth, int linespacing, double scaleX, double scaleY, int translation, int style);
+void SBar_DrawString(DStatusBarCore* self, DHUDFont* font, const FString& string, float x, float y, int flags, int trans, float alpha, int wrapwidth, int linespacing, float scaleX, float scaleY, int translation, int style);
 
 DEFINE_ACTION_FUNCTION_NATIVE(DStatusBarCore, DrawString, SBar_DrawString)
 {
@@ -206,7 +206,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(DStatusBarCore, DrawString, SBar_DrawString)
 	return 0;
 }
 
-static double SBar_TransformRect(DStatusBarCore* self, double x, double y, double w, double h, int flags, double* py, double* pw, double* ph)
+static float SBar_TransformRect(DStatusBarCore* self, float x, float y, float w, float h, int flags, float* py, float* pw, float* ph)
 {
 	self->TransformRect(x, y, w, h, flags);
 	*py = y;
@@ -231,7 +231,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(DStatusBarCore, TransformRect, SBar_TransformRect)
 	return min(4, numret);
 }
 
-static void SBar_Fill(DStatusBarCore* self, int color, double x, double y, double w, double h, int flags)
+static void SBar_Fill(DStatusBarCore* self, int color, float x, float y, float w, float h, int flags)
 {
 	if (!twod->HasBegun2D()) ThrowAbortException(X_OTHER, "Attempt to draw to screen outside a draw function");
 	self->Fill(color, x, y, w, h, flags);
@@ -250,7 +250,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(DStatusBarCore, Fill, SBar_Fill)
 	return 0;
 }
 
-static void SBar_SetClipRect(DStatusBarCore* self, double x, double y, double w, double h, int flags)
+static void SBar_SetClipRect(DStatusBarCore* self, float x, float y, float w, float h, int flags)
 {
 	self->SetClipRect(x, y, w, h, flags);
 }
@@ -326,7 +326,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(DStatusBarCore, BeginStatusBar, BeginStatusBar)
 	return 0;
 }
 
-static void BeginHUD(DStatusBarCore* self, double a, bool fs, int w, int h)
+static void BeginHUD(DStatusBarCore* self, float a, bool fs, int w, int h)
 {
 	self->BeginHUD(w, h, a, fs);
 }
@@ -448,7 +448,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(_TexMan, GetSize, GetTextureSize)
 static void GetScaledSize(int texid, DVector2* pvec)
 {
 	auto tex = TexMan.GameByIndex(texid);
-	double x, y;
+	float x, y;
 	if (tex != nullptr)
 	{
 		x = tex->GetDisplayWidth();
@@ -479,7 +479,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(_TexMan, GetScaledSize, GetScaledSize)
 static void GetScaledOffset(int texid, DVector2* pvec)
 {
 	auto tex = TexMan.GameByIndex(texid);
-	double x, y;
+	float x, y;
 	if (tex != nullptr)
 	{
 		x = tex->GetDisplayLeftOffset();
@@ -623,7 +623,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(FFont, GetDisplacement, GetDisplacement)
 	ACTION_RETURN_INT(self->GetDisplacement());
 }
 
-double GetBottomAlignOffset(FFont *font, int c);
+float GetBottomAlignOffset(FFont *font, int c);
 DEFINE_ACTION_FUNCTION_NATIVE(FFont, GetBottomAlignOffset, GetBottomAlignOffset)
 {
 	PARAM_SELF_STRUCT_PROLOGUE(FFont);
@@ -717,7 +717,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(FFont, GetDefaultKerning, GetDefaultKerning)
 	ACTION_RETURN_INT(self->GetDefaultKerning());
 }
 
-static double GetDisplayTopOffset(FFont* font, int c)
+static float GetDisplayTopOffset(FFont* font, int c)
 {
 	auto texc = font->GetChar(c, CR_UNDEFINED, nullptr);
 	return texc ? texc->GetDisplayTopOffset() : 0;
@@ -1142,7 +1142,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(_System, MusicEnabled, MusicEnabled)
 	ACTION_RETURN_INT(MusicEnabled());
 }
 
-static double Jit_GetTimeFrac() // cannot use I_GetTimwfrac directly due to default arguments.
+static float Jit_GetTimeFrac() // cannot use I_GetTimwfrac directly due to default arguments.
 {
 	return I_GetTimeFrac();
 }
@@ -1177,7 +1177,7 @@ DEFINE_FIELD(DHUDFont, mFont);
 
 //
 // Quaternion
-void QuatFromAngles(double yaw, double pitch, double roll, DQuaternion* pquat)
+void QuatFromAngles(float yaw, float pitch, float roll, DQuaternion* pquat)
 {
 	*pquat = DQuaternion::FromAngles(DAngle::fromDeg(yaw), DAngle::fromDeg(pitch), DAngle::fromDeg(roll));
 }
@@ -1194,7 +1194,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(_QuatStruct, FromAngles, QuatFromAngles)
 	ACTION_RETURN_QUAT(quat);
 }
 
-void QuatAxisAngle(double x, double y, double z, double angleDeg, DQuaternion* pquat)
+void QuatAxisAngle(float x, float y, float z, float angleDeg, DQuaternion* pquat)
 {
 	auto axis = DVector3(x, y, z);
 	auto angle = DAngle::fromDeg(angleDeg);
@@ -1215,9 +1215,9 @@ DEFINE_ACTION_FUNCTION_NATIVE(_QuatStruct, AxisAngle, QuatAxisAngle)
 }
 
 void QuatNLerp(
-	double ax, double ay, double az, double aw,
-	double bx, double by, double bz, double bw,
-	double t,
+	float ax, float ay, float az, float aw,
+	float bx, float by, float bz, float bw,
+	float t,
 	DQuaternion* pquat
 )
 {
@@ -1245,9 +1245,9 @@ DEFINE_ACTION_FUNCTION_NATIVE(_QuatStruct, NLerp, QuatNLerp)
 }
 
 void QuatSLerp(
-	double ax, double ay, double az, double aw,
-	double bx, double by, double bz, double bw,
-	double t,
+	float ax, float ay, float az, float aw,
+	float bx, float by, float bz, float bw,
+	float t,
 	DQuaternion* pquat
 )
 {
@@ -1275,7 +1275,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(_QuatStruct, SLerp, QuatSLerp)
 }
 
 void QuatConjugate(
-	double x, double y, double z, double w,
+	float x, float y, float z, float w,
 	DQuaternion* pquat
 )
 {
@@ -1292,7 +1292,7 @@ DEFINE_ACTION_FUNCTION_NATIVE(_QuatStruct, Conjugate, QuatConjugate)
 }
 
 void QuatInverse(
-	double x, double y, double z, double w,
+	float x, float y, float z, float w,
 	DQuaternion* pquat
 )
 {

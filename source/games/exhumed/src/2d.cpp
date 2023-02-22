@@ -55,12 +55,12 @@ BEGIN_PS_NS
 //
 //---------------------------------------------------------------------------
 
-void DrawAbs(int tile, double x, double y, int shade = 0)
+void DrawAbs(int tile, float x, float y, int shade = 0)
 {
     DrawTexture(twod, tileGetTexture(tile), x, y, DTA_FullscreenScale, FSMode_Fit320x200, DTA_TopLeft, true, DTA_Color, shadeToLight(shade), TAG_DONE);
 }
 
-void DrawRel(FGameTexture* tex, double x, double y, int shade = 0)
+void DrawRel(FGameTexture* tex, float x, float y, int shade = 0)
 {
     // This is slightly different than what the backend does here, but critical for some graphics.
     int offx = (int(tex->GetDisplayWidth()) >> 1) + int(tex->GetDisplayLeftOffset());
@@ -68,7 +68,7 @@ void DrawRel(FGameTexture* tex, double x, double y, int shade = 0)
     DrawTexture(twod, tex, x - offx, y - offy, DTA_FullscreenScale, FSMode_Fit320x200, DTA_TopLeft, true, DTA_Color, shadeToLight(shade), TAG_DONE);
 }
 
-void DrawRel(int tile, double x, double y, int shade)
+void DrawRel(int tile, float x, float y, int shade)
 {
     DrawRel(tileGetTexture(tile), x, y, shade);
 }
@@ -339,7 +339,7 @@ void TextOverlay::Create(const FString& text, int pal)
     ComputeCinemaText();
 }
 
-void TextOverlay::Start(double starttime)
+void TextOverlay::Start(float starttime)
 {
     lastclock = starttime;
 }
@@ -367,7 +367,7 @@ void TextOverlay::DisplayText()
 {
     if (nHeight + nCrawlY > 0)
     {
-        double y = nCrawlY;
+        float y = nCrawlY;
         unsigned int i = 0;
 
         while (i < screentext.Size() && y <= 199)
@@ -382,11 +382,11 @@ void TextOverlay::DisplayText()
     }
 }
 
-bool TextOverlay::AdvanceCinemaText(double clock)
+bool TextOverlay::AdvanceCinemaText(float clock)
 {
     if (nHeight + nCrawlY > 0 || CDplaying())
     {
-        nCrawlY-= min(clock - lastclock, 1.5) / 15.;   // do proper interpolation.
+        nCrawlY-= min(clock - lastclock, 1.5f) / 15.f;   // do proper interpolation.
         lastclock = clock;
         return true;
     }

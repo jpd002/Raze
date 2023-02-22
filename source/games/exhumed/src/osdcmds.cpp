@@ -39,7 +39,7 @@ BEGIN_PS_NS
 //
 //---------------------------------------------------------------------------
 
-void GameInterface::WarpToCoords(double x, double y, double z, DAngle ang)
+void GameInterface::WarpToCoords(float x, float y, float z, DAngle ang)
 {
     Player *nPlayer = &PlayerList[nLocalPlayer];
 

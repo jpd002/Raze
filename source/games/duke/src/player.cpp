@@ -118,7 +118,7 @@ void forceplayerangle(int snum)
 	player_struct* p = &ps[snum];
 	const auto ang = (DAngle22_5 - randomAngle(45)) / 2.;
 
-	p->GetActor()->spr.Angles.Pitch -= DAngle::fromDeg(26.566);
+	p->GetActor()->spr.Angles.Pitch -= DAngle::fromDeg(26.566f);
 	p->sync.actions |= SB_CENTERVIEW;
 	p->Angles.ViewAngles.Yaw = ang;
 	p->Angles.ViewAngles.Roll = -ang;
@@ -149,7 +149,7 @@ void tracers(const DVector3& start, const DVector3& dest, int n)
 		{
 			if (sect->lotag == 2)
 			{
-				DVector2 scale(0.0625 + (krand() & 3) * REPEAT_SCALE, 0.0625 + (krand() & 3) * REPEAT_SCALE);
+				DVector2 scale(0.0625f + (krand() & 3) * REPEAT_SCALE, 0.0625f + (krand() & 3) * REPEAT_SCALE);
 				CreateActor(sect, pos, TILE_WATERBUBBLE, -32, scale, randomAngle(), 0., 0., ps[0].GetActor(), 5);
 			}
 			else
@@ -164,9 +164,9 @@ void tracers(const DVector3& start, const DVector3& dest, int n)
 //
 //---------------------------------------------------------------------------
 
-double hits(DDukeActor* actor)
+float hits(DDukeActor* actor)
 {
-	double zoff;
+	float zoff;
 	HitInfo hit{};
 
 	if (actor->isPlayer()) zoff = gs.playerheight;
@@ -183,9 +183,9 @@ double hits(DDukeActor* actor)
 //
 //---------------------------------------------------------------------------
 
-double hitasprite(DDukeActor* actor, DDukeActor** hitsp)
+float hitasprite(DDukeActor* actor, DDukeActor** hitsp)
 {
-	double zoff;
+	float zoff;
 	HitInfo hit{};
 
 	if (badguy(actor))
@@ -209,7 +209,7 @@ double hitasprite(DDukeActor* actor, DDukeActor** hitsp)
 //
 //---------------------------------------------------------------------------
 
-double hitawall(player_struct* p, walltype** hitw)
+float hitawall(player_struct* p, walltype** hitw)
 {
 	HitInfo hit{};
 
@@ -246,7 +246,7 @@ DDukeActor* aim(DDukeActor* actor, int abase)
 			// This is a reimplementation of how it was solved in RedNukem.
 			if (plr->curr_weapon == PISTOL_WEAPON && !isWW2GI())
 			{
-				double vel = 1024, zvel = 0;
+				float vel = 1024, zvel = 0;
 				setFreeAimVelocity(vel, zvel, plr->Angles.getPitchWithView(), 16.);
 
 				HitInfo hit{};
@@ -303,7 +303,7 @@ DDukeActor* aim(DDukeActor* actor, int abase)
 		gotfreezer = actor->isPlayer() && ps[actor->PlayerIndex()].curr_weapon == FREEZE_WEAPON;
 	}
 
-	double smax = 0x7fffffff;
+	float smax = 0x7fffffff;
 
 	auto dv1 = (a - aang).ToVector();
 	auto dv2 = (a + aang).ToVector();
@@ -338,14 +338,14 @@ DDukeActor* aim(DDukeActor* actor, int abase)
 					if ((dv1.Y * vv.X) <= (dv1.X * vv.Y))
 						if ((dv2.Y * vv.X) >= (dv2.X * vv.Y))
 						{
-							double sdist = dv3.dot(vv);
+							float sdist = dv3.dot(vv);
 							if (sdist > 32 && sdist < smax)
 							{
 								int check;
 								if (actor->isPlayer())
 								{
-									double checkval = (act->spr.pos.Z - actor->spr.pos.Z) * 1.25 / sdist;
-									double horiz = ps[actor->PlayerIndex()].Angles.getPitchWithView().Tan();
+									float checkval = (act->spr.pos.Z - actor->spr.pos.Z) * 1.25 / sdist;
+									float horiz = ps[actor->PlayerIndex()].Angles.getPitchWithView().Tan();
 									check = abs(checkval - horiz) < 0.78125;
 								}
 								else check = 1;
@@ -540,7 +540,7 @@ void footprints(int snum)
 //
 //---------------------------------------------------------------------------
 
-void playerisdead(int snum, int psectlotag, double floorz, double ceilingz)
+void playerisdead(int snum, int psectlotag, float floorz, float ceilingz)
 {
 	auto p = &ps[snum];
 	auto actor = p->GetActor();
@@ -700,7 +700,7 @@ void playerCrouch(int snum)
 	}
 }
 
-void playerJump(int snum, double floorz, double ceilingz)
+void playerJump(int snum, float floorz, float ceilingz)
 {
 	auto p = &ps[snum];
 	if (p->jumping_toggle == 0 && p->jumping_counter == 0)
@@ -730,7 +730,7 @@ void player_struct::apply_seasick()
 	{
 		if (SeaSick < 250)
 		{
-			static constexpr DAngle adjustment = DAngle::fromDeg(4.21875);
+			static constexpr DAngle adjustment = DAngle::fromDeg(4.21875f);
 
 			if (SeaSick >= 180)
 				Angles.ViewAngles.Roll -= adjustment;
@@ -742,7 +742,7 @@ void player_struct::apply_seasick()
 				Angles.ViewAngles.Roll += adjustment;
 		}
 		if (SeaSick < 250)
-			Angles.ViewAngles.Yaw = DAngle::fromDeg(krandf(45) - 22.5);
+			Angles.ViewAngles.Yaw = DAngle::fromDeg(krandf(45) - 22.5f);
 	}
 }
 
@@ -804,7 +804,7 @@ void player_struct::checkhardlanding()
 	}
 }
 
-void player_struct::playerweaponsway(double xvel)
+void player_struct::playerweaponsway(float xvel)
 {
 	if (cl_weaponsway)
 	{

@@ -52,7 +52,7 @@
 #include "m_argv.h"
 
 #if 0
-void AddLightDefaults(FLightDefaults *defaults, double attnFactor);
+void AddLightDefaults(FLightDefaults *defaults, float attnFactor);
 void AddLightAssociation(const char *actor, const char *frame, const char *light);
 void InitializeActorLights(TArray<FLightAssociation> &LightAssociations);
 void ParseColorization(FScanner& sc);
@@ -67,7 +67,7 @@ struct ExtraUniformCVARData
 {
 	FString Shader;
 	FString Uniform;
-	double* vec4 = nullptr;
+	float* vec4 = nullptr;
 	ExtraUniformCVARData* Next;
 };
 
@@ -84,7 +84,7 @@ static void do_uniform_set(float value, ExtraUniformCVARData* data)
 			}
 		}
 	}
-	double* vec4 = data->vec4;
+	float* vec4 = data->vec4;
 	if (vec4)
 	{
 		vec4[0] = value;
@@ -284,7 +284,7 @@ class GLDefsParser
 	int workingLump;
 	int ScriptDepth = 0;
 	TArray<FLightAssociation> &LightAssociations;
-	double lightSizeFactor = 1.;
+	float lightSizeFactor = 1.;
 
 	//==========================================================================
 	//

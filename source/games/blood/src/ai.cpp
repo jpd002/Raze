@@ -127,14 +127,14 @@ static bool isImmune(DBloodActor* actor, int dmgType, int minScale)
 //
 //---------------------------------------------------------------------------
 
-bool CanMove(DBloodActor* actor, DBloodActor* target, DAngle nAngle, double nRange)
+bool CanMove(DBloodActor* actor, DBloodActor* target, DAngle nAngle, float nRange)
 {
-	double top, bottom;
+	float top, bottom;
 	GetActorExtents(actor, &top, &bottom);
 	DVector3 pos = actor->spr.pos;
 	DVector2 nAngVect = nAngle.ToVector();
 	HitScan(actor, pos.Z, DVector3(nAngVect, 0) * 1024, CLIPMASK0, nRange);
-	double nDist = (actor->spr.pos.XY() - gHitInfo.hitpos.XY()).Length();
+	float nDist = (actor->spr.pos.XY() - gHitInfo.hitpos.XY()).Length();
 	if (nDist - (actor->clipdist) < nRange / 16.) // this was actually comparing a Build unit value with a texel unit value!
 	{
 		if (gHitInfo.actor() == nullptr || target == nullptr || target != gHitInfo.actor())
@@ -147,7 +147,7 @@ bool CanMove(DBloodActor* actor, DBloodActor* target, DAngle nAngle, double nRan
 	auto ps2 = pSector;
 	updatesectorz(pos, &pSector);
 	if (!pSector) return false;
-	double floorZ = getflorzofslopeptr(pSector, pos);
+	float floorZ = getflorzofslopeptr(pSector, pos);
 	auto pXSector = pSector->hasX()? &pSector->xs() : nullptr;
 	bool Underwater = 0; 
 	bool Water = 0; 
@@ -253,7 +253,7 @@ void aiChooseDirection(DBloodActor* actor, DAngle direction)
 	auto almost60deg = DAngle::fromBuild(341); // 60° does not work correctly - this is a little bit less, actually.
 	DAngle v8 = vc.Sgn() == -1 ? -almost60deg : almost60deg;
 
-	double range = actor->vel.XY().dot(actor->spr.Angles.Yaw.ToVector()) * 120;
+	float range = actor->vel.XY().dot(actor->spr.Angles.Yaw.ToVector()) * 120;
 
 	if (CanMove(actor, actor->GetTarget(), actor->spr.Angles.Yaw + vc, range))
 		actor->xspr.goalAng = actor->spr.Angles.Yaw + vc;
@@ -921,7 +921,7 @@ void aiSetTarget(DBloodActor* actor, DBloodActor* target)
 		{
 			actor->SetTarget(target);
 			DUDEINFO* pDudeInfo = getDudeInfo(target->spr.type);
-			double eyeHeight = (pDudeInfo->eyeHeight * target->spr.scale.Y);
+			float eyeHeight = (pDudeInfo->eyeHeight * target->spr.scale.Y);
 			actor->xspr.TargetPos = target->spr.pos.plusZ(-eyeHeight);
 		}
 	}
@@ -1498,10 +1498,10 @@ void aiThinkTarget(DBloodActor* actor)
 			auto dvec = ppos.XY() - actor->spr.pos.XY();
 			auto pSector = pPlayer->actor->sector();
 
-			double nDist = dvec.Length();
+			float nDist = dvec.Length();
 			if (nDist > pDudeInfo->SeeDist() && nDist > pDudeInfo->HearDist())
 				continue;
-			double height = (pDudeInfo->eyeHeight * actor->spr.scale.Y);
+			float height = (pDudeInfo->eyeHeight * actor->spr.scale.Y);
 			if (!cansee(ppos, pSector, actor->spr.pos.plusZ(-height), actor->sector()))
 				continue;
 
@@ -1543,10 +1543,10 @@ void aiLookForTarget(DBloodActor* actor)
 			auto dvec = ppos.XY() - actor->spr.pos.XY();
 			auto pSector = pPlayer->actor->sector();
 
-			double nDist = dvec.Length();
+			float nDist = dvec.Length();
 			if (nDist > pDudeInfo->SeeDist() && nDist > pDudeInfo->HearDist())
 				continue;
-			double height = (pDudeInfo->eyeHeight * actor->spr.scale.Y);
+			float height = (pDudeInfo->eyeHeight * actor->spr.scale.Y);
 			if (!cansee(ppos, pSector, actor->spr.pos.plusZ(-height), actor->sector()))
 				continue;
 			DAngle nDeltaAngle = absangle(actor->spr.Angles.Yaw, dvec.Angle());
@@ -1571,7 +1571,7 @@ void aiLookForTarget(DBloodActor* actor)
 			BloodStatIterator it(kStatDude);
 			while (DBloodActor* actor2 = it.Next())
 			{
-				double nDist = (actor2->spr.pos.XY() - actor->spr.pos.XY()).Length();
+				float nDist = (actor2->spr.pos.XY() - actor->spr.pos.XY()).Length();
 				if (actor2->spr.type == kDudeInnocent)
 				{
 					pDudeInfo = getDudeInfo(actor2->spr.type);

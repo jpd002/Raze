@@ -1194,9 +1194,9 @@ uint64_t FString::ToULong (int base) const
 	return strtoull (Chars, NULL, base);
 }
 
-double FString::ToDouble () const
+float FString::ToDouble () const
 {
-	return strtod (Chars, NULL);
+	return strtof (Chars, NULL);
 }
 
 void FString::StrCopy (char *to, const char *from, size_t len)

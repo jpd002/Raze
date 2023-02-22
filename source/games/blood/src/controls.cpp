@@ -40,7 +40,7 @@ static InputPacket gInput;
 //
 //---------------------------------------------------------------------------
 
-void GameInterface::GetInput(ControlInfo* const hidInput, double const scaleAdjust, InputPacket* packet)
+void GameInterface::GetInput(ControlInfo* const hidInput, float const scaleAdjust, InputPacket* packet)
 {
 	if (paused || M_Active())
 	{
