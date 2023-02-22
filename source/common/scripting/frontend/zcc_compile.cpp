@@ -1767,11 +1767,11 @@ PType *ZCCCompiler::DetermineType(PType *outertype, ZCC_TreeNode *field, FName n
 			break;
 
 		case ZCC_FloatAuto:
-			retval = formember ? TypeFloat32 : TypeFloat64;
+			retval = TypeFloat32;
 			break;
 
 		case ZCC_Float64:
-			retval = TypeFloat64;
+			retval = TypeFloat32;
 			break;
 
 		case ZCC_String:

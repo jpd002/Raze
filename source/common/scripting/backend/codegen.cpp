@@ -631,7 +631,7 @@ FxExpression *FxVectorValue::Resolve(FCompileContext&ctx)
 	{
 		assert(dynamic_cast<FxExpression*>(xyzw[i]));
 
-		if (xyzw[i]->ValueType == TypeFloat64)
+		if (xyzw[i]->ValueType == TypeFloat32)
 		{
 			vectorDimensions++;
 		}
@@ -1055,7 +1055,7 @@ FxFloatCast::FxFloatCast(FxExpression *x)
 	: FxExpression(EFX_FloatCast, x->ScriptPosition)
 {
 	basex = x;
-	ValueType = TypeFloat64;
+	ValueType = TypeFloat32;
 }
 
 //==========================================================================
@@ -2842,7 +2842,7 @@ bool FxBinary::Promote(FCompileContext &ctx, bool forceint, bool shiftop)
 	}
 	else if (!forceint)
 	{
-		ValueType = TypeFloat64;
+		ValueType = TypeFloat32;
 		if (left->IsFloat() && right->IsInteger())
 		{
 			right = (new FxFloatCast(right))->Resolve(ctx);
@@ -4716,7 +4716,7 @@ FxExpression *FxDotCross::Resolve(FCompileContext& ctx)
 		delete this;
 		return nullptr;
 	}
-	ValueType = Operator == TK_Cross ? (PType*)TypeVector3 : TypeFloat64;
+	ValueType = Operator == TK_Cross ? (PType*)TypeVector3 : TypeFloat32;
 	return this;
 }
 
@@ -4941,7 +4941,7 @@ FxExpression *FxConditional::Resolve(FCompileContext& ctx)
 	else if (truex->IsInteger() && falsex->IsInteger())
 		ValueType = TypeSInt32;
 	else if (truex->IsNumeric() && falsex->IsNumeric())
-		ValueType = TypeFloat64;
+		ValueType = TypeFloat32;
 	else if (truex->IsPointer() && falsex->ValueType == TypeNullPtr)
 		ValueType = truex->ValueType;
 	else if (falsex->IsPointer() && truex->ValueType == TypeNullPtr)
@@ -5165,6 +5165,7 @@ FxExpression *FxAbs::Resolve(FCompileContext &ctx)
 		return x;
 	}
 	ValueType = val->ValueType;
+	assert(ValueType->Size == 4);
 	return this;
 }
 
@@ -5545,7 +5546,7 @@ FxExpression *FxMinMax::Resolve(FCompileContext &ctx)
 	}
 	if (floatcount != 0)
 	{
-		ValueType = TypeFloat64;
+		ValueType = TypeFloat32;
 		if (intcount != 0)
 		{ // There are some ints that need to be cast to floats
 			for (i = 0; i < choices.Size(); ++i)
@@ -5984,7 +5985,7 @@ FxFRandom::FxFRandom(FRandom *r, FxExpression *mi, FxExpression *ma, const FScri
 	assert(mi && ma);
 	min = new FxFloatCast(mi);
 	max = new FxFloatCast(ma);
-	ValueType = TypeFloat64;
+	ValueType = TypeFloat32;
 }
 
 //==========================================================================
@@ -6963,7 +6964,7 @@ FxExpression *FxCVar::Resolve(FCompileContext &ctx)
 		break;
 
 	case CVAR_Float:
-		ValueType = TypeFloat64;
+		ValueType = TypeFloat32;
 		break;
 
 	case CVAR_String:
@@ -9243,7 +9244,7 @@ FxExpression *FxVMFunctionCall::Resolve(FCompileContext& ctx)
 								FxConstant *cs[4] = { nullptr };
 								for (int l = 0; l < ntype->GetRegCount(); l++)
 								{
-									cs[l] = new FxConstant(TypeFloat64, defaults[l + i + k + skipdefs + implicit], ScriptPosition);
+									cs[l] = new FxConstant(TypeFloat32, defaults[l + i + k + skipdefs + implicit], ScriptPosition);
 								}
 								FxExpression *x = new FxVectorValue(cs[0], cs[1], cs[2], cs[3], ScriptPosition);
 								ArgList.Insert(i + k, x);
@@ -9596,7 +9597,7 @@ FxExpression *FxFlopFunctionCall::Resolve(FCompileContext& ctx)
 	{
 		ArgList[0] = new FxFloatCast(ArgList[0]);
 	}
-	ValueType = TypeFloat64;
+	ValueType = TypeFloat32;
 	return this;
 }
 
@@ -9654,7 +9655,7 @@ FxExpression *FxVectorBuiltin::Resolve(FCompileContext &ctx)
 	case NAME_Length:
 	case NAME_LengthSquared:
 	case NAME_Sum:
-		ValueType = TypeFloat64;
+		ValueType = TypeFloat32;
 		break;
 
 	case NAME_Unit:
@@ -11599,7 +11600,7 @@ FxExpression *FxLocalVariableDeclaration::Resolve(FCompileContext &ctx)
 		}
 		// check for undersized ints and floats. These are not allowed as local variables.
 		if (IsInteger() && ValueType->Align < sizeof(int)) ValueType = TypeSInt32;
-		else if (IsFloat() && ValueType->Align < sizeof(float)) ValueType = TypeFloat64;
+		else if (IsFloat() && ValueType->Align < sizeof(float)) ValueType = TypeFloat32;
 	}
 	if (Name != NAME_None)
 	{

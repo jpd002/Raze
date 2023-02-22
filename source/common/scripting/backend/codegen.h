@@ -445,7 +445,7 @@ public:
 
 	FxConstant(float val, const FScriptPosition &pos) : FxExpression(EFX_Constant, pos)
 	{
-		ValueType = value.Type = TypeFloat64;
+		ValueType = value.Type = TypeFloat32;
 		value.Float = val;
 		isresolved = true;
 	}

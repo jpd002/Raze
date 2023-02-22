@@ -832,7 +832,7 @@ PFloat::PFloat(unsigned int size)
 	else
 	{
 		assert(size == 4);
-		MemberOnly = true;
+		//MemberOnly = true;
 		SetSingleSymbols();
 	}
 	SetOps();
