@@ -115,10 +115,12 @@ public:
 			return;
 		}
 #endif
+#ifndef __PS2__
 		timespec ts;
 
 		clock_gettime(CLOCK_MONOTONIC, &ts);
 		Sec -= ts.tv_sec + ts.tv_nsec * 1e-9;
+#endif
 	}
 
 	void ResetAndClock()
@@ -137,10 +139,12 @@ public:
 			return;
 		}
 #endif
+#ifndef __PS2__
 		timespec ts;
 
 		clock_gettime(CLOCK_MONOTONIC, &ts);
 		Sec += ts.tv_sec + ts.tv_nsec * 1e-9;
+#endif
 	}
 
 	double Time()

@@ -112,6 +112,19 @@ inline angle_t RAD2BAM(double rad)
 	return angle_t(xs_RoundToUInt(rad * (0x80000000u / M_PI)));
 }
 
+#ifdef __PS2__
+inline char* strdup(const char* s)
+{
+	size_t slen = strlen(s);
+	auto result = reinterpret_cast<char*>(malloc(slen + 1));
+	if(!result)
+	{
+		return result;
+	}
+	memcpy(result, s, slen + 1);
+	return result;
+}
+#endif
 
 // This is needed in common code, despite being Doom specific.
 enum EStateUseFlags

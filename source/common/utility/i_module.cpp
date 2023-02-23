@@ -36,16 +36,20 @@
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+#elif defined(__PS2__)
+using HMODULE = void*;
+#define LoadLibraryA(x) (nullptr)
+#define GetProcAddress(a,b) (nullptr)
+#define FreeLibrary(x)
 #else
 #include <dlfcn.h>
-#endif
 
 
-#ifndef _WIN32
 #define LoadLibraryA(x) dlopen((x), RTLD_LAZY)
 #define GetProcAddress(a,b) dlsym((a),(b))
 #define FreeLibrary(x) dlclose((x))
 using HMODULE = void*;
+
 #endif
 
 bool FModule::Load(std::initializer_list<const char*> libnames)

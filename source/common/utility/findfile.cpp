@@ -39,7 +39,32 @@
 #include "configfile.h"
 #include "i_system.h"
 
-#ifndef _WIN32
+#if defined(__PS2__)
+
+void *I_FindFirst(const char *const filespec, findstate_t *const fileinfo)
+{
+	printf("I_FindFirst(...);\n");
+	return nullptr;
+}
+
+int I_FindNext(void* const handle, findstate_t* const fileinfo)
+{
+	printf("I_FindNext(...);\n");
+	return 0;
+}
+
+int I_FindClose(void* const handle)
+{
+	printf("I_FindClose(...);\n");
+	return 0;
+}
+
+int I_FindAttr(findstate_t *const fileinfo)
+{
+	return 0;
+}
+
+#elif !defined(_WIN32)
 
 #include <unistd.h>
 #include <fnmatch.h>

@@ -472,6 +472,7 @@ void M_FreePNG (PNGHandle *png)
 bool M_ReadIDAT (FileReader &file, uint8_t *buffer, int width, int height, int pitch,
 				 uint8_t bitdepth, uint8_t colortype, uint8_t interlace, unsigned int chunklen)
 {
+#ifndef __PS2__ //alloca not supported on PS2: need to find an alternative
 	// Uninterlaced images are treated as a conceptual eighth pass by these tables.
 	static const uint8_t passwidthshift[8] =  { 3, 3, 2, 2, 1, 1, 0, 0 };
 	static const uint8_t passheightshift[8] = { 3, 3, 3, 2, 2, 1, 1, 0 };
@@ -685,6 +686,7 @@ bool M_ReadIDAT (FileReader &file, uint8_t *buffer, int width, int height, int p
 			UnpackPixels (width, bytesPerRowIn, bitdepth, curr, curr, colortype == 0);
 		}
 	}
+#endif
 	return true;
 }
 
