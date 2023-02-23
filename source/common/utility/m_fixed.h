@@ -38,7 +38,13 @@ inline constexpr float FixedToFloat(fixed_t f)
 
 inline constexpr float FixedToFloat(fixed_t f, int b)
 {
+#ifdef __PS2__
+	float scale = static_cast<float>(1 << b);
+	float fcvt = static_cast<float>(scale);
+	return fcvt / scale;
+#else
 	return f * (1.f / (1 << b));
+#endif
 }
 
 template<int b = 16>

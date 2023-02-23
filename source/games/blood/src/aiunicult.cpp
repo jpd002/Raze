@@ -871,6 +871,7 @@ static void unicultThinkChase(DBloodActor* actor)
 								bool immune = nnExtIsImmune(hitactor, gVectorData[curWeapon].dmgType);
 								if (!(hitactor->hasX() && (!immune || (immune && hitactor->spr.statnum == kStatThing && hitactor->xspr.Vector)) && !hitactor->xspr.locked))
 								{
+#ifndef __PS2__ //Doesn't compile
 									auto hdist = (gHitInfo.hitpos.XY() - actor->spr.pos.XY()).Length();
 									if ((hdist <= 93.75 && !blck)
 										|| (dist <= (pExtra->fireDist / max(Random(4), 1u))))
@@ -881,6 +882,7 @@ static void unicultThinkChase(DBloodActor* actor)
 										return;
 
 									}
+#endif
 									auto tex1 = TexMan.GetGameTexture(hitactor->spr.spritetexture());
 									auto tex2 = TexMan.GetGameTexture(actor->spr.spritetexture());
 
