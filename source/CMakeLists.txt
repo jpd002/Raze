@@ -461,11 +461,19 @@ set( PLAT_COCOA_SOURCES
 	common/platform/posix/cocoa/i_video.mm
 	common/platform/posix/cocoa/st_console.mm
 	common/platform/posix/cocoa/st_start.mm )
+set( PLAT_PS2_SOURCES 
+	common/platform/ps2/i_input.cpp
+	common/platform/ps2/i_main.cpp
+	common/platform/ps2/i_specialpaths.cpp
+	common/platform/ps2/i_system.cpp
+	common/platform/ps2/i_video.cpp
+	common/platform/ps2/st_start.cpp
+	common/platform/ps2/zmusic_stub.cpp )
 
 if( WIN32 )
 	set( SYSTEM_SOURCES_DIR common/platform/win32 )
 	set( SYSTEM_SOURCES ${PLAT_WIN32_SOURCES} )
-	set( OTHER_SYSTEM_SOURCES ${PLAT_POSIX_SOURCES} ${PLAT_SDL_SOURCES} ${PLAT_OSX_SOURCES} ${PLAT_COCOA_SOURCES} ${PLAT_UNIX_SOURCES} )
+	set( OTHER_SYSTEM_SOURCES ${PLAT_POSIX_SOURCES} ${PLAT_SDL_SOURCES} ${PLAT_OSX_SOURCES} ${PLAT_COCOA_SOURCES} ${PLAT_UNIX_SOURCES} ${PLAT_PS2_SOURCES} )
 
 	set( SYSTEM_SOURCES ${SYSTEM_SOURCES} platform/win32/gameres.rc )
 elseif( APPLE )
@@ -484,12 +492,16 @@ elseif( APPLE )
 
 	set_source_files_properties( platform/posix/osx/${PROJECT_NAME}.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources )
 	set_source_files_properties( common/platform/posix/osx/iwadpicker_cocoa.mm PROPERTIES COMPILE_FLAGS -fobjc-exceptions )
+elseif( PLATFORM_PS2 )
+	set( SYSTEM_SOURCES_DIR common/platform/posix )
+	set( SYSTEM_SOURCES ${PLAT_PS2_SOURCES} )
+	set( PROJECT_LIBRARIES ${PROJECT_LIBRARIES} ps2ip )
 else()
 	option (SYSTEMINSTALL "Set global progdir based on CMake Install Dir" OFF)
 
 	set( SYSTEM_SOURCES_DIR common/platform/posix common/platform/posix/sdl )
 	set( SYSTEM_SOURCES ${PLAT_POSIX_SOURCES} ${PLAT_SDL_SOURCES} ${PLAT_UNIX_SOURCES} )
-	set( OTHER_SYSTEM_SOURCES ${PLAT_WIN32_SOURCES} ${PLAT_OSX_SOURCES} ${PLAT_COCOA_SOURCES} )
+	set( OTHER_SYSTEM_SOURCES ${PLAT_WIN32_SOURCES} ${PLAT_OSX_SOURCES} ${PLAT_COCOA_SOURCES} ${PLAT_PS2_SOURCES} )
 
 	if ( SYSTEMINSTALL )
 		add_definitions( -DPROGDIR="${CMAKE_INSTALL_PREFIX}/${INSTALL_PK3_PATH}" )
@@ -1395,6 +1407,10 @@ else()
 	)
 endif()
 
+if( PLATFORM_PS2 )
+	set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "${PROJECT_NAME}.elf")
+endif()
+
 if( MSVC )
 	option( COMPILE_GENERATE_MAPFILE "Generate .map file for debugging." OFF )
 	set( LINKERSTUFF "/MANIFEST:NO" )
@@ -1520,6 +1536,7 @@ source_group("Common\\Platforms\\OS X Files" REGULAR_EXPRESSION "^${CMAKE_CURREN
 source_group("Common\\Platforms\\Unix Files" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/common/platform/posix/unix/.+")
 source_group("Common\\Platforms\\SDL Files" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/common/platform/posix/sdl/.+")
 source_group("Common\\Platforms\\Win32 Files" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/common/platform/win32/.+")
+source_group("Common\\Platforms\\PlayStation2 Files" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/common/platform/ps2/.+")
 source_group("Common\\Rendering" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/common/rendering/.+")
 source_group("Common\\Rendering\\Hardware Renderer" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/common/rendering/hwrenderer/.+")
 source_group("Common\\Rendering\\Hardware Renderer\\Data" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/common/rendering/hwrenderer/data/.+")
