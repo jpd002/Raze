@@ -322,9 +322,12 @@ add_custom_target( revision_check ALL
 
 # required libraries
 
-set( PROJECT_LIBRARIES ${PROJECT_LIBRARIES} "${ZLIB_LIBRARIES}" "${JPEG_LIBRARIES}" "${BZIP2_LIBRARIES}" "${CMAKE_DL_LIBS}" "${TESS_LIBRARIES}" "${DRPC_LIBRARIES}")
+set( PROJECT_LIBRARIES ${PROJECT_LIBRARIES} "${ZLIB_LIBRARIES}" "${JPEG_LIBRARIES}" "${BZIP2_LIBRARIES}" "${TESS_LIBRARIES}" )
 if (HAVE_VULKAN)
 	set( PROJECT_LIBRARIES ${PROJECT_LIBRARIES} "zvulkan")
+endif()
+if( NOT PLATFORM_PS2 )
+	set( PROJECT_LIBRARIES ${PROJECT_LIBRARIES} "${CMAKE_DL_LIBS}" "${DRPC_LIBRARIES}" )
 endif()
 
 # ZMUSIC
@@ -352,6 +355,9 @@ if( ( MSVC OR PLATFORM_PS2 ) AND NOT ZMUSIC_FOUND )
 	set( ZMUSIC_FOUND TRUE )
 endif()
 
+if( NOT PLATFORM_PS2 )
+	set( PROJECT_LIBRARIES ${PROJECT_LIBRARIES} "${CMAKE_DL_LIBS}" "${DRPC_LIBRARIES}" "${ZMUSIC_LIBRARIES}" )
+endif()
 
 # VPX
 
@@ -886,7 +892,6 @@ set( VM_JIT_SOURCES
 # Enable fast math for some sources where performance matters (or where the PCH must not be used.)
 set( FASTMATH_SOURCES
 
-	common/rendering/gl_load/gl_load.c
 	common/textures/hires/hqnx/init.cpp
 	common/textures/hires/hqnx/hq2x.cpp
 	common/textures/hires/hqnx/hq3x.cpp
@@ -942,6 +947,27 @@ endif()
 
 if (HAVE_VULKAN)
 	set (FASTMATH_SOURCES ${FASTMATH_SOURCES} ${VULKAN_SOURCES})
+endif()
+
+if(NOT PLATFORM_PS2)
+	set (GL_SOURCES
+		common/rendering/gl_load/gl_load.c
+		common/rendering/gl_load/gl_interface.cpp
+		common/rendering/gl/gl_renderer.cpp
+		common/rendering/gl/gl_stereo3d.cpp
+		common/rendering/gl/gl_framebuffer.cpp
+		common/rendering/gl/gl_renderstate.cpp
+		common/rendering/gl/gl_renderbuffers.cpp
+		common/rendering/gl/gl_postprocess.cpp
+		common/rendering/gl/gl_postprocessstate.cpp
+		common/rendering/gl/gl_debug.cpp
+		common/rendering/gl/gl_buffers.cpp
+		common/rendering/gl/gl_hwtexture.cpp
+		common/rendering/gl/gl_samplers.cpp
+		common/rendering/gl/gl_shader.cpp
+		common/rendering/gl/gl_shaderprogram.cpp
+	)
+	set (FASTMATH_SOURCES ${FASTMATH_SOURCES} ${GL_SOURCES})
 endif()
 
 set (FASTMATH_SOURCES ${FASTMATH_SOURCES})
@@ -1204,20 +1230,6 @@ set (PCH_SOURCES
 	common/rendering/hwrenderer/postprocessing/hw_postprocess.cpp
 	common/rendering/hwrenderer/postprocessing/hw_postprocess_cvars.cpp
 	common/rendering/hwrenderer/postprocessing/hw_postprocessshader_ccmds.cpp
-	common/rendering/gl_load/gl_interface.cpp
-	common/rendering/gl/gl_renderer.cpp
-	common/rendering/gl/gl_stereo3d.cpp
-	common/rendering/gl/gl_framebuffer.cpp
-	common/rendering/gl/gl_renderstate.cpp
-	common/rendering/gl/gl_renderbuffers.cpp
-	common/rendering/gl/gl_postprocess.cpp
-	common/rendering/gl/gl_postprocessstate.cpp
-	common/rendering/gl/gl_debug.cpp
-	common/rendering/gl/gl_buffers.cpp
-	common/rendering/gl/gl_hwtexture.cpp
-	common/rendering/gl/gl_samplers.cpp
-	common/rendering/gl/gl_shader.cpp
-	common/rendering/gl/gl_shaderprogram.cpp
 	common/scripting/core/dictionary.cpp
 	common/scripting/core/dynarrays.cpp
 	common/scripting/core/symbols.cpp
@@ -1321,7 +1333,7 @@ if( UNIX )
 	endif()
 endif()
 
-target_link_libraries( ${PROJECT_NAME} ${PROJECT_LIBRARIES} ${ZMUSIC_LIBRARIES} gdtoa lzma )
+target_link_libraries( ${PROJECT_NAME} ${PROJECT_LIBRARIES} gdtoa lzma )
 
 include_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}
