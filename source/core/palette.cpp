@@ -194,7 +194,7 @@ void LookupTableInfo::postLoadTables(void)
 //
 //==========================================================================
 
-int32_t LookupTableInfo::loadTable(FileReader &fp)
+int LookupTableInfo::loadTable(FileReader &fp)
 {
     uint8_t buffer[256];
     int numlookups = fp.ReadUInt8();
@@ -312,7 +312,7 @@ void LookupTableInfo::postLoadLookups()
 //
 //==========================================================================
 
-int32_t LookupTableInfo::setTable(int palnum, const uint8_t *shtab)
+int LookupTableInfo::setTable(int palnum, const uint8_t *shtab)
 {
     if (shtab != NULL)
     {
@@ -478,9 +478,9 @@ void DrawFullscreenBlends()
     // These get prepended to the 2D drawer so they must be submitted in reverse order of drawing.
     if (tint_blood_r | tint_blood_g | tint_blood_b)
     {
-        PalEntry color2(255, max(-tint_blood_r, 0), max(-tint_blood_g, 0), max(-tint_blood_b, 0));
+        PalEntry color2(255, max<int>(-tint_blood_r, 0), max<int>(-tint_blood_g, 0), max<int>(-tint_blood_b, 0));
         twod->AddColorOnlyQuad(0, 0, twod->GetWidth(), twod->GetHeight(), color2, &LegacyRenderStyles[STYLE_Subtract], true);
-        PalEntry color(255, max(tint_blood_r, 0), max(tint_blood_g, 0), max(tint_blood_b, 0));
+        PalEntry color(255, max<int>(tint_blood_r, 0), max<int>(tint_blood_g, 0), max<int>(tint_blood_b, 0));
         twod->AddColorOnlyQuad(0, 0, twod->GetWidth(), twod->GetHeight(), color, &LegacyRenderStyles[STYLE_Add], true);
     }
 

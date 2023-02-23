@@ -63,7 +63,7 @@ protected:
 
 private:
 	void SetRavenDefaults (bool isHexen);
-	void ReadCVars (unsigned flags);
+	void ReadCVars (uint32_t flags);
 
 	bool bModSetup;
 	bool isInitialized = false;

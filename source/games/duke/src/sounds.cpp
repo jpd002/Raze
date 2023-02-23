@@ -271,7 +271,7 @@ inline bool S_IsAmbientSFX(DDukeActor* actor)
 //==========================================================================
 
 static int GetPositionInfo(DDukeActor* actor, FSoundID soundid, sectortype* sect,
-							 const DVector3 &cam, const DVector3 &pos, int *distPtr, FVector3 *sndPos)
+							 const DVector3 &cam, const DVector3 &pos, int32_t *distPtr, FVector3 *sndPos)
 {
 	// There's a lot of hackery going on here that could be mapped to rolloff and attenuation parameters.
 	// However, ultimately rolloff would also just reposition the sound source so this can remain as it is.
