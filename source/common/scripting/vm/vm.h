@@ -612,6 +612,10 @@ namespace
 	template<> struct native_is_valid<void> { static const bool value = true; static const bool retval = true; };
 	template<> struct native_is_valid<int> { static const bool value = true;  static const bool retval = true; };
 	template<> struct native_is_valid<unsigned int> { static const bool value = true; static const bool retval = true; };
+#ifdef __PS2__
+	template<> struct native_is_valid<int32_t> { static const bool value = true;  static const bool retval = true; };
+	template<> struct native_is_valid<uint32_t> { static const bool value = true; static const bool retval = true; };
+#endif
 	template<> struct native_is_valid<double> { static const bool value = true; static const bool retval = true; };
 	template<> struct native_is_valid<bool> { static const bool value = true; static const bool retval = false;};	// Bool as return does not work!
 }

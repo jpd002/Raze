@@ -226,6 +226,10 @@ FSerializer &Serialize(FSerializer &arc, const char *key, int8_t &value, int8_t 
 FSerializer &Serialize(FSerializer &arc, const char *key, uint8_t &value, uint8_t *defval);
 FSerializer &Serialize(FSerializer &arc, const char *key, int16_t &value, int16_t *defval);
 FSerializer &Serialize(FSerializer &arc, const char *key, uint16_t &value, uint16_t *defval);
+#ifdef __PS2__
+FSerializer &Serialize(FSerializer &arc, const char *key, int &value, int *defval);
+FSerializer &Serialize(FSerializer &arc, const char *key, unsigned int &value, unsigned int *defval);
+#endif
 FSerializer &Serialize(FSerializer &arc, const char *key, double &value, double *defval);
 FSerializer &Serialize(FSerializer &arc, const char *key, float &value, float *defval);
 FSerializer &Serialize(FSerializer &arc, const char *key, FTextureID &value, FTextureID *defval);

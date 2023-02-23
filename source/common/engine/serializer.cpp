@@ -1007,6 +1007,80 @@ FSerializer &Serialize(FSerializer &arc, const char *key, uint32_t &value, uint3
 //
 //==========================================================================
 
+#ifdef __PS2__
+FSerializer &Serialize(FSerializer &arc, const char *key, int &value, int *defval)
+{
+	if (arc.isWriting())
+	{
+		if (!arc.w->inObject() || defval == nullptr || value != *defval)
+		{
+			arc.WriteKey(key);
+			arc.w->Int(value);
+		}
+	}
+	else
+	{
+		auto val = arc.r->FindKey(key);
+		if (val != nullptr)
+		{
+			assert(val->IsInt());
+			if (val->IsInt())
+			{
+				value = val->GetInt();
+			}
+			else
+			{
+				Printf(TEXTCOLOR_RED "integer type expected for '%s'\n", key);
+				arc.mErrors++;
+			}
+		}
+	}
+	return arc;
+}
+
+//==========================================================================
+//
+//
+//
+//==========================================================================
+
+FSerializer &Serialize(FSerializer &arc, const char *key, unsigned int &value, unsigned int *defval)
+{
+	if (arc.isWriting())
+	{
+		if (!arc.w->inObject() || defval == nullptr || value != *defval)
+		{
+			arc.WriteKey(key);
+			arc.w->Uint(value);
+		}
+	}
+	else
+	{
+		auto val = arc.r->FindKey(key);
+		if (val != nullptr)
+		{
+			assert(val->IsUint());
+			if (val->IsUint())
+			{
+				value = val->GetUint();
+			}
+			else
+			{
+				Printf(TEXTCOLOR_RED "integer type expected for '%s'\n", key);
+				arc.mErrors++;
+			}
+		}
+	}
+	return arc;
+}
+#endif
+
+//==========================================================================
+//
+//
+//
+//==========================================================================
+
 FSerializer& Serialize(FSerializer& arc, const char* key, char& value, char* defval)
 {
 	int32_t vv = value;

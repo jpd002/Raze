@@ -1290,6 +1290,12 @@ public:
 	{
 		return TAngle(f * (90. / 0x40000000));
 	}
+#ifdef __PS2__
+	static constexpr TAngle fromBam(angle_t f)
+	{
+		return TAngle(f * (90.f / 0x40000000));
+	}
+#endif
 
 	static constexpr TAngle fromBuild(double bang)
 	{

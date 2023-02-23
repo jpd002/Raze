@@ -151,6 +151,38 @@ inline int LittleLong(int x)
 	return x;
 }
 
+#ifdef __PS2__
+
+inline uint32_t LittleLong(uint32_t x)
+{
+	return x;
+}
+
+inline int32_t LittleLong(int32_t x)
+{
+	return x;
+}
+
+inline uint32_t BigLong (uint32_t x)
+{
+	return (unsigned int)(
+		(x>>24)
+		| ((x>>8) & 0xff00)
+		| ((x<<8) & 0xff0000)
+		| (x<<24));
+}
+
+inline int32_t BigLong (int32_t x)
+{
+	return (int)(
+		(((unsigned int)x)>>24)
+		| ((((unsigned int)x)>>8) & 0xff00)
+		| ((((unsigned int)x)<<8) & 0xff0000)
+		| (((unsigned int)x)<<24));
+}
+
+#endif
+
 #ifdef _MSC_VER
 
 inline short BigShort(short x)
@@ -209,10 +241,10 @@ inline int BigLong (int x)
 #endif // __BIG_ENDIAN__
 
 // These may be destructive so they should create errors
-unsigned long BigLong(unsigned long) = delete;
-long BigLong(long) = delete;
-unsigned long LittleLong(unsigned long) = delete;
-long LittleLong(long) = delete;
+uint64_t BigLong(uint64_t) = delete;
+int64_t BigLong(int64_t) = delete;
+uint64_t LittleLong(uint64_t) = delete;
+int64_t LittleLong(int64_t) = delete;
 
 
 // Data accessors, since some data is highly likely to be unaligned.

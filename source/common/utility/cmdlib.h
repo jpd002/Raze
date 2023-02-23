@@ -80,6 +80,13 @@ bool ScanDirectory(TArray<FFileList> &list, const char *dirpath);
 bool IsAbsPath(const char*);
 FString M_ZLibError(int zerrnum);
 
+#ifdef __PS2__
+inline constexpr int Scale(int a, int b, int c)
+{
+	return (int32_t)(((int64_t)a * b) / c);
+}
+#endif
+
 inline constexpr int32_t Scale(int32_t a, int32_t b, int32_t c)
 {
 	return (int32_t)(((int64_t)a * b) / c);

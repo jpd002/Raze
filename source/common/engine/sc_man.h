@@ -92,6 +92,10 @@ public:
 	void RestorePos(const SavedPos &pos);
 	void AddSymbol(const char* name, int64_t value);
 	void AddSymbol(const char* name, uint64_t value);
+#ifdef __PS2__
+	inline void AddSymbol(const char* name, int value) { return AddSymbol(name, int64_t(value)); }
+	inline void AddSymbol(const char* name, unsigned value) { return AddSymbol(name, uint64_t(value)); }
+#endif
 	inline void AddSymbol(const char* name, int32_t value) { return AddSymbol(name, int64_t(value)); }
 	inline void AddSymbol(const char* name, uint32_t value) { return AddSymbol(name, uint64_t(value)); }
 	void AddSymbol(const char* name, double value);
@@ -130,6 +134,15 @@ public:
 		var = Number;
 		return true;
 	}
+
+#ifdef __PS2__
+	bool GetNumber(int32_t& var, bool evaluate = false)
+	{
+		if (!GetNumber(evaluate)) return false;
+		var = Number;
+		return true;
+	}
+#endif
 
 	bool GetNumber(int64_t& var, bool evaluate = false)
 	{
