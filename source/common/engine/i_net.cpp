@@ -54,6 +54,11 @@
 #	define WIN32_LEAN_AND_MEAN
 #	include <windows.h>
 #	include <winsock.h>
+#elif defined(__PS2__)
+extern "C"
+{
+#	include <sys/socket.h>
+}
 #else
 #	include <sys/socket.h>
 #	include <netinet/in.h>
@@ -85,6 +90,17 @@
 
 /* [Petteri] Get more portable: */
 #ifndef __WIN32__
+#ifdef __PS2__
+typedef int SOCKET;
+typedef uint16_t u_short;
+typedef uint32_t u_long;
+#define SOCKET_ERROR		-1
+#define INVALID_SOCKET		-1
+#define Sleep(x)			usleep (x * 1000)
+#define WSAEWOULDBLOCK		EWOULDBLOCK
+#define WSAECONNRESET		ECONNRESET
+#define WSAGetLastError()	errno
+#else
 typedef int SOCKET;
 #define SOCKET_ERROR		-1
 #define INVALID_SOCKET		-1
@@ -94,6 +110,7 @@ typedef int SOCKET;
 #define WSAEWOULDBLOCK		EWOULDBLOCK
 #define WSAECONNRESET		ECONNRESET
 #define WSAGetLastError()	errno
+#endif
 #endif
 
 #ifndef IPPORT_USERRESERVED
