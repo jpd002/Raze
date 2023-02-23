@@ -7282,7 +7282,7 @@ FxExpression *FxStructMember::Resolve(FCompileContext &ctx)
 			auto locvar = static_cast<FxLocalVariable *>(classx);
 			if (!(locvar->Variable->VarFlags & VARF_Out))
 			{
-				locvar->RegOffset = int(membervar->Offset / 8);
+				locvar->RegOffset = int(membervar->Offset / sizeof(float));
 			}
 			else
 			{
