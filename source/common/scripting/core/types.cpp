@@ -850,9 +850,9 @@ void PFloat::SetDoubleSymbols()
 {
 	static const SymbolInitF symf[] =
 	{
-		{ NAME_Min_Normal,		DBL_MIN },
-		{ NAME_Max,				DBL_MAX },
-		{ NAME_Epsilon,			DBL_EPSILON },
+		{ NAME_Min_Normal,		FLT_MIN },
+		{ NAME_Max,				FLT_MAX },
+		{ NAME_Epsilon,			FLT_EPSILON },
 		{ NAME_NaN,				std::numeric_limits<float>::quiet_NaN() },
 		{ NAME_Infinity,		std::numeric_limits<float>::infinity() },
 		{ NAME_Min_Denormal,	std::numeric_limits<float>::denorm_min() }
