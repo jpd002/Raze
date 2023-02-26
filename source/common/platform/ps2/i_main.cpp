@@ -7,13 +7,14 @@ FArgs *Args;
 
 int main(int argc, char** argv)
 {
+	progdir = "host:/raze";
 	const int result = GameMain();
 	return result;
 }
 
 void I_SetWindowTitle(const char* caption)
 {
-	printf("I_SetWindowTitle('%s'\n);", caption);
+	printf("I_SetWindowTitle('%s');\n", caption);
 }
 
 void UpdateVRModes(bool)

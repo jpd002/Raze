@@ -468,6 +468,8 @@ set( PLAT_COCOA_SOURCES
 	common/platform/posix/cocoa/st_console.mm
 	common/platform/posix/cocoa/st_start.mm )
 set( PLAT_PS2_SOURCES 
+	common/platform/ps2/gs_framebuffer.cpp
+	common/platform/ps2/gs_framebuffer.h
 	common/platform/ps2/i_input.cpp
 	common/platform/ps2/i_main.cpp
 	common/platform/ps2/i_specialpaths.cpp
