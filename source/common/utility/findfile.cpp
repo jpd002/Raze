@@ -43,25 +43,46 @@
 
 void *I_FindFirst(const char *const filespec, findstate_t *const fileinfo)
 {
-	printf("I_FindFirst(...);\n");
-	return nullptr;
+	//We can't really do super fancy globbing here.
+	auto charPos = strchr(filespec, '*');
+	if(!charPos)
+	{
+		return (void*)-1;
+	}
+	auto size = charPos - filespec;
+	FString path(filespec, size);
+	//printf("Looking inside '%s'.\n", path.GetChars());
+	DIR* dir = opendir(path.GetChars());
+	if(!dir)
+	{
+		return (void*)-1;
+	}
+	return (void*)dir;
 }
 
 int I_FindNext(void* const handle, findstate_t* const fileinfo)
 {
-	printf("I_FindNext(...);\n");
-	return 0;
+	auto entry = readdir(reinterpret_cast<DIR*>(handle));
+	fileinfo->currentEntry = entry;
+	return entry ? 0 : -1;
 }
 
 int I_FindClose(void* const handle)
 {
-	printf("I_FindClose(...);\n");
+	closedir(reinterpret_cast<DIR*>(handle));
 	return 0;
+}
+
+const char *I_FindName(findstate_t *fileinfo)
+{
+	return fileinfo->currentEntry->d_name;
 }
 
 int I_FindAttr(findstate_t *const fileinfo)
 {
-	return 0;
+	auto entry = fileinfo->currentEntry;
+	bool isdir = S_ISDIR(entry->d_stat.st_mode) != 0;
+	return isdir ? FA_DIREC : 0;
 }
 
 #elif !defined(_WIN32)

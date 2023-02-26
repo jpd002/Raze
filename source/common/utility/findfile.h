@@ -9,7 +9,25 @@ enum
 	ZPATH_MAX = 260
 };
 
-#ifndef _WIN32
+#ifdef __PS2__
+
+#include <dirent.h>
+
+struct findstate_t
+{
+	struct dirent* currentEntry = {};
+};
+
+const char* I_FindName(findstate_t* fileinfo);
+int I_FindAttr(findstate_t* const fileinfo);
+
+#define FA_RDONLY	1
+#define FA_HIDDEN	2
+#define FA_SYSTEM	4
+#define FA_DIREC	8
+#define FA_ARCH		16
+
+#elif !defined(_WIN32)
 
 #include <dirent.h>
 
@@ -28,7 +46,7 @@ private:
 	friend int I_FindClose(void *handle);
 };
 
-int I_FindAttr (findstate_t *fileinfo); 
+int I_FindAttr (findstate_t *fileinfo);
 
 inline const char *I_FindName(findstate_t *fileinfo)
 {
