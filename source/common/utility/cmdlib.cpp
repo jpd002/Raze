@@ -48,6 +48,10 @@
 #include <unistd.h>
 #endif
 
+#ifdef _WIN32
+#define S_ISDIR(a) (!!(a & S_IFDIR))
+#endif
+
 /*
 progdir will hold the path up to the game directory, including the slash
 
@@ -221,7 +225,7 @@ bool DirEntryExists(const char *pathname, bool *isdir)
 	struct _stat64 info;
 	bool res = _wstat64(wstr.c_str(), &info) == 0;
 #endif
-	if (isdir) *isdir = !!(info.st_mode & S_IFDIR);
+	if (isdir) *isdir = !!S_ISDIR(info.st_mode);
 	return res;
 }
 
@@ -247,7 +251,7 @@ bool GetFileInfo(const char* pathname, size_t *size, time_t *time)
 	struct _stat64 info;
 	bool res = _wstat64(wstr.c_str(), &info) == 0;
 #endif
-	if (!res || (info.st_mode & S_IFDIR)) return false;
+	if (!res || S_ISDIR(info.st_mode)) return false;
 	if (size) *size = (size_t)info.st_size;
 	if (time) *time = info.st_mtime;
 	return res;
