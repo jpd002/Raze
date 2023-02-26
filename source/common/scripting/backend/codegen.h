@@ -120,6 +120,9 @@ struct ExpVal
 		float Float;
 		void *pointer;
 	};
+	//Some assumptions for memcpy operations that are done in ctors.
+	static_assert(sizeof(pointer) >= sizeof(Float));
+	static_assert(sizeof(pointer) >= sizeof(Int));
 
 	ExpVal()
 	{
@@ -150,7 +153,7 @@ struct ExpVal
 		}
 		else
 		{
-			memcpy(&Float, &o.Float, 8);
+			memcpy(&pointer, &o.pointer, sizeof(pointer));
 		}
 	}
 
@@ -167,7 +170,7 @@ struct ExpVal
 		}
 		else
 		{
-			memcpy(&Float, &o.Float, 8);
+			memcpy(&pointer, &o.pointer, sizeof(pointer));
 		}
 		return *this;
 	}
