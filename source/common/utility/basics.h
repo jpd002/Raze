@@ -3,6 +3,7 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <algorithm>
+#include <string.h>
 #include "xs_Float.h"
 
 #define MAXWIDTH 12000
