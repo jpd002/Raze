@@ -1,5 +1,6 @@
 #pragma once
 
+#include <gsKit.h>
 #include "v_video.h"
 
 class GsFrameBuffer : public DFrameBuffer
@@ -12,4 +13,7 @@ public:
 	bool IsFullscreen() override;
 	int GetClientWidth() override;
 	int GetClientHeight() override;
+
+	void Update() override;
+
 };
