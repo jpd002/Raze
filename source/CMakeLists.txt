@@ -507,7 +507,7 @@ elseif( APPLE )
 elseif( PLATFORM_PS2 )
 	set( SYSTEM_SOURCES_DIR common/platform/posix )
 	set( SYSTEM_SOURCES ${PLAT_PS2_SOURCES} )
-	set( PROJECT_LIBRARIES ${PROJECT_LIBRARIES} ps2ip )
+	set( PROJECT_LIBRARIES ${PROJECT_LIBRARIES} ps2ip gskit dmakit )
 else()
 	option (SYSTEMINSTALL "Set global progdir based on CMake Install Dir" OFF)
 
