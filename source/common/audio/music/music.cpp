@@ -711,6 +711,8 @@ bool S_ChangeMusic(const char* musicname, int order, bool looping, bool force)
 		return true;
 	}
 
+	mus_playing.name = musicname;
+
 	// load & register it
 	if (handle != nullptr)
 	{
@@ -729,7 +731,6 @@ bool S_ChangeMusic(const char* musicname, int order, bool looping, bool force)
 	}
 
 	mus_playing.loop = looping;
-	mus_playing.name = musicname;
 	mus_playing.baseorder = 0;
 	mus_playing.LastSong = "";
 
