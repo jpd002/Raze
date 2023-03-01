@@ -2,7 +2,7 @@
 
 const char* ZMusic_GetLastError()
 {
-	return "";
+	return "Not implemented";
 }
 
 // Sets callbacks for functionality that the client needs to provide.
