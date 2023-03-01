@@ -1,4 +1,11 @@
 #include "gs_framebuffer.h"
+#include "v_draw.h"
+#include "gs_buffers.h"
+#include "flatvertices.h"
+#include "hw_skydome.h"
+#include "hw_viewpointbuffer.h"
+#include "hw_lightbuffer.h"
+#include "hw_bonebuffer.h"
 
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 448
@@ -18,6 +25,13 @@ void GsFrameBuffer::InitializeState()
 	gsKit_mode_switch(m_gsContext, GS_ONESHOT);
 	gsKit_init_screen(m_gsContext);
 
+	SetViewportRects(nullptr);
+
+	mVertexData = new FFlatVertexBuffer(GetWidth(), GetHeight(), screen->mPipelineNbr);
+	mSkyData = new FSkyVertexBuffer;
+	mViewpoints = new HWViewpointBuffer(screen->mPipelineNbr);
+	mLights = new FLightBuffer(screen->mPipelineNbr);
+	mBones = new BoneBuffer(screen->mPipelineNbr);
 }
 
 bool GsFrameBuffer::IsFullscreen()
@@ -34,6 +48,22 @@ int GsFrameBuffer::GetClientHeight()
 {
 	return SCREEN_HEIGHT;
 }
+
+IVertexBuffer* GsFrameBuffer::CreateVertexBuffer()
+{
+	return new GsVertexBuffer();
+}
+
+IIndexBuffer* GsFrameBuffer::CreateIndexBuffer()
+{
+	return new GsIndexBuffer();
+}
+
+IDataBuffer* GsFrameBuffer::CreateDataBuffer(int bindingpoint, bool ssbo, bool needsresize)
+{
+	return new GsDataBuffer();
+}
+
 void GsFrameBuffer::Update()
 {
 	printf("Updating.\r\n");

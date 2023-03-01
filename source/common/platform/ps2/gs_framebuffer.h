@@ -14,6 +14,12 @@ public:
 	int GetClientWidth() override;
 	int GetClientHeight() override;
 
+	IVertexBuffer* CreateVertexBuffer() override;
+	IIndexBuffer* CreateIndexBuffer() override;
+	IDataBuffer* CreateDataBuffer(int bindingpoint, bool ssbo, bool needsresize) override;
+
 	void Update() override;
 
+private:
+	GSGLOBAL* m_gsContext = nullptr;
 };
