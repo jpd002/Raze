@@ -56,6 +56,19 @@ void GsBuffer::Resize(size_t newsize)
 
 void GsVertexBuffer::SetFormat(int numBindingPoints, int numAttributes, size_t stride, const FVertexBufferAttribute *attrs)
 {
+	m_stride = stride;
+	for(int i = 0; i < numAttributes; i++)
+	{
+		const auto& attr = attrs[i];
+		assert(attr.binding == 0);
+		switch(attr.location)
+		{
+		case VATTR_VERTEX:
+			assert(attr.format == VFmt_Float3);
+			m_positionOffset = attr.offset;
+			break;
+		}
+	}
 }
 
 void GsDataBuffer::BindRange(FRenderState* state, size_t start, size_t length)

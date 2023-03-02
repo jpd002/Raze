@@ -12,13 +12,13 @@
 
 GsFrameBuffer::GsFrameBuffer()
 	: DFrameBuffer(SCREEN_WIDTH, SCREEN_HEIGHT)
+	, m_gsContext(gsKit_init_global_custom(GS_RENDER_QUEUE_OS_POOLSIZE, GS_RENDER_QUEUE_PER_POOLSIZE))
+	, m_renderState(m_gsContext)
 {
 }
 
 void GsFrameBuffer::InitializeState()
 {
-	m_gsContext = gsKit_init_global();
-	
 	dmaKit_init(D_CTRL_RELE_OFF,D_CTRL_MFD_OFF, D_CTRL_STS_UNSPEC, D_CTRL_STD_OFF, D_CTRL_RCYC_8, 1 << DMA_CHANNEL_GIF);
 	dmaKit_chan_init(DMA_CHANNEL_GIF);
 
@@ -66,12 +66,12 @@ IDataBuffer* GsFrameBuffer::CreateDataBuffer(int bindingpoint, bool ssbo, bool n
 
 void GsFrameBuffer::Update()
 {
-	printf("Updating.\r\n");
+	gsKit_clear(m_gsContext, GS_SETREG_RGBAQ(0, 0, 0, 0, 0));
 
-	gsKit_clear(m_gsContext, GS_SETREG_RGBAQ(0xFF,0xFF,0xFF,0x00,0x00));
-
-	//::Draw2D(twod, m_renderState);
+	::Draw2D(twod, m_renderState);
 
 	gsKit_queue_exec(m_gsContext);
+	FPSLimit();
 	gsKit_sync_flip(m_gsContext);
+	Super::Update();
 }

@@ -26,6 +26,9 @@ public:
 	GsVertexBuffer() = default;
 	virtual ~GsVertexBuffer() = default;
 	void SetFormat(int numBindingPoints, int numAttributes, size_t stride, const FVertexBufferAttribute *attrs) override;
+
+	size_t m_positionOffset = -1;
+	size_t m_stride = -1;
 };
 
 class GsIndexBuffer : public IIndexBuffer, public GsBuffer

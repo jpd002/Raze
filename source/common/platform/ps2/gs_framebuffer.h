@@ -2,9 +2,11 @@
 
 #include <gsKit.h>
 #include "v_video.h"
+#include "gs_renderstate.h"
 
 class GsFrameBuffer : public DFrameBuffer
 {
+	typedef DFrameBuffer Super;
 public:
 	GsFrameBuffer();
 	virtual ~GsFrameBuffer() = default;
@@ -22,4 +24,5 @@ public:
 
 private:
 	GSGLOBAL* m_gsContext = nullptr;
+	GsRenderState m_renderState;
 };

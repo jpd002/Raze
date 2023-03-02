@@ -6,7 +6,7 @@ CVAR (Bool,  use_mouse,				true, CVAR_ARCHIVE|CVAR_GLOBALCONFIG)
 
 void I_GetEvent()
 {
-	printf("I_GetEvent();\n");
+	//printf("I_GetEvent();\n");
 }
 
 void I_StartTic()

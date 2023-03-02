@@ -1,11 +1,12 @@
 #pragma once
 
+#include <gsKit.h>
 #include "hw_renderstate.h"
 
 class GsRenderState : public FRenderState
 {
 public:
-	GsRenderState() = default;
+	GsRenderState(GSGLOBAL*);
 	virtual ~GsRenderState() = default;
 
 	void ClearScreen() override;
@@ -28,4 +29,7 @@ public:
 	void EnableMultisampling(bool on) override;
 	void EnableLineSmooth(bool on) override;
 	void EnableDrawBuffers(int count, bool apply = false) override;
+
+private:
+	GSGLOBAL* m_gsContext = nullptr;
 };
