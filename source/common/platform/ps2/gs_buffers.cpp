@@ -22,7 +22,10 @@ void GsBuffer::SetData(size_t size, const void *data, BufferUsageType type)
 			throw std::bad_alloc();
 		}
 	}
-	memcpy(m_data, data, size);
+	if(data)
+	{
+		memcpy(m_data, data, size);
+	}
 	m_size = size;
 }
 
@@ -51,7 +54,7 @@ void GsBuffer::Unmap()
 
 void GsBuffer::Resize(size_t newsize)
 {
-	printf("Not implemented.\n");
+	SetData(newsize, nullptr, BufferUsageType::Static);
 }
 
 void GsVertexBuffer::SetFormat(int numBindingPoints, int numAttributes, size_t stride, const FVertexBufferAttribute *attrs)
