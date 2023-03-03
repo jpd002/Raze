@@ -57,6 +57,14 @@ void *I_FindFirst(const char *const filespec, findstate_t *const fileinfo)
 	{
 		return (void*)-1;
 	}
+	//This function returns the first entry found, readdir and return that entry if we got something.
+	auto entry = readdir(dir);
+	if(!entry)
+	{
+		closedir(dir);
+		return (void*)-1;
+	}
+	fileinfo->currentEntry = entry;
 	return (void*)dir;
 }
 
