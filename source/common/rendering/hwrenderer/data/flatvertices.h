@@ -75,7 +75,7 @@ public:
 
 	unsigned int mMapStart;
 
-	static const unsigned int BUFFER_SIZE = 2000000;
+	static const unsigned int BUFFER_SIZE = 65535;
 	static const unsigned int BUFFER_SIZE_TO_USE = BUFFER_SIZE-500;
 
 public:

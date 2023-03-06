@@ -36,7 +36,7 @@ static const int ELEMENT_SIZE = (4*sizeof(float));
 FLightBuffer::FLightBuffer(int pipelineNbr):
 	mPipelineNbr(pipelineNbr)
 {
-	int maxNumberOfLights = 80000;
+	int maxNumberOfLights = 16;
 
 	mBufferSize = maxNumberOfLights * ELEMENTS_PER_LIGHT;
 	mByteSize = mBufferSize * ELEMENT_SIZE;
