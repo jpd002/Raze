@@ -1000,6 +1000,7 @@ void ZCCCompiler::CompileAllConstants()
 {
 	// put all constants in one list to make resolving this easier.
 	TArray<ZCC_ConstantWork> constantwork;
+	constantwork.Grow(2048);
 
 	CopyConstants(constantwork, Constants, nullptr, &OutNamespace->Symbols);
 	for (auto c : Classes)
@@ -1623,6 +1624,7 @@ bool ZCCCompiler::CompileFields(PContainerType *type, TArray<ZCC_VarDeclarator *
 TArray<ZCC_StructWork *> ZCCCompiler::OrderStructs()
 {
 	TArray<ZCC_StructWork *> new_order;
+	new_order.Grow(128);
 
 	for (auto struct_def : Structs)
 	{
