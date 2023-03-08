@@ -1,6 +1,7 @@
 #include "gs_framebuffer.h"
 #include "v_draw.h"
 #include "gs_buffers.h"
+#include "gs_hwtexture.h"
 #include "flatvertices.h"
 #include "hw_skydome.h"
 #include "hw_viewpointbuffer.h"
@@ -62,6 +63,11 @@ IIndexBuffer* GsFrameBuffer::CreateIndexBuffer()
 IDataBuffer* GsFrameBuffer::CreateDataBuffer(int bindingpoint, bool ssbo, bool needsresize)
 {
 	return new GsDataBuffer();
+}
+
+IHardwareTexture* GsFrameBuffer::CreateHardwareTexture(int numchannels)
+{
+	return new GsHwTexture(m_gsContext);
 }
 
 void GsFrameBuffer::Update()

@@ -20,6 +20,8 @@ public:
 	IIndexBuffer* CreateIndexBuffer() override;
 	IDataBuffer* CreateDataBuffer(int bindingpoint, bool ssbo, bool needsresize) override;
 
+	IHardwareTexture* CreateHardwareTexture(int numchannels) override;
+
 	void Update() override;
 
 private:

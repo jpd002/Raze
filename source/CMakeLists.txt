@@ -472,6 +472,8 @@ set( PLAT_PS2_SOURCES
 	common/platform/ps2/gs_buffers.h
 	common/platform/ps2/gs_framebuffer.cpp
 	common/platform/ps2/gs_framebuffer.h
+	common/platform/ps2/gs_hwtexture.cpp
+	common/platform/ps2/gs_hwtexture.h
 	common/platform/ps2/gs_renderstate.cpp
 	common/platform/ps2/gs_renderstate.h
 	common/platform/ps2/i_input.cpp

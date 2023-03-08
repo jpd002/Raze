@@ -70,6 +70,10 @@ void GsVertexBuffer::SetFormat(int numBindingPoints, int numAttributes, size_t s
 			assert(attr.format == VFmt_Float3);
 			m_positionOffset = attr.offset;
 			break;
+		case VATTR_TEXCOORD:
+			assert(attr.format == VFmt_Float2);
+			m_texCoordOffset = attr.offset;
+			break;
 		}
 	}
 }
