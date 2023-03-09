@@ -776,7 +776,7 @@ static int ListGetInt(Va_List &tags)
 
 static inline float ListGetDouble(Va_List &tags)
 {
-	return va_arg(tags.list, float);
+	return va_arg(tags.list, double);
 }
 
 static inline FSpecialColormap * ListGetSpecialColormap(Va_List &tags)
