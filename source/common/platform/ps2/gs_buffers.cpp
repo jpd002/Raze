@@ -11,7 +11,6 @@ GsBuffer::~GsBuffer()
 
 void GsBuffer::SetData(size_t size, const void *data, BufferUsageType type)
 {
-	printf("GsBuffer::SetData(size = %d);\n", static_cast<int>(size));
 	if(m_size != size)
 	{
 		free(m_data);

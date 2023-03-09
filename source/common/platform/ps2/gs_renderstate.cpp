@@ -17,14 +17,10 @@ void GsRenderState::ClearScreen()
 
 void GsRenderState::Draw(int dt, int index, int count, bool apply)
 {
-	//printf("Draw(dt = %d, index = %d, count = %d, apply = %d);\n",
-	//	dt, index, count, apply);
 }
 
 void GsRenderState::DrawIndexed(int dt, int index, int count, bool apply)
 {
-	//printf("DrawIndexed(dt = %d, index = %d, count = %d, apply = %d);\n",
-	//	dt, index, count, apply);
 	assert(mIndexBuffer);
 	assert(mVertexBuffer);
 	assert(dt == DT_Triangles);
@@ -54,7 +50,6 @@ void GsRenderState::DrawIndexed(int dt, int index, int count, bool apply)
 		gsVertex.rgbaq = color_to_RGBAQ(0x80, 0x80, 0x80, 0x80, 1.0f);
 		gsVertex.xyz2 = vertex_to_XYZ2(m_gsContext, position[0], position[1], position[2]);
 		gsVertex.stq = vertex_to_STQ(texCoord[0], texCoord[1]);
-		//printf("%f, %f, %f\n", position[0], position[1], position[2]);
 	}
 	mIndexBuffer->Unmap();
 	mVertexBuffer->Unmap();
