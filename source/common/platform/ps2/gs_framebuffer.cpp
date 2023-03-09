@@ -50,6 +50,11 @@ int GsFrameBuffer::GetClientHeight()
 	return SCREEN_HEIGHT;
 }
 
+FRenderState* GsFrameBuffer::RenderState()
+{
+	return &m_renderState;
+}
+
 IVertexBuffer* GsFrameBuffer::CreateVertexBuffer()
 {
 	return new GsVertexBuffer();

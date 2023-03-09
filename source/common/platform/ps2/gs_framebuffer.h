@@ -16,6 +16,8 @@ public:
 	int GetClientWidth() override;
 	int GetClientHeight() override;
 
+	FRenderState* RenderState() override;
+
 	IVertexBuffer* CreateVertexBuffer() override;
 	IIndexBuffer* CreateIndexBuffer() override;
 	IDataBuffer* CreateDataBuffer(int bindingpoint, bool ssbo, bool needsresize) override;
