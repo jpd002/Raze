@@ -1,6 +1,8 @@
 #include "gs_renderstate.h"
 #include "gs_buffers.h"
 #include "gs_hwtexture.h"
+#include "shaderuniforms.h"
+#include "hw_viewpointuniforms.h"
 #include <gsInline.h>
 
 static const int32_t MAX_VERTICES = 0x1000;
@@ -125,4 +127,16 @@ void GsRenderState::EnableLineSmooth(bool on)
 
 void GsRenderState::EnableDrawBuffers(int count, bool apply)
 {
+}
+
+void GsRenderState::BindUniformBuffer(int bindingPoint, uint8_t* buffer, size_t bufferSize)
+{
+	//We're only interested by viewpoint uniforms for now
+	if(bindingPoint != VIEWPOINT_BINDINGPOINT)
+	{
+		return;
+	}
+	assert(bufferSize >= sizeof(HWViewpointUniforms));
+	m_viewpointBuffer = buffer;
+	m_viewpointBufferSize = bufferSize;
 }

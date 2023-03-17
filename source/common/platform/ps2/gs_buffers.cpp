@@ -3,6 +3,7 @@
 #include <malloc.h>
 #include <exception>
 #include <cstring>
+#include "gs_renderstate.h"
 
 GsBuffer::~GsBuffer()
 {
@@ -77,6 +78,14 @@ void GsVertexBuffer::SetFormat(int numBindingPoints, int numAttributes, size_t s
 	}
 }
 
+GsDataBuffer::GsDataBuffer(int bindingPoint)
+: m_bindingPoint(bindingPoint)
+{
+
+}
+
 void GsDataBuffer::BindRange(FRenderState* state, size_t start, size_t length)
 {
+	assert((start + length) <= m_size);
+	static_cast<GsRenderState*>(state)->BindUniformBuffer(m_bindingPoint, reinterpret_cast<uint8_t*>(m_data) + start, length);
 }

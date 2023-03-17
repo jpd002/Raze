@@ -67,7 +67,7 @@ IIndexBuffer* GsFrameBuffer::CreateIndexBuffer()
 
 IDataBuffer* GsFrameBuffer::CreateDataBuffer(int bindingpoint, bool ssbo, bool needsresize)
 {
-	return new GsDataBuffer();
+	return new GsDataBuffer(bindingpoint);
 }
 
 IHardwareTexture* GsFrameBuffer::CreateHardwareTexture(int numchannels)

@@ -15,7 +15,7 @@ public:
 	void Unmap() override;
 	void Resize(size_t newsize) override;
 
-private:
+protected:
 	void* m_data = nullptr;
 	size_t m_size = 0;
 };
@@ -42,7 +42,10 @@ public:
 class GsDataBuffer : public IDataBuffer, public GsBuffer
 {
 public:
-	GsDataBuffer() = default;
+	GsDataBuffer(int bindingPoint);
 	virtual ~GsDataBuffer() = default;
 	void BindRange(FRenderState* state, size_t start, size_t length) override;
+
+private:
+	int m_bindingPoint = 0;
 };

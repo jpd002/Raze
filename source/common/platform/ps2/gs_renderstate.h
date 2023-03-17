@@ -30,6 +30,10 @@ public:
 	void EnableLineSmooth(bool on) override;
 	void EnableDrawBuffers(int count, bool apply = false) override;
 
+	void BindUniformBuffer(int bindingPoint, uint8_t* buffer, size_t bufferSize);
+
 private:
 	GSGLOBAL* m_gsContext = nullptr;
+	uint8_t* m_viewpointBuffer = nullptr;
+	size_t m_viewpointBufferSize = 0;
 };
