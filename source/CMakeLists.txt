@@ -476,6 +476,8 @@ set( PLAT_PS2_SOURCES
 	common/platform/ps2/gs_hwtexture.h
 	common/platform/ps2/gs_renderstate.cpp
 	common/platform/ps2/gs_renderstate.h
+	common/platform/ps2/gsKit_ext.cpp
+	common/platform/ps2/gsKit_ext.h
 	common/platform/ps2/i_input.cpp
 	common/platform/ps2/i_main.cpp
 	common/platform/ps2/i_specialpaths.cpp
