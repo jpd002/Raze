@@ -97,6 +97,10 @@ void GsRenderState::EnableClipDistance(int num, bool state)
 
 void GsRenderState::Clear(int targets)
 {
+	if(targets & (CT_Color | CT_Depth))
+	{
+		gsKit_clear(m_gsContext, 0);
+	}
 }
 
 void GsRenderState::EnableStencil(bool on)

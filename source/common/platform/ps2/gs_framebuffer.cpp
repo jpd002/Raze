@@ -77,12 +77,9 @@ IHardwareTexture* GsFrameBuffer::CreateHardwareTexture(int numchannels)
 
 void GsFrameBuffer::Update()
 {
-	gsKit_clear(m_gsContext, GS_SETREG_RGBAQ(0, 0, 0, 0, 0));
-
 	::Draw2D(twod, m_renderState);
 
 	gsKit_queue_exec(m_gsContext);
-	FPSLimit();
 	gsKit_sync_flip(m_gsContext);
 	Super::Update();
 }
