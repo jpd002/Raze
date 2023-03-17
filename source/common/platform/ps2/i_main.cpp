@@ -5,9 +5,12 @@ int GameMain();
 
 FArgs *Args;
 
+void SetupPad();
+
 int main(int argc, char** argv)
 {
 	progdir = "host:/raze";
+	SetupPad();
 	const int result = GameMain();
 	return result;
 }
