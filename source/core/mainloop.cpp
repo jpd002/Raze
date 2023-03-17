@@ -505,16 +505,13 @@ void Display()
 
 static void TicStabilityWait()
 {
-	using namespace std::chrono;
-	using namespace std::this_thread;
-
 	if (!r_ticstability)
 		return;
 
-	uint64_t start = duration_cast<microseconds>(steady_clock::now().time_since_epoch()).count();
+	uint64_t start = GetTimePointUS();
 	while (true)
 	{
-		uint64_t cur = duration_cast<microseconds>(steady_clock::now().time_since_epoch()).count();
+		uint64_t cur = GetTimePointUS();
 		if (cur - start > stabilityticduration)
 			break;
 	}
@@ -522,14 +519,12 @@ static void TicStabilityWait()
 
 static void TicStabilityBegin()
 {
-	using namespace std::chrono;
-	stabilitystarttime = duration_cast<microseconds>(steady_clock::now().time_since_epoch()).count();
+	stabilitystarttime = GetTimePointUS();
 }
 
 static void TicStabilityEnd()
 {
-	using namespace std::chrono;
-	uint64_t stabilityendtime = duration_cast<microseconds>(steady_clock::now().time_since_epoch()).count();
+	uint64_t stabilityendtime = GetTimePointUS();
 	stabilityticduration = min(stabilityendtime - stabilitystarttime, (uint64_t)1'000'000);
 }
 

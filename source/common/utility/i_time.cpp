@@ -37,6 +37,9 @@
 #include <thread>
 #include <assert.h>
 #include "i_time.h"
+#ifdef __PS2__
+#include <timer.h>
+#endif
 
 //==========================================================================
 //
@@ -55,8 +58,26 @@ float TimeScale = 1.0f;
 
 static uint64_t GetTimePoint()
 {
+#ifdef __PS2__
+	//gettimeofday has a bug in PS2SDK
+	uint64_t usTime = GetTimerSystemTime() / (kBUSCLK / 1'000'000);
+	return usTime * 1000;
+#else
 	using namespace std::chrono;
 	return (uint64_t)(duration_cast<nanoseconds>(steady_clock::now().time_since_epoch()).count());
+#endif
+}
+
+uint64_t GetTimePointUS()
+{
+#ifdef __PS2__
+	//gettimeofday has a bug in PS2SDK
+	uint64_t usTime = GetTimerSystemTime() / (kBUSCLK / 1'000'000);
+	return usTime;
+#else
+	using namespace std::chrono;
+	return (uint64_t)(duration_cast<microseconds>(steady_clock::now().time_since_epoch()).count());
+#endif
 }
 
 void I_InitTime()
@@ -137,7 +158,13 @@ int I_WaitForTic(int prevtic, float const ticrate)
 
 			if (sleepTime > 2)
 			{
+#ifdef __PS2__
+				uint64_t sleepTimeNSec = (sleepTime - 2) * 1'000'000;
+				timespec sltime = { sleepTimeNSec / 1'000'000'000, sleepTimeNSec % 1'000'000'000 };
+				nanosleep(&sltime, nullptr);
+#else
 				std::this_thread::sleep_for(std::chrono::milliseconds(sleepTime - 2));
+#endif
 			}
 		}
 

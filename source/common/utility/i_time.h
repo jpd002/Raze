@@ -51,3 +51,5 @@ void I_ResetInputTime();
 // [RH] Despite the name, it apparently never waited for the VBL, even in
 // the original DOS version (if the Heretic/Hexen source is any indicator).
 void I_WaitVBL(int count);
+
+uint64_t GetTimePointUS();
