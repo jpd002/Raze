@@ -23,6 +23,9 @@ void GsFrameBuffer::InitializeState()
 	dmaKit_init(D_CTRL_RELE_OFF,D_CTRL_MFD_OFF, D_CTRL_STS_UNSPEC, D_CTRL_STD_OFF, D_CTRL_RCYC_8, 1 << DMA_CHANNEL_GIF);
 	dmaKit_chan_init(DMA_CHANNEL_GIF);
 
+	m_gsContext->Clamp->WMS = GS_CMODE_REPEAT;
+	m_gsContext->Clamp->WMT = GS_CMODE_REPEAT;
+
 	gsKit_mode_switch(m_gsContext, GS_ONESHOT);
 	gsKit_init_screen(m_gsContext);
 
