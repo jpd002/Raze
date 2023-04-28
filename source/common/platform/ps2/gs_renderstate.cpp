@@ -6,8 +6,15 @@
 #include <gsInline.h>
 #include "gsKit_ext.h"
 
+struct CLIP_VERTEX
+{
+	FVector4 position;
+	FVector2 texCoord;
+};
+
 static const int32_t MAX_VERTICES = 0x1000;
 static GSPRIMSTQPOINT g_gsVertices[MAX_VERTICES];
+static CLIP_VERTEX g_clipVertices[MAX_VERTICES];
 
 static FVector4 TransformVector4(const VSMatrix& mat, const FVector4& vec)
 {
@@ -70,55 +77,186 @@ void GsRenderState::Draw(int dt, int index, int count, bool apply)
 		hwTex->BindOrCreate(tex->GetTexture(), 0, mMaterial.mClampMode, mMaterial.mTranslation, layer->scaleFlags);
 	}
 
-	const auto* viewpointUniforms = reinterpret_cast<const HWViewpointUniforms*>(m_viewpointBuffer);
-
-	mVertexBuffer->Map();
-	auto vertexBuffer = static_cast<GsVertexBuffer*>(mVertexBuffer);
-	auto vertices = reinterpret_cast<uint8_t*>(mVertexBuffer->Memory());
-	uint32_t clipFlag = 0;
-	for(int i = 0; i < count; i++)
+	//Transform all vertices
 	{
-		uint32_t vidx = index + i;
-		auto vtxBase = vertices + (vertexBuffer->m_stride * vidx);
-		float* position = reinterpret_cast<float*>(vtxBase + vertexBuffer->m_positionOffset);
-		float* texCoord = reinterpret_cast<float*>(vtxBase + vertexBuffer->m_texCoordOffset);
-		auto inputPos = FVector4(position[0], position[1], position[2], 1);
-		auto eyeCoordPos = TransformVector4(viewpointUniforms->mViewMatrix, inputPos);
-		auto outputPos = TransformVector4(viewpointUniforms->mProjectionMatrix, eyeCoordPos);
-
-//		printf("InputPos: ");
-//		PrintVector(inputPos);
-
-//		printf("OutputPos: ");
-//		PrintVector(outputPos);
-
-//		printf("TexCoord: U: %f, V: %f\n", texCoord[0], texCoord[1]);
-
-//		assert(false);
-
-		float absW = fabs(outputPos.W);
-		//Cheap simulation of CLIP instruction
-		clipFlag <<= 6;
-		clipFlag &= 0x3FFFF;
-		clipFlag |= (outputPos.X >  absW) ? 0x01 : 0;
-		clipFlag |= (outputPos.X < -absW) ? 0x02 : 0;
-		clipFlag |= (outputPos.Y >  absW) ? 0x04 : 0;
-		clipFlag |= (outputPos.Y < -absW) ? 0x08 : 0;
-		clipFlag |= (outputPos.Z >  absW) ? 0x10 : 0;
-		clipFlag |= (outputPos.Z < -absW) ? 0x20 : 0;
-		bool clip = (clipFlag != 0);
-		auto& gsVertex = g_gsVertices[i];
-		gsVertex.rgbaq = color_to_RGBAQ(0x80, 0x80, 0x80, 0x80, 1.0f);
-		gsVertex.xyz2 = vertex_to_XYZ_clip(m_gsContext, 
-			((( outputPos.X / outputPos.W) + 1.0f) / 2.0f) * 640.f,
-			(((-outputPos.Y / outputPos.W) + 1.0f) / 2.0f) * 448.f,
-			position[2], clip);
-		gsVertex.stq = vertex_to_STQ(texCoord[0], texCoord[1]);
+		const auto* viewpointUniforms = reinterpret_cast<const HWViewpointUniforms*>(m_viewpointBuffer);
+		mVertexBuffer->Map();
+		auto vertexBuffer = static_cast<GsVertexBuffer*>(mVertexBuffer);
+		auto vertices = reinterpret_cast<uint8_t*>(mVertexBuffer->Memory());
+		for(int i = 0; i < count; i++)
+		{
+			auto& clipVertex = g_clipVertices[i];
+			uint32_t vidx = index + i;
+			auto vtxBase = vertices + (vertexBuffer->m_stride * vidx);
+			float* position = reinterpret_cast<float*>(vtxBase + vertexBuffer->m_positionOffset);
+			float* texCoord = reinterpret_cast<float*>(vtxBase + vertexBuffer->m_texCoordOffset);
+			auto inputPos = FVector4(position[0], position[1], position[2], 1);
+			auto eyeCoordPos = TransformVector4(viewpointUniforms->mViewMatrix, inputPos);
+			clipVertex.position = TransformVector4(viewpointUniforms->mProjectionMatrix, eyeCoordPos);
+			clipVertex.texCoord = FVector2(texCoord[0], texCoord[1]);
+		}
+		mVertexBuffer->Unmap();
 	}
-	mVertexBuffer->Unmap();
+
+	static const float g_nearClip = 1.f;
+	uint32_t gsVertexCount = 0;
+
+	const auto makeClippedVertex =
+		[](const CLIP_VERTEX& v0, const CLIP_VERTEX& v1)
+		{
+			const auto& p0 = v0.position;
+			const auto& p1 = v1.position;
+			const auto& t0 = v0.texCoord;
+			const auto& t1 = v1.texCoord;
+			float factor = (g_nearClip - p1.W) / (p0.W - p1.W);
+			CLIP_VERTEX clipped;
+			clipped.position = (factor * (p0 - p1)) + p1;
+			clipped.texCoord = (factor * (t0 - t1)) + t1;
+			return clipped;
+		};
+
+	const auto registerVertex = 
+		[&](const FVector4& position, const FVector2& texCoord)
+		{
+			assert(gsVertexCount < MAX_VERTICES);
+			auto& gsVertex = g_gsVertices[gsVertexCount++];
+			gsVertex.rgbaq = color_to_RGBAQ(0x80, 0x80, 0x80, 0x80, 1.f / position.W);
+			gsVertex.xyz2 = vertex_to_XYZ_clip(m_gsContext, 
+				((( position.X / position.W) + 1.0f) / 2.0f) * 640.f,
+				(((-position.Y / position.W) + 1.0f) / 2.0f) * 448.f,
+				position.Z, false);
+			gsVertex.stq = vertex_to_STQ(texCoord.X / position.W, texCoord.Y / position.W);
+		};
+
+	const auto singleClipTriangle =
+		[&](int inIndex, int outIndex0, int outIndex1)
+		{
+			const auto& inVertex = g_clipVertices[inIndex];
+			const auto& outVertex0 = g_clipVertices[outIndex0];
+			const auto& outVertex1 = g_clipVertices[outIndex1];
+			auto clippedVertex0 = makeClippedVertex(inVertex, outVertex0);
+			auto clippedVertex1 = makeClippedVertex(inVertex, outVertex1);
+			registerVertex(inVertex.position, inVertex.texCoord);
+			registerVertex(clippedVertex0.position, clippedVertex0.texCoord);
+			registerVertex(clippedVertex1.position, clippedVertex1.texCoord);
+		};
+
+	const auto doubleClipTriangle =
+		[&](int inIndex0, int inIndex1, int outIndex)
+		{
+			const auto& inVertex0 = g_clipVertices[inIndex0];
+			const auto& inVertex1 = g_clipVertices[inIndex1];
+			const auto& outVertex = g_clipVertices[outIndex];
+			auto clippedVertex0 = makeClippedVertex(inVertex0, outVertex);
+			auto clippedVertex1 = makeClippedVertex(inVertex1, outVertex);
+
+#if 0
+			//assert(inVertex0.position.W > nearClip);
+			//assert(inVertex1.position.W > nearClip);
+			//assert(outVertex.position.W <= nearClip);
+
+			if((inVertex0.position.W <= g_nearClip) ||
+				(inVertex1.position.W <= g_nearClip) ||
+				(outVertex.position.W > g_nearClip))
+			{
+				printf("inVertex0: "); PrintVector(inVertex0.position);
+				printf("inVertex1: "); PrintVector(inVertex1.position);
+				printf("outVertex: "); PrintVector(outVertex.position);
+				printf("Clipped vertex0: "); PrintVector(clippedVertex0);
+				printf("Clipped vertex1: "); PrintVector(clippedVertex1);
+				assert(false);
+			}
+#endif
+
+			//Triangle 0
+			registerVertex(inVertex0.position, inVertex0.texCoord);
+			registerVertex(inVertex1.position, inVertex1.texCoord);
+			registerVertex(clippedVertex0.position, clippedVertex0.texCoord);
+
+			//Triangle 1
+			registerVertex(clippedVertex0.position, clippedVertex0.texCoord);
+			registerVertex(clippedVertex1.position, clippedVertex1.texCoord);
+			registerVertex(inVertex1.position, inVertex1.texCoord);
+		};
+
+	//Cull/clip triangles
+	for(int i = 0; i < count; i += 3)
+	{
+		//Cull triangles that have all their points outside.
+		uint32_t clipFlag = 0;
+		for(int j = 0; j < 3; j++)
+		{
+			const auto& clipVertex = g_clipVertices[i + j];
+			const auto& clipPosition = clipVertex.position;
+			float absW = fabs(clipPosition.W);
+			//Cheap simulation of CLIP instruction
+			clipFlag <<= 6;
+			//clipFlag |= (clipPosition.X >  absW) ? 0x01 : 0;
+			//clipFlag |= (clipPosition.X < -absW) ? 0x02 : 0;
+			//clipFlag |= (clipPosition.Y >  absW) ? 0x04 : 0;
+			//clipFlag |= (clipPosition.Y < -absW) ? 0x08 : 0;
+			//clipFlag |= (clipPosition.Z >  absW) ? 0x10 : 0;
+			//clipFlag |= (clipPosition.Z < -absW) ? 0x20 : 0;
+			clipFlag |= (clipPosition.W <= g_nearClip) ? 0x01 : 0;
+		}
+		
+		//if(clipFlag != 0) continue;
+
+//		if((clipFlag & 0x01041) == 0x01041) continue; //All X > +W
+//		if((clipFlag & 0x02082) == 0x02082) continue; //All X < -W
+//		if((clipFlag & 0x04104) == 0x04104) continue; //All Y > +W
+//		if((clipFlag & 0x08208) == 0x08208) continue; //All Y < -W
+//		if((clipFlag & 0x10410) == 0x10410) continue; //All Z > +W
+//		if((clipFlag & 0x20820) == 0x20820) continue; //All Z < -W
+
+		switch(clipFlag & 0b000001'000001'000001)
+		{
+		case 0b000000'000000'000000:
+			//All points in
+			for(int j = 0; j < 3; j++)
+			{
+				const auto& clipVertex = g_clipVertices[i + j];
+				const auto& clipPosition = clipVertex.position;
+				const auto& clipTexCoord = clipVertex.texCoord;
+				registerVertex(clipPosition, clipTexCoord);
+			}
+			break;
+		case 0b000001'000001'000001:
+			//All points out
+			break;
+		case 0b000000'000001'000001:
+			singleClipTriangle(i + 0, i + 1, i + 2);
+			break;
+		case 0b000001'000000'000001:
+			singleClipTriangle(i + 1, i + 0, i + 2);
+			break;
+		case 0b000001'000001'000000:
+			singleClipTriangle(i + 2, i + 0, i + 1);
+			break;
+		case 0b000000'000000'000001:
+			doubleClipTriangle(i + 0, i + 1, i + 2);
+			break;
+		case 0b000000'000001'000000:
+			doubleClipTriangle(i + 0, i + 2, i + 1);
+			break;
+		case 0b000001'000000'000000:
+			doubleClipTriangle(i + 1, i + 2, i + 0);
+			break;
+		}
+#if 0
+		for(int j = 0; j < 3; j++)
+		{
+			const auto& clipVertex = g_clipVertices[i + j];
+			const auto& clipPosition = clipVertex.position;
+			const auto& clipTexCoord = clipVertex.texCoord;
+			registerVertex(clipPosition, clipTexCoord);
+		}
+#endif
+	}
+
 	if(hwTex != nullptr)
 	{
-		gsKit_prim_list_triangle_goraud_texture_stq_3d(m_gsContext, hwTex->GetHandle(), count, g_gsVertices);
+		gsKit_prim_list_triangle_goraud_texture_stq_3d(m_gsContext, hwTex->GetHandle(), gsVertexCount, g_gsVertices);
 	}
 }
 
