@@ -221,6 +221,16 @@ void I_GetEvent()
 			ev.data1 = 0x1F; //DIK_S
 			ev.data2 = 's';
 		}
+		if((new_pad ^ old_pad) & PAD_LEFT)
+		{
+			ev.type = ((new_pad & PAD_LEFT) ? EV_KeyDown : EV_KeyUp);
+			ev.data1 = 0xCB; //KEY_LEFTARROW
+		}
+		if((new_pad ^ old_pad) & PAD_RIGHT)
+		{
+			ev.type = ((new_pad & PAD_RIGHT) ? EV_KeyDown : EV_KeyUp);
+			ev.data1 = 0xCD; //KEY_RIGHTARROW
+		}
 
 		old_pad = new_pad;
 
